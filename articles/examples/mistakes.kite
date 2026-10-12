@@ -1,0 +1,14 @@
+module Mistakes
+
+fn average(xs: list<dec>) -> dec
+    let total = sum(xs)
+    total = total + 0.0
+    let mut count = len(xs)
+    upper("unused")
+    return total / count
+
+fn first_name(name: str?) -> str
+    return name.Split(' ')[0]
+
+fn main()
+    print(average([1.0, 2.0]))

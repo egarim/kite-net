@@ -25,14 +25,17 @@ trained on. ↑ higher is better, ↓ lower is better.
 | | Untrained | Round 1 (Kite only) | Round 2 | **Round 3: champion** |
 |---|---|---|---|---|
 | Kite compiles ↑ | 0% | 80.0% | (not tested) | **83.4%** |
-| Kite passes hidden tests ↑ | 0% | 65.7% | (not tested) | **69.4%** (70.2% with 2 repairs) |
-| Writes C# instead of Kite ↓ | 98.9% | 0% | | **0%** |
+| Kite passes hidden tests ↑ | 0% | 65.7% | (not tested) | **69.4%** |
+| Writes another language instead of Kite ↓ | 98.9% (mostly Kotlin) | 0% | | **0%** |
 | C# guard passes ↑ (117 C# tasks) | 64.1% | 0% | | **64.1%** |
 | Verdict | | rejected: forgot C# | rejected on valid: C# 12 points down | **champion** |
 
 - **Round 1** learned Kite and forgot C#: asked for C#, it wrote Kite. The "not dumber" guard caught it.
 - **Round 2** mixed in 328 C# tasks and 256 repair lessons (kite's real error messages and the fix): C# came
   back, not far enough.
+- The fix-it loop (feed kite's messages back, up to 2 tries) fixed none of the 44 answers that didn't compile; the
+  only 2 "fixes" were retries after kite crashed or timed out. The repair lessons covered syntax slips the model no
+  longer makes.
 - **Round 3**: 748 C# tasks and half the learning rate; chosen on valid as the best Kite score whose C# stays
   within 2 points of the untrained model, then one look at test.
 
