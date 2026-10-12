@@ -1,0 +1,21 @@
+module Bad
+
+fn Add_Two(x: int) -> int
+    let y = 1
+    y = 2
+    x = x + 1
+    let mut z = 5
+    return x + z
+
+fn maybe(s: str?) -> int
+    return s.Length
+
+fn main()
+    let unused = 3
+    print(Add_Two(1))
+
+fn waste(xs: list<int>)
+    xs |> map(x => x * 2)
+    upper("a")
+    if xs.Count() > 0
+        print("some")

@@ -1,0 +1,6 @@
+#!/bin/sh
+# kite: run the Kite.NET compiler (builds it on first use)
+here="$(cd "$(dirname "$0")/.." && pwd)"
+dll="$here/Kite/bin/Release/net9.0/kite.dll"
+[ -f "$dll" ] || dotnet build "$here/Kite" -c Release -v q -nologo >/dev/null || exit 1
+exec dotnet "$dll" "$@"

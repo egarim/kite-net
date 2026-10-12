@@ -1,0 +1,2792 @@
+{
+ "model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit",
+ "adapter": null,
+ "split": "test",
+ "repairs": 0,
+ "metrics": {
+  "compiles": 0.7435897435897436,
+  "passes": 0.6410256410256411,
+  "clean": 0.6410256410256411,
+  "csharp_leak": 0.0,
+  "warnings_per_compiled": 0.14942528735632185,
+  "tokens_per_s": 179.5774635335759
+ },
+ "results": [
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record CartItem(string Name, int Quantity, decimal UnitPrice);` and `public record Cart(string Customer, List<CartItem> Items);`. In a static class `Solution`, write `public static decimal CartSubtotal(Cart cart)` that returns the sum of Quantity times UnitPrice, `public static decimal CartTotal(Cart cart, decimal discountPercent)` that applies the discount percent to the subtotal, and `public static Cart? FindCart(IEnumerable<Cart> carts, string customer)` that returns the first cart for the customer matched case-insensitively or null.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 24: warning CA1862: Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 24: warning CA1862: Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record CartItem(string Name, int Quantity, decimal UnitPrice);\n\npublic record Cart(string Customer, List<CartItem> Items);\n\npublic static class Solution\n{\n    public static decimal CartSubtotal(Cart cart)\n    {\n        return cart.Items.Sum(item => item.Quantity * item.UnitPrice);\n    }\n\n    public static decimal CartTotal(Cart cart, decimal discountPercent)\n    {\n        decimal subtotal = CartSubtotal(cart);\n        return subtotal * (1 - discountPercent / 100);\n    }\n\n    public static Cart? FindCart(IEnumerable<Cart> carts, string customer)\n    {\n        return carts.FirstOrDefault(cart => cart.Customer.ToLower() == customer.ToLower());\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record OrderItem(string ProductName, int Quantity, decimal UnitPrice);` and `public record Order(int Id, string Customer, List<OrderItem> Items);`. In a static class `Solution`, write `public static decimal OrderTotal(Order order)` that returns the sum of Quantity times UnitPrice, `public static int TotalQuantityForProduct(IEnumerable<Order> orders, string productName)` that totals quantities for a product name case-insensitively, and `public static decimal TotalRevenueForProduct(IEnumerable<Order> orders, string productName)` that totals revenue for a product name case-insensitively.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 21: warning CA1862: Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'",
+     "test 'totals orders and product quantities/revenue' failed: total quantity lookup case-insensitive"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 21: warning CA1862: Prefer using 'string.Equals(string, StringComparison)' to perform a case-insensitive comparison, but keep in mind that this might cause subtle changes in behavior, so make sure to conduct thorough testing after applying the suggestion, or if culturally sensitive comparison is not required, consider using 'StringComparison.OrdinalIgnoreCase'",
+     "test 'totals orders and product quantities/revenue' failed: total quantity lookup case-insensitive"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic record OrderItem(string ProductName, int Quantity, decimal UnitPrice);\npublic record Order(int Id, string Customer, List<OrderItem> Items);\n\npublic static class Solution\n{\n    public static decimal OrderTotal(Order order)\n    {\n        return order.Items.Sum(item => item.Quantity * item.UnitPrice);\n    }\n\n    public static int TotalQuantityForProduct(IEnumerable<Order> orders, string productName)\n    {\n        return orders.Sum(order => order.Items.Count(item => item.ProductName.ToLower() == productName.ToLower()));\n    }\n\n    public static decimal TotalRevenueForProduct(IEnumerable<Order> orders, string productName)\n    {\n        return orders.Sum(order => order.Items.Sum(item => item.Quantity * item.UnitPrice));\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `Person(string Name, int Age, string City)` and write a static class Solution with `public static Dictionary<string, List<Person>> GroupByCity(IEnumerable<Person> people)` that groups people by City (case-insensitive keys), and `public static int CountAdults(IEnumerable<Person> people)` that returns the number of people with Age at least 18.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'group people by city and count adults' failed: The given key 'LONDON' was not present in the dictionary."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'group people by city and count adults' failed: The given key 'LONDON' was not present in the dictionary."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record Person(string Name, int Age, string City);\n\npublic static class Solution\n{\n    public static Dictionary<string, List<Person>> GroupByCity(IEnumerable<Person> people)\n    {\n        return people.GroupBy(p => p.City.ToLower()).ToDictionary(g => g.Key, g => g.ToList());\n    }\n\n    public static int CountAdults(IEnumerable<Person> people)\n    {\n        return people.Count(p => p.Age >= 18);\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `Order(int Id, string Customer, decimal Amount)` and write a static class Solution with `public static decimal TotalForCustomer(IEnumerable<Order> orders, string customer)` that returns the sum of Amount for orders whose Customer matches the given customer exactly, and `public static Order? FindOrder(IEnumerable<Order> orders, int id)` that returns the order with the given Id or null if not found.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record Order(int Id, string Customer, decimal Amount);\n\npublic static class Solution\n{\n    public static decimal TotalForCustomer(IEnumerable<Order> orders, string customer)\n    {\n        return orders.Where(order => order.Customer == customer).Sum(order => order.Amount);\n    }\n\n    public static Order? FindOrder(IEnumerable<Order> orders, int id)\n    {\n        return orders.FirstOrDefault(order => order.Id == id);\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `Product(string Name, string Category, decimal Price, int Quantity)` and write a static class Solution with `public static Dictionary<string, decimal> TotalByCategory(IEnumerable<Product> products)` that returns total Price * Quantity per Category, and `public static Product? CheapestInCategory(IEnumerable<Product> products, string category)` that returns the product with the lowest Price in the given category, or null if none.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record Product(string Name, string Category, decimal Price, int Quantity);\n\npublic static class Solution\n{\n    public static Dictionary<string, decimal> TotalByCategory(IEnumerable<Product> products)\n    {\n        return products.GroupBy(p => p.Category)\n                      .ToDictionary(g => g.Key, g => g.Sum(p => p.Price * p.Quantity));\n    }\n\n    public static Product? CheapestInCategory(IEnumerable<Product> products, string category)\n    {\n        return products.Where(p => p.Category == category)\n                      .OrderBy(p => p.Price)\n                      .FirstOrDefault();\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `Person(string Name, DateOnly BirthDate)` and write a static class Solution with `public static int AgeOn(Person person, DateOnly date)` that returns the person's completed age on the given date, and `public static List<Person> BornBefore(IEnumerable<Person> people, DateOnly date)` that returns people whose BirthDate is before the given date.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS0019: Operator '-' cannot be applied to operands of type 'int' and 'bool'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS0019: Operator '-' cannot be applied to operands of type 'int' and 'bool'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record Person(string Name, DateOnly BirthDate);\n\npublic static class Solution\n{\n    public static int AgeOn(Person person, DateOnly date)\n    {\n        return (int)(date.Year - person.BirthDate.Year) - (date.Month < person.BirthDate.Month || (date.Month == person.BirthDate.Month && date.Day < person.BirthDate.Day));\n    }\n\n    public static List<Person> BornBefore(IEnumerable<Person> people, DateOnly date)\n    {\n        return people.Where(p => p.BirthDate < date).ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `OrderLine(string Product, decimal UnitPrice, int Quantity)` and a public record `Order(int Id, string Customer, List<OrderLine> Lines)`. Write a static class Solution with `public static decimal OrderTotal(Order order)` that returns the sum of UnitPrice * Quantity for the order's lines, and `public static Dictionary<string, decimal> ProductTotals(IEnumerable<Order> orders)` that returns total revenue per product across all orders.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 19: error CS1061: 'Order' does not contain a definition for 'UnitPrice' and no accessible extension method 'UnitPrice' accepting a first argument of type 'Order' could be found (are you missing a using directive or an assembly reference?)",
+     "line 19: error CS1061: 'Order' does not contain a definition for 'Quantity' and no accessible extension method 'Quantity' accepting a first argument of type 'Order' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 19: error CS1061: 'Order' does not contain a definition for 'UnitPrice' and no accessible extension method 'UnitPrice' accepting a first argument of type 'Order' could be found (are you missing a using directive or an assembly reference?)",
+     "line 19: error CS1061: 'Order' does not contain a definition for 'Quantity' and no accessible extension method 'Quantity' accepting a first argument of type 'Order' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record OrderLine(string Product, decimal UnitPrice, int Quantity);\n\npublic record Order(int Id, string Customer, List<OrderLine> Lines);\n\npublic static class Solution\n{\n    public static decimal OrderTotal(Order order)\n    {\n        return order.Lines.Sum(line => line.UnitPrice * line.Quantity);\n    }\n\n    public static Dictionary<string, decimal> ProductTotals(IEnumerable<Order> orders)\n    {\n        return orders.GroupBy(order => order.Lines.Select(line => line.Product).Distinct())\n                      .ToDictionary(group => group.Key, group => group.Sum(line => line.UnitPrice * line.Quantity));\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `Customer(int Id, string Name, string Email)` and a public record `Order(int Id, int CustomerId, decimal Total)`. Write a static class Solution with `public static Dictionary<int, Customer> IndexCustomers(IEnumerable<Customer> customers)` that builds a dictionary keyed by customer Id, `public static Customer? FindCustomer(IEnumerable<Customer> customers, int id)` that returns the matching customer or null, and `public static decimal TotalForCustomer(IEnumerable<Order> orders, int customerId)` that returns the sum of Total for orders with the given CustomerId.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record Customer(int Id, string Name, string Email);\n\npublic record Order(int Id, int CustomerId, decimal Total);\n\npublic static class Solution\n{\n    public static Dictionary<int, Customer> IndexCustomers(IEnumerable<Customer> customers)\n    {\n        return customers.ToDictionary(c => c.Id);\n    }\n\n    public static Customer? FindCustomer(IEnumerable<Customer> customers, int id)\n    {\n        return customers.FirstOrDefault(c => c.Id == id);\n    }\n\n    public static decimal TotalForCustomer(IEnumerable<Order> orders, int customerId)\n    {\n        return orders.Where(o => o.CustomerId == customerId).Sum(o => o.Total);\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `Product(string Sku, string Name, decimal Price)` and a public record `OrderLine(string Sku, int Quantity)`. Write a static class Solution with `public static Dictionary<string, Product> IndexBySku(IEnumerable<Product> products)` that builds a case-insensitive dictionary keyed by Sku, and `public static decimal TotalForOrder(IEnumerable<OrderLine> lines, IReadOnlyDictionary<string, Product> products)` that returns the sum of Product.Price * Quantity for lines whose Sku exists in the dictionary (missing SKUs contribute zero).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record Product(string Sku, string Name, decimal Price);\n\npublic record OrderLine(string Sku, int Quantity);\n\npublic static class Solution\n{\n    public static Dictionary<string, Product> IndexBySku(IEnumerable<Product> products)\n    {\n        return products.ToDictionary(p => p.Sku.ToLower());\n    }\n\n    public static decimal TotalForOrder(IEnumerable<OrderLine> lines, IReadOnlyDictionary<string, Product> products)\n    {\n        return lines\n            .Where(line => products.ContainsKey(line.Sku.ToLower()))\n            .Sum(line => products[line.Sku.ToLower()].Price * line.Quantity);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static bool IsPrime(int n)` in a static class Solution that returns true if n is a prime number, and false otherwise. Negative numbers, 0 and 1 are not prime.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static bool IsPrime(int n)\n    {\n        if (n <= 1) return false;\n        if (n == 2) return true;\n        if (n % 2 == 0) return false;\n\n        var boundary = (int)Math.Floor(Math.Sqrt(n));\n\n        for (int i = 3; i <= boundary; i += 2)\n        {\n            if (n % i == 0) return false;\n        }\n\n        return true;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static int CountPrimes(int n)` in a static class Solution that returns the number of prime numbers less than or equal to n.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int CountPrimes(int n)\n    {\n        if (n <= 1) return 0;\n        bool[] isPrime = new bool[n + 1];\n        for (int i = 2; i * i <= n; i++)\n        {\n            if (!isPrime[i])\n            {\n                for (int j = i * i; j <= n; j += i)\n                {\n                    isPrime[j] = true;\n                }\n            }\n        }\n        int count = 0;\n        for (int i = 2; i <= n; i++)\n        {\n            if (!isPrime[i])\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static long Gcd(int a, int b)` in a static class Solution that returns the greatest common divisor of a and b. The result is non-negative. Handle zero and negative inputs.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes gcd for positive, negative, and zero inputs' failed: Both numbers must be non-negative."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes gcd for positive, negative, and zero inputs' failed: Both numbers must be non-negative."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Gcd(int a, int b)\n    {\n        if (a < 0 || b < 0)\n        {\n            throw new ArgumentException(\"Both numbers must be non-negative.\");\n        }\n\n        while (b != 0)\n        {\n            int temp = b;\n            b = a % b;\n            a = temp;\n        }\n\n        return a;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static long Lcm(int a, int b)` in a static class Solution that returns the least common multiple of a and b. If either input is 0, return 0. The result is non-negative.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 28: error CS0266: Cannot implicitly convert type 'long' to 'int'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 28: error CS0266: Cannot implicitly convert type 'long' to 'int'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Lcm(int a, int b)\n    {\n        if (a == 0 || b == 0)\n        {\n            return 0;\n        }\n\n        long gcd = Gcd(a, b);\n        return (a / gcd) * b;\n    }\n\n    private static long Gcd(int a, int b)\n    {\n        while (b != 0)\n        {\n            long temp = b;\n            b = a % b;\n            a = temp;\n        }\n        return a;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static bool IsCoprime(int a, int b)` in a static class Solution that returns true if a and b are coprime (their greatest common divisor is 1). Handle zero and negative inputs; 0 and 1 are coprime, but 0 and 0 are not.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'checks coprimality for various inputs' failed: signs do not affect coprimality"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'checks coprimality for various inputs' failed: signs do not affect coprimality"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static bool IsCoprime(int a, int b)\n    {\n        if (a == 0 || b == 0) return false;\n        if (a == 1 || b == 1) return true;\n        if (a < 0 || b < 0) return false;\n\n        while (b != 0)\n        {\n            int temp = b;\n            b = a % b;\n            a = temp;\n        }\n        return a == 1;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static decimal RoundToCents(decimal amount)` in a static class Solution that rounds amount to two decimal places using MidpointRounding.AwayFromZero.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static decimal RoundToCents(decimal amount)\n    {\n        return Math.Round(amount, 2, MidpointRounding.AwayFromZero);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static decimal CalculateTotal(decimal price, int quantity, decimal taxRate)` in a static class Solution that returns price * quantity * (1 + taxRate), rounded to two decimal places using MidpointRounding.AwayFromZero.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static decimal CalculateTotal(decimal price, int quantity, decimal taxRate)\n    {\n        decimal total = price * quantity * (1 + taxRate);\n        return Math.Round(total, 2, MidpointRounding.AwayFromZero);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static List<int> PrimeFactors(int n)` in a static class Solution that returns the prime factors of n in nondecreasing order. If n < 2, return an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static List<int> PrimeFactors(int n)\n    {\n        if (n < 2)\n        {\n            return new List<int>();\n        }\n\n        List<int> factors = new List<int>();\n        int divisor = 2;\n\n        while (n > 1)\n        {\n            while (n % divisor == 0)\n            {\n                factors.Add(divisor);\n                n /= divisor;\n            }\n            divisor++;\n        }\n\n        return factors;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static int CountPrimes(int limit)` in a static class Solution that returns the number of prime numbers less than or equal to limit. If limit is less than 2, return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int CountPrimes(int limit)\n    {\n        if (limit < 2)\n        {\n            return 0;\n        }\n\n        var primes = new HashSet<int>();\n        for (int num = 2; num <= limit; num++)\n        {\n            if (IsPrime(num))\n            {\n                primes.Add(num);\n            }\n        }\n\n        return primes.Count;\n    }\n\n    private static bool IsPrime(int num)\n    {\n        if (num <= 1) return false;\n        if (num == 2) return true;\n        if (num % 2 == 0) return false;\n\n        var boundary = (int)Math.Floor(Math.Sqrt(num));\n\n        for (int i = 3; i <= boundary; i += 2)\n        {\n            if (num % i == 0) return false;\n        }\n\n        return true;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static int Gcd(int a, int b)` in a static class Solution that returns the greatest common divisor of two integers. The result must be non-negative. Gcd(0, 0) should return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes greatest common divisor' failed: negative input"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes greatest common divisor' failed: negative input"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int Gcd(int a, int b)\n    {\n        if (a == 0 && b == 0) return 0;\n        while (b != 0)\n        {\n            int temp = b;\n            b = a % b;\n            a = temp;\n        }\n        return a;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static long Lcm(int a, int b)` in a static class Solution that returns the least common multiple of two integers. If either input is 0, return 0. The result must be non-negative and fit in a long. Use long arithmetic to avoid overflow.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 24: error CS0266: Cannot implicitly convert type 'long' to 'int'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 24: error CS0266: Cannot implicitly convert type 'long' to 'int'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Lcm(int a, int b)\n    {\n        if (a == 0 || b == 0) return 0;\n        long gcd = Gcd(a, b);\n        return (a / gcd) * b;\n    }\n\n    private static long Gcd(int a, int b)\n    {\n        while (b != 0)\n        {\n            long temp = b;\n            b = a % b;\n            a = temp;\n        }\n        return a;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static decimal RoundMoney(decimal amount)` in a static class Solution that rounds a monetary amount to two decimal places using midpoint rounding away from zero.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static decimal RoundMoney(decimal amount)\n    {\n        return Math.Round(amount, 2, MidpointRounding.AwayFromZero);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static decimal AddMoney(decimal left, decimal right)` in a static class Solution that adds two monetary amounts and rounds the result to two decimal places using midpoint rounding away from zero.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static decimal AddMoney(decimal left, decimal right)\n    {\n        decimal result = left + right;\n        return Math.Round(result, 2, MidpointRounding.AwayFromZero);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static decimal ApplyDiscount(decimal price, decimal percentOff)` in a static class Solution that returns the discounted price rounded to two decimal places using midpoint rounding away from zero. `percentOff` is a percentage between 0 and 100. The result is `price * (1 - percentOff / 100)`, rounded to cents.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static decimal ApplyDiscount(decimal price, decimal percentOff)\n    {\n        decimal discount = price * (1 - percentOff / 100);\n        return Math.Round(discount, 2, MidpointRounding.AwayFromZero);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static long SumPrimes(int limit)` in a static class Solution that returns the sum of all prime numbers less than or equal to limit. If limit is less than 2, return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static long SumPrimes(int limit)\n    {\n        if (limit < 2) return 0;\n\n        List<long> primes = new List<long>();\n        for (long num = 2; num <= limit; num++)\n        {\n            if (IsPrime(num))\n            {\n                primes.Add(num);\n            }\n        }\n\n        return primes.Sum();\n    }\n\n    private static bool IsPrime(long num)\n    {\n        if (num <= 1) return false;\n        if (num == 2) return true;\n        if (num % 2 == 0) return false;\n\n        var boundary = (long)Math.Floor(Math.Sqrt(num));\n\n        for (long i = 3; i <= boundary; i += 2)\n        {\n            if (num % i == 0) return false;\n        }\n\n        return true;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static int CountPrimes(int limit)` in a static class Solution that returns the number of prime numbers less than or equal to limit. If limit < 2, return 0. Use the Sieve of Eratosthenes.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int CountPrimes(int limit)\n    {\n        if (limit < 2) return 0;\n\n        bool[] isPrime = new bool[limit + 1];\n        for (int i = 2; i <= limit; i++) isPrime[i] = true;\n\n        for (int i = 2; i * i <= limit; i++)\n        {\n            if (isPrime[i])\n            {\n                for (int j = i * i; j <= limit; j += i)\n                    isPrime[j] = false;\n            }\n        }\n\n        int count = 0;\n        for (int i = 2; i <= limit; i++)\n        {\n            if (isPrime[i]) count++;\n        }\n\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static long Gcd(int a, int b)` in a static class Solution that returns the non-negative greatest common divisor of a and b. Use the Euclidean algorithm and handle negative inputs. Return 0 only if both inputs are 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Gcd(int a, int b)\n    {\n        if (a == 0 && b == 0) return 0;\n        if (a < 0) a = -a;\n        if (b < 0) b = -b;\n        while (b != 0)\n        {\n            int temp = b;\n            b = a % b;\n            a = temp;\n        }\n        return a;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static long Lcm(int a, int b)` in a static class Solution that returns the non-negative least common multiple of a and b. If either input is 0, return 0. Use the gcd of the inputs and a long result to avoid overflow. You may include a helper method `public static long Gcd(int a, int b)`.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes lcm' failed: negative input"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes lcm' failed: negative input"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Lcm(int a, int b)\n    {\n        if (a == 0 || b == 0) return 0;\n        return (a / Gcd(a, b)) * b;\n    }\n\n    private static long Gcd(int a, int b)\n    {\n        while (b != 0)\n        {\n            int temp = b;\n            b = a % b;\n            a = temp;\n        }\n        return a;\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static decimal RoundMoney(decimal amount)` in a static class Solution that rounds a monetary amount to two decimal places using midpoint rounding away from zero.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static decimal RoundMoney(decimal amount)\n    {\n        return Math.Round(amount, 2, MidpointRounding.AwayFromZero);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static decimal AddMoney(decimal a, decimal b)` in a static class Solution that adds two monetary amounts and rounds the result to two decimal places using midpoint rounding away from zero.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static decimal AddMoney(decimal a, decimal b)\n    {\n        decimal result = a + b;\n        return Math.Round(result, 2, MidpointRounding.AwayFromZero);\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static int[] PrimeFactors(int n)` in a static class Solution that returns the distinct prime factors of the absolute value of n in ascending order. If the absolute value is less than 2, return an empty array.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CA1825: Avoid unnecessary zero-length array allocations.  Use Array.Empty<int>() instead.",
+     "test 'finds distinct prime factors' failed: negative input"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CA1825: Avoid unnecessary zero-length array allocations.  Use Array.Empty<int>() instead.",
+     "test 'finds distinct prime factors' failed: negative input"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int[] PrimeFactors(int n)\n    {\n        if (n < 2) return new int[0];\n\n        var factors = new HashSet<int>();\n        for (int i = 2; i * i <= n; i++)\n        {\n            while (n % i == 0)\n            {\n                factors.Add(i);\n                n /= i;\n            }\n        }\n\n        if (n > 1) factors.Add(n);\n\n        return factors.ToArray();\n    }\n}"
+  },
+  {
+   "family": "cs-math",
+   "prompt": "Write a static method `public static bool IsCoprime(int a, int b)` in a static class Solution that returns true if the greatest common divisor of a and b is 1. You may include a helper method `public static long Gcd(int a, int b)`.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS0266: Cannot implicitly convert type 'long' to 'int'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS0266: Cannot implicitly convert type 'long' to 'int'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static bool IsCoprime(int a, int b)\n    {\n        return Gcd(a, b) == 1;\n    }\n\n    private static long Gcd(int a, int b)\n    {\n        while (b != 0)\n        {\n            long temp = b;\n            b = a % b;\n            a = temp;\n        }\n        return a;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<string, int> CountWords(IEnumerable<string> words)` in a static class Solution that returns a dictionary mapping each distinct non-null word to the number of times it appears. Words are compared with ordinal case-sensitive equality. The input may be empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<string, int> CountWords(IEnumerable<string> words)\n    {\n        return words.GroupBy(word => word).ToDictionary(group => group.Key, group => group.Count());\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static List<string> UniquePreserveOrder(IEnumerable<string> items)` in a static class Solution that returns a list containing only the first occurrence of each distinct string, preserving the original order. Use a HashSet for seen items.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<string> UniquePreserveOrder(IEnumerable<string> items)\n    {\n        HashSet<string> seen = new HashSet<string>();\n        List<string> result = new List<string>();\n\n        foreach (var item in items)\n        {\n            if (!seen.Contains(item))\n            {\n                seen.Add(item);\n                result.Add(item);\n            }\n        }\n\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static int CountDistinct(IEnumerable<int> numbers)` in a static class Solution that returns the number of distinct integers in the input. Use a HashSet<int>.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static int CountDistinct(IEnumerable<int> numbers)\n    {\n        HashSet<int> distinctNumbers = new HashSet<int>(numbers);\n        return distinctNumbers.Count;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static HashSet<int> FindDuplicates(IEnumerable<int> numbers)` in a static class Solution that returns a HashSet<int> containing each integer that appears more than once in the input. Each duplicate value should appear once in the result. The input may be empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static HashSet<int> FindDuplicates(IEnumerable<int> numbers)\n    {\n        HashSet<int> seen = new HashSet<int>();\n        HashSet<int> duplicates = new HashSet<int>();\n\n        foreach (int number in numbers)\n        {\n            if (seen.Contains(number))\n            {\n                duplicates.Add(number);\n            }\n            else\n            {\n                seen.Add(number);\n            }\n        }\n\n        return duplicates;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static HashSet<int> CommonUnique(IEnumerable<int> first, IEnumerable<int> second)` in a static class Solution that returns a HashSet<int> containing all integers that appear in both inputs, with each common value appearing once in the result. Use HashSet<int>.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 16: warning CA1851: Possible multiple enumerations of 'IEnumerable' collection. Consider using an implementation that avoids multiple enumerations."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 16: warning CA1851: Possible multiple enumerations of 'IEnumerable' collection. Consider using an implementation that avoids multiple enumerations."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static HashSet<int> CommonUnique(IEnumerable<int> first, IEnumerable<int> second)\n    {\n        HashSet<int> result = new HashSet<int>();\n        foreach (var item in first)\n        {\n            if (second.Contains(item))\n            {\n                result.Add(item);\n            }\n        }\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<string, int> CountWords(string[] words)` in a static class Solution that returns a dictionary mapping each word to the number of times it appears in the array.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<string, int> CountWords(string[] words)\n    {\n        return words.GroupBy(word => word).ToDictionary(group => group.Key, group => group.Count());\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static List<string> UniqueInOrder(string[] items)` in a static class Solution that returns the unique items in the order they first appear.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<string> UniqueInOrder(string[] items)\n    {\n        HashSet<string> seen = new HashSet<string>();\n        List<string> result = new List<string>();\n\n        foreach (var item in items)\n        {\n            if (!seen.Contains(item))\n            {\n                seen.Add(item);\n                result.Add(item);\n            }\n        }\n\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<int, List<string>> GroupByLength(string[] words)` in a static class Solution that groups words by their length, preserving the original order within each group.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<int, List<string>> GroupByLength(string[] words)\n    {\n        return words.GroupBy(word => word.Length)\n                     .ToDictionary(group => group.Key, group => group.ToList());\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static int CountDistinct(int[] numbers)` in a static class Solution that returns the number of distinct integers in the array.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static int CountDistinct(int[] numbers)\n    {\n        HashSet<int> distinctNumbers = new HashSet<int>(numbers);\n        return distinctNumbers.Count;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static List<int> AppearOnce(int[] numbers)` in a static class Solution that returns the integers that appear exactly once, preserving their first occurrence order.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 16: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 16: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<int> AppearOnce(int[] numbers)\n    {\n        Dictionary<int, int> countMap = new Dictionary<int, int>();\n        foreach (int number in numbers)\n        {\n            if (countMap.ContainsKey(number))\n            {\n                countMap[number]++;\n            }\n            else\n            {\n                countMap[number] = 1;\n            }\n        }\n\n        return countMap.Where(pair => pair.Value == 1).Select(pair => pair.Key).ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<char, List<string>> GroupByFirstLetter(string[] words)` in a static class Solution that groups non-empty words by their first character, preserving input order within each group and ignoring empty strings.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<char, List<string>> GroupByFirstLetter(string[] words)\n    {\n        return words\n            .Where(word => !string.IsNullOrEmpty(word))\n            .GroupBy(word => word[0])\n            .ToDictionary(group => group.Key, group => group.ToList());\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<string, int> MergeCounts(string[] first, string[] second)` in a static class Solution that returns the combined occurrence count of all strings in both arrays.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 17: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 17: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<string, int> MergeCounts(string[] first, string[] second)\n    {\n        var combinedCounts = new Dictionary<string, int>();\n\n        foreach (var str in first.Concat(second))\n        {\n            if (combinedCounts.ContainsKey(str))\n            {\n                combinedCounts[str]++;\n            }\n            else\n            {\n                combinedCounts[str] = 1;\n            }\n        }\n\n        return combinedCounts;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static HashSet<string> Intersection(string[] first, string[] second)` in a static class Solution that returns the unique strings that appear in both arrays.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static HashSet<string> Intersection(string[] first, string[] second)\n    {\n        HashSet<string> result = new HashSet<string>();\n        foreach (var item in first)\n        {\n            if (second.Contains(item))\n            {\n                result.Add(item);\n            }\n        }\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<char, int> CountCharacters(string s)` in a static class Solution that returns the number of occurrences of each character in s. Include every character, including spaces. An empty string returns an empty dictionary.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 20: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 20: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static Dictionary<char, int> CountCharacters(string s)\n    {\n        if (string.IsNullOrEmpty(s))\n        {\n            return new Dictionary<char, int>();\n        }\n\n        Dictionary<char, int> charCount = new Dictionary<char, int>();\n        foreach (char c in s)\n        {\n            if (charCount.ContainsKey(c))\n            {\n                charCount[c]++;\n            }\n            else\n            {\n                charCount.Add(c, 1);\n            }\n        }\n\n        return charCount;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<string, int> CountWords(string text)` in a static class Solution that counts words separated by whitespace. Comparisons are case-insensitive, so keys must be lowercase. Ignore empty entries. An empty text returns an empty dictionary.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<string, int> CountWords(string text)\n    {\n        if (string.IsNullOrEmpty(text))\n        {\n            return new Dictionary<string, int>();\n        }\n\n        var words = text.ToLower().Split(new[] { ' ', '\\t', '\\n' }, StringSplitOptions.RemoveEmptyEntries);\n        return words.GroupBy(word => word).ToDictionary(group => group.Key, group => group.Count());\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static List<int> UniqueInOrder(int[] numbers)` in a static class Solution that returns the distinct numbers in the order they first appear. Use a HashSet for tracking seen values. An empty array returns an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<int> UniqueInOrder(int[] numbers)\n    {\n        HashSet<int> seen = new HashSet<int>();\n        List<int> result = new List<int>();\n\n        foreach (int number in numbers)\n        {\n            if (!seen.Contains(number))\n            {\n                seen.Add(number);\n                result.Add(number);\n            }\n        }\n\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static List<int> FindDuplicates(int[] numbers)` in a static class Solution that returns the distinct values that occur more than once, sorted in ascending order. Use a Dictionary for counting. An empty array returns an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 18: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 18: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<int> FindDuplicates(int[] numbers)\n    {\n        if (numbers.Length == 0) return new List<int>();\n\n        Dictionary<int, int> countMap = new Dictionary<int, int>();\n        foreach (var number in numbers)\n        {\n            if (countMap.ContainsKey(number))\n            {\n                countMap[number]++;\n            }\n            else\n            {\n                countMap[number] = 1;\n            }\n        }\n\n        return countMap.Where(pair => pair.Value > 1).Select(pair => pair.Key).OrderBy(n => n).ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static Dictionary<string, List<int>> GroupByParity(int[] numbers)` in a static class Solution that groups numbers into keys \"even\" and \"odd\". Both keys must always be present, even if their lists are empty. Preserve the original order of numbers within each group.",
+   "first": {
+    "errors": 0,
+    "warnings": 2,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 19: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup",
+     "line 27: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup",
+     "test 'empty input still has keys' failed: The given key 'even' was not present in the dictionary."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 2,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 19: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup",
+     "line 27: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup",
+     "test 'empty input still has keys' failed: The given key 'even' was not present in the dictionary."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<string, List<int>> GroupByParity(int[] numbers)\n    {\n        var result = new Dictionary<string, List<int>>();\n\n        foreach (var number in numbers)\n        {\n            if (number % 2 == 0)\n            {\n                if (!result.ContainsKey(\"even\"))\n                {\n                    result[\"even\"] = new List<int>();\n                }\n                result[\"even\"].Add(number);\n            }\n            else\n            {\n                if (!result.ContainsKey(\"odd\"))\n                {\n                    result[\"odd\"] = new List<int>();\n                }\n                result[\"odd\"].Add(number);\n            }\n        }\n\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-collections",
+   "prompt": "Write a static method `public static char? FirstUniqueChar(string s)` in a static class Solution that returns the first character in s that appears exactly once, or null if no character is unique. Comparisons are case-sensitive.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 17: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 17: warning CA1854: Prefer a 'TryGetValue' call over a Dictionary indexer access guarded by a 'ContainsKey' check to avoid double lookup"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static char? FirstUniqueChar(string s)\n    {\n        Dictionary<char, int> charCount = new Dictionary<char, int>();\n\n        foreach (char c in s)\n        {\n            if (charCount.ContainsKey(c))\n            {\n                charCount[c]++;\n            }\n            else\n            {\n                charCount[c] = 1;\n            }\n        }\n\n        foreach (char c in s)\n        {\n            if (charCount[c] == 1)\n            {\n                return c;\n            }\n        }\n\n        return null;\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string ClassifyNumber(int value)` in a static class Solution that returns \"Negative\" for values less than 0, \"Zero\" for 0, \"Small\" for 1 through 9, \"Medium\" for 10 through 99, and \"Large\" for 100 or more. Use a switch expression with relational patterns.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 17: error CS0029: Cannot implicitly convert type 'System.Range' to 'int'",
+     "line 18: error CS0029: Cannot implicitly convert type 'System.Range' to 'int'"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 17: error CS0029: Cannot implicitly convert type 'System.Range' to 'int'",
+     "line 18: error CS0029: Cannot implicitly convert type 'System.Range' to 'int'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static string ClassifyNumber(int value)\n    {\n        return value switch\n        {\n            < 0 => \"Negative\",\n            0 => \"Zero\",\n            1..9 => \"Small\",\n            10..99 => \"Medium\",\n            _ => \"Large\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string GetOrderCategory(Order? order)` in a static class Solution that categorizes an order. Define a public record `public record Order(string Status, int Total, bool IsPriority);` at top level. Return \"NoOrder\" for null, \"Cancelled\" when Status is \"Cancelled\", \"PriorityHighValue\" when IsPriority is true and Total is at least 100, \"Priority\" when IsPriority is true, \"HighValue\" when Total is at least 1000, \"Pending\" when Status is \"Pending\", and \"Standard\" otherwise. Use a switch expression with property patterns.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: warning CA1508: 'Order status => status.Status switch\n            {\n                \"Cancelled\" => \"Cancelled\",\n                \"PriorityHighValue\" when status.IsPriority && status.Total >= 100 => \"PriorityHighValue\",\n                \"Priority\" when status.IsPriority => \"Priority\",\n                \"HighValue\" when status.Total >= 1000 => \"HighValue\",\n                \"Pending\" => \"Pending\",\n                _ => \"Standard\"\n            }' is always 'true'. Remove or refactor the condition(s) to avoid dead code.",
+     "test 'Categorizes orders by status and value' failed: priority high value"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: warning CA1508: 'Order status => status.Status switch\n            {\n                \"Cancelled\" => \"Cancelled\",\n                \"PriorityHighValue\" when status.IsPriority && status.Total >= 100 => \"PriorityHighValue\",\n                \"Priority\" when status.IsPriority => \"Priority\",\n                \"HighValue\" when status.Total >= 1000 => \"HighValue\",\n                \"Pending\" => \"Pending\",\n                _ => \"Standard\"\n            }' is always 'true'. Remove or refactor the condition(s) to avoid dead code.",
+     "test 'Categorizes orders by status and value' failed: priority high value"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static string GetOrderCategory(Order? order)\n    {\n        return order switch\n        {\n            null => \"NoOrder\",\n            Order status => status.Status switch\n            {\n                \"Cancelled\" => \"Cancelled\",\n                \"PriorityHighValue\" when status.IsPriority && status.Total >= 100 => \"PriorityHighValue\",\n                \"Priority\" when status.IsPriority => \"Priority\",\n                \"HighValue\" when status.Total >= 1000 => \"HighValue\",\n                \"Pending\" => \"Pending\",\n                _ => \"Standard\"\n            }\n        };\n    }\n}\n\npublic record Order(string Status, int Total, bool IsPriority);"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string GetAction(TrafficLight light)` in a static class Solution that returns \"Stop\" for Red, \"Caution\" for Yellow, and \"Go\" for Green. Define a public enum `public enum TrafficLight { Red, Yellow, Green }` at top level. Use a switch expression, with \"Unknown\" as the fallback.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static string GetAction(TrafficLight light)\n    {\n        return light switch\n        {\n            TrafficLight.Red => \"Stop\",\n            TrafficLight.Yellow => \"Caution\",\n            TrafficLight.Green => \"Go\",\n            _ => \"Unknown\"\n        };\n    }\n}\n\npublic enum TrafficLight\n{\n    Red,\n    Yellow,\n    Green\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string DescribeShape(Shape? shape)` in a static class Solution that describes shapes. Define these top-level types: `public abstract record Shape;`, `public record Circle(double Radius) : Shape;`, `public record Rectangle(double Width, double Height) : Shape;`, and `public record Square(double Side) : Shape;`. Return \"No shape\" for null, \"Invalid circle\" for a Circle with non-positive Radius, \"Circle\" for a valid Circle, \"Invalid rectangle\" for a Rectangle with non-positive Width or Height, \"Square-like rectangle\" for a Rectangle whose Width equals Height, \"Rectangle\" for other rectangles, \"Invalid square\" for a Square with non-positive Side, \"Square\" for a valid Square, and \"Unknown shape\" otherwise. Use a switch expression with type and property patterns.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static string DescribeShape(Shape? shape)\n    {\n        switch (shape)\n        {\n            case null:\n                return \"No shape\";\n            case Circle circle when circle.Radius <= 0:\n                return \"Invalid circle\";\n            case Circle circle:\n                return \"Circle\";\n            case Rectangle rectangle when rectangle.Width <= 0 || rectangle.Height <= 0:\n                return \"Invalid rectangle\";\n            case Rectangle rectangle when rectangle.Width == rectangle.Height:\n                return \"Square-like rectangle\";\n            case Rectangle rectangle:\n                return \"Rectangle\";\n            case Square square when square.Side <= 0:\n                return \"Invalid square\";\n            case Square square:\n                return \"Square\";\n            default:\n                return \"Unknown shape\";\n        }\n    }\n}\n\npublic abstract record Shape;\npublic record Circle(double Radius) : Shape;\npublic record Rectangle(double Width, double Height) : Shape;\npublic record Square(double Side) : Shape;"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string CategorizeHttpStatus(int statusCode)` in a static class Solution that returns \"Invalid\" for codes below 100 or above 599, \"Informational\" for 100-199, \"Success\" for 200-299, \"Redirect\" for 300-399, \"ClientError\" for 400-499, and \"ServerError\" for 500-599. Use a switch expression with relational patterns.",
+   "first": {
+    "errors": 5,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 8: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 9: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 10: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 11: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 12: error CS0029: Cannot implicitly convert type 'bool' to 'int'"
+    ]
+   },
+   "final": {
+    "errors": 5,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 8: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 9: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 10: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 11: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 12: error CS0029: Cannot implicitly convert type 'bool' to 'int'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string CategorizeHttpStatus(int statusCode)\n    {\n        return statusCode switch\n        {\n            < 100 or > 599 => \"Invalid\",\n            100 <= statusCode && statusCode <= 199 => \"Informational\",\n            200 <= statusCode && statusCode <= 299 => \"Success\",\n            300 <= statusCode && statusCode <= 399 => \"Redirect\",\n            400 <= statusCode && statusCode <= 499 => \"ClientError\",\n            500 <= statusCode && statusCode <= 599 => \"ServerError\",\n            _ => \"Unknown\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string GetPlayerMessage(Player? player)` in a static class Solution that returns a state message for a player. Define a public record `public record Player(string State, int Health, bool HasKey);` at top level. Return \"No player\" for null, \"Game over\" when State is \"Dead\" or Health is 0 or less, \"Victory\" when State is \"Won\", \"Paused\" when State is \"Paused\", \"Ready for door\" when State is \"Running\", HasKey is true, and Health is greater than 50, \"Has key\" when State is \"Running\" and HasKey is true, \"Running\" when State is \"Running\", and \"Unknown\" otherwise. Use a switch expression with property patterns.",
+   "first": {
+    "errors": 59,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: error CS1513: } expected",
+     "line 10: error CS1003: Syntax error, '=>' expected",
+     "line 10: error CS1525: Invalid expression term '='",
+     "line 10: error CS1003: Syntax error, '=>' expected",
+     "line 10: error CS1525: Invalid expression term '}'",
+     "line 10: error CS1002: ; expected",
+     "line 10: error CS1513: } expected",
+     "line 10: error CS1002: ; expected",
+     "line 10: error CS1513: } expected",
+     "line 10: error CS8503: A property subpattern requires a reference to the property or field to be matched, e.g. '{ Name: State }'",
+     "line 10: error CS0103: The name 'State' does not exist in the current context",
+     "line 10: error CS0103: The name 'Health' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 59,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: error CS1513: } expected",
+     "line 10: error CS1003: Syntax error, '=>' expected",
+     "line 10: error CS1525: Invalid expression term '='",
+     "line 10: error CS1003: Syntax error, '=>' expected",
+     "line 10: error CS1525: Invalid expression term '}'",
+     "line 10: error CS1002: ; expected",
+     "line 10: error CS1513: } expected",
+     "line 10: error CS1002: ; expected",
+     "line 10: error CS1513: } expected",
+     "line 10: error CS8503: A property subpattern requires a reference to the property or field to be matched, e.g. '{ Name: State }'",
+     "line 10: error CS0103: The name 'State' does not exist in the current context",
+     "line 10: error CS0103: The name 'Health' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static string GetPlayerMessage(Player? player)\n    {\n        return player switch\n        {\n            null => \"No player\",\n            Player { State = \"Dead\", Health <= 0 } => \"Game over\",\n            Player { State = \"Won\" } => \"Victory\",\n            Player { State = \"Paused\" } => \"Paused\",\n            Player { State = \"Running\", HasKey, Health > 50 } => \"Ready for door\",\n            Player { State = \"Running\", HasKey } => \"Has key\",\n            Player { State = \"Running\" } => \"Running\",\n            _ => \"Unknown\"\n        };\n    }\n}\n\npublic record Player(string State, int Health, bool HasKey);"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string GetDirectionType(string? direction)` in a static class Solution that returns \"Unknown\" for null, \"Empty\" for an empty string, \"Cardinal\" for \"North\", \"South\", \"East\", or \"West\", \"Ordinal\" for \"Northeast\", \"Northwest\", \"Southeast\", or \"Southwest\", and \"Invalid\" otherwise. Use a switch expression with constant and or patterns.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string GetDirectionType(string? direction)\n    {\n        return direction switch\n        {\n            null => \"Unknown\",\n            \"\" => \"Empty\",\n            \"North\" => \"Cardinal\",\n            \"South\" => \"Cardinal\",\n            \"East\" => \"Cardinal\",\n            \"West\" => \"Cardinal\",\n            \"Northeast\" => \"Ordinal\",\n            \"Northwest\" => \"Ordinal\",\n            \"Southeast\" => \"Ordinal\",\n            \"Southwest\" => \"Ordinal\",\n            _ => \"Invalid\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string CategorizeWeather(int temperatureCelsius, bool isRaining)` in a static class Solution that returns \"Hot and rainy\" for temperatures at least 30 when raining, \"Hot\" for at least 30 when not raining, \"Warm and rainy\" for at least 20 when raining, \"Warm\" for at least 20 when not raining, \"Cool\" for at least 10, \"Cold\" for at least 0, and \"Freezing\" otherwise. Use a switch expression on a tuple with relational and discard patterns.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 14: error CS0411: The type arguments for method 'Queryable.Select<TSource, TResult>(IQueryable<TSource>, Expression<Func<TSource, TResult>>)' cannot be inferred from the usage. Try specifying the type arguments explicitly."
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 14: error CS0411: The type arguments for method 'Queryable.Select<TSource, TResult>(IQueryable<TSource>, Expression<Func<TSource, TResult>>)' cannot be inferred from the usage. Try specifying the type arguments explicitly."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static string CategorizeWeather(int temperatureCelsius, bool isRaining)\n    {\n        return (temperatureCelsius >= 30, isRaining)\n            .Select(tuple => tuple.Item1 ? (tuple.Item2 ? \"Hot and rainy\" : \"Hot\") : (tuple.Item2 ? \"Warm and rainy\" : (tuple.Item2 ? \"Warm\" : (tuple.Item2 ? \"Cool\" : (tuple.Item2 ? \"Cold\" : \"Freezing\")))))\n            .Single();\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string Categorize(int value)` in a static class Solution that returns \"negative\", \"zero\", \"small positive\", or \"large positive\" using a switch expression with relational patterns. A value is small positive if it is between 1 and 9 inclusive; large positive if 10 or greater.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS0029: Cannot implicitly convert type 'bool' to 'int'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS0029: Cannot implicitly convert type 'bool' to 'int'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string Categorize(int value)\n    {\n        return value switch\n        {\n            < 0 => \"negative\",\n            0 => \"zero\",\n            1 <= value && value <= 9 => \"small positive\",\n            10 => \"large positive\",\n            _ => throw new ArgumentException(\"Value must be between -10 and 10\")\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string ClassifyChar(char c)` in a static class Solution that returns \"vowel\", \"consonant\", \"digit\", \"whitespace\", or \"other\" using a switch expression with pattern matching. Treat lowercase and uppercase vowels (a, e, i, o, u) as vowels; letters that are not vowels as consonants; characters 0-9 as digit; space, tab, newline, carriage return as whitespace.",
+   "first": {
+    "errors": 8,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 15: error CS0266: Cannot implicitly convert type 'int' to 'char'. An explicit conversion exists (are you missing a cast?)",
+     "line 16: error CS0266: Cannot implicitly convert type 'int' to 'char'. An explicit conversion exists (are you missing a cast?)",
+     "line 17: error CS1003: Syntax error, '=>' expected",
+     "line 17: error CS1525: Invalid expression term '='",
+     "line 17: error CS1003: Syntax error, ',' expected",
+     "line 17: error CS8504: Pattern missing",
+     "line 17: error CS0029: Cannot implicitly convert type 'System.Range' to 'char'",
+     "line 18: error CS0266: Cannot implicitly convert type 'int' to 'char'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "final": {
+    "errors": 8,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 15: error CS0266: Cannot implicitly convert type 'int' to 'char'. An explicit conversion exists (are you missing a cast?)",
+     "line 16: error CS0266: Cannot implicitly convert type 'int' to 'char'. An explicit conversion exists (are you missing a cast?)",
+     "line 17: error CS1003: Syntax error, '=>' expected",
+     "line 17: error CS1525: Invalid expression term '='",
+     "line 17: error CS1003: Syntax error, ',' expected",
+     "line 17: error CS8504: Pattern missing",
+     "line 17: error CS0029: Cannot implicitly convert type 'System.Range' to 'char'",
+     "line 18: error CS0266: Cannot implicitly convert type 'int' to 'char'. An explicit conversion exists (are you missing a cast?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static string ClassifyChar(char c)\n    {\n        return c switch\n        {\n            'a' | 'e' | 'i' | 'o' | 'u' => \"vowel\",\n            'A' | 'E' | 'I' | 'O' | 'U' => \"vowel\",\n            '0'..='9' => \"digit\",\n            ' ' | '\\t' | '\\n' | '\\r' => \"whitespace\",\n            _ => \"other\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define an enum `public enum TrafficLight { Red, Yellow, Green }` and write a static method `public static string NextAction(TrafficLight light)` in a static class Solution that returns \"Stop\", \"Caution\", or \"Go\" using a switch expression. Red -> Stop, Yellow -> Caution, Green -> Go. Include a discard arm that throws ArgumentOutOfRangeException for unknown values.",
+   "first": {
+    "errors": 4,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS0246: The type or namespace name 'TrafficLight' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 15: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 17: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 19: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 32: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 33: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 34: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 36: error CS0246: The type or namespace name 'TrafficLight' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 4,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS0246: The type or namespace name 'TrafficLight' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 15: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 17: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 19: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 32: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 33: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 34: error CS0103: The name 'TrafficLight' does not exist in the current context",
+     "line 36: error CS0246: The type or namespace name 'TrafficLight' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static string NextAction(TrafficLight light)\n    {\n        switch (light)\n        {\n            case TrafficLight.Red:\n                return \"Stop\";\n            case TrafficLight.Yellow:\n                return \"Caution\";\n            case TrafficLight.Green:\n                return \"Go\";\n            default:\n                throw new ArgumentOutOfRangeException(nameof(light), \"Unknown traffic light value\");\n        }\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define an enum `public enum OrderState { Pending, Paid, Shipped, Delivered, Cancelled }` and write a static method `public static string Describe(OrderState state)` in a static class Solution that returns a human-readable description using a switch expression. Pending -> \"Awaiting payment\", Paid -> \"Ready to ship\", Shipped -> \"On the way\", Delivered -> \"Received\", Cancelled -> \"Order cancelled\". Include a discard arm that returns \"Unknown state\".",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic enum OrderState\n{\n    Pending,\n    Paid,\n    Shipped,\n    Delivered,\n    Cancelled\n}\n\npublic static class Solution\n{\n    public static string Describe(OrderState state)\n    {\n        return state switch\n        {\n            OrderState.Pending => \"Awaiting payment\",\n            OrderState.Paid => \"Ready to ship\",\n            OrderState.Shipped => \"On the way\",\n            OrderState.Delivered => \"Received\",\n            OrderState.Cancelled => \"Order cancelled\",\n            _ => \"Unknown state\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define an abstract record `public abstract record Shape;` and derived records `public record Circle(double Radius) : Shape;`, `public record Rectangle(double Width, double Height) : Shape;`, and `public record Triangle(double Base, double Height) : Shape;`. Write a static method `public static double Area(Shape shape)` in a static class Solution that returns the area using a switch expression with type patterns. Circle area = Math.PI * Radius * Radius; Rectangle area = Width * Height; Triangle area = 0.5 * Base * Height. Include a discard arm that throws ArgumentException.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic abstract record Shape\n{\n    public abstract double Area();\n}\n\npublic record Circle(double Radius) : Shape\n{\n    public override double Area()\n    {\n        return Math.PI * Radius * Radius;\n    }\n}\n\npublic record Rectangle(double Width, double Height) : Shape\n{\n    public override double Area()\n    {\n        return Width * Height;\n    }\n}\n\npublic record Triangle(double Base, double Height) : Shape\n{\n    public override double Area()\n    {\n        return 0.5 * Base * Height;\n    }\n}\n\npublic static class Solution\n{\n    public static double Area(Shape shape)\n    {\n        switch (shape)\n        {\n            case Circle circle:\n                return circle.Area();\n            case Rectangle rectangle:\n                return rectangle.Area();\n            case Triangle triangle:\n                return triangle.Area();\n            default:\n                throw new ArgumentException(\"Invalid shape\");\n        }\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define a record `public record User(string Name, string Role);` and write a static method `public static string GetAccess(User user)` in a static class Solution that returns \"full\", \"write\", \"read\", or \"none\" using a switch expression with property patterns. If Role is \"admin\" -> \"full\"; \"editor\" -> \"write\"; \"viewer\" -> \"read\"; anything else (including null or empty) -> \"none\". The user parameter is non-null.",
+   "first": {
+    "errors": 22,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS1513: } expected",
+     "line 11: error CS1003: Syntax error, '=>' expected",
+     "line 11: error CS1525: Invalid expression term '='",
+     "line 11: error CS1002: ; expected",
+     "line 11: error CS1513: } expected",
+     "line 11: error CS1002: ; expected",
+     "line 11: error CS1513: } expected",
+     "line 11: error CS8503: A property subpattern requires a reference to the property or field to be matched, e.g. '{ Name: Role }'",
+     "line 11: error CS0103: The name 'Role' does not exist in the current context",
+     "line 11: warning CS0162: Unreachable code detected",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1513: } expected"
+    ]
+   },
+   "final": {
+    "errors": 22,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS1513: } expected",
+     "line 11: error CS1003: Syntax error, '=>' expected",
+     "line 11: error CS1525: Invalid expression term '='",
+     "line 11: error CS1002: ; expected",
+     "line 11: error CS1513: } expected",
+     "line 11: error CS1002: ; expected",
+     "line 11: error CS1513: } expected",
+     "line 11: error CS8503: A property subpattern requires a reference to the property or field to be matched, e.g. '{ Name: Role }'",
+     "line 11: error CS0103: The name 'Role' does not exist in the current context",
+     "line 11: warning CS0162: Unreachable code detected",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1513: } expected"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic record User(string Name, string Role);\n\npublic static class Solution\n{\n    public static string GetAccess(User user)\n    {\n        return user switch\n        {\n            { Role = \"admin\" } => \"full\",\n            { Role = \"editor\" } => \"write\",\n            { Role = \"viewer\" } => \"read\",\n            _ => \"none\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string HandleCommand(string? command)` in a static class Solution that returns an action string using a switch expression with constant and null patterns. If command is null or empty -> \"unknown\"; \"start\" -> \"starting\"; \"stop\" -> \"stopping\"; \"restart\" -> \"restarting\"; any other non-empty string -> \"unknown\".",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string HandleCommand(string? command)\n    {\n        return command switch\n        {\n            null or \"\" => \"unknown\",\n            \"start\" => \"starting\",\n            \"stop\" => \"stopping\",\n            \"restart\" => \"restarting\",\n            _ => \"unknown\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define an enum `public enum DoorState { Open, Closed, Locked }` and write a static method `public static DoorState Transition(DoorState current, string action)` in a static class Solution that returns the next door state using a switch expression with tuple patterns. Rules: If current is Open and action is \"close\" -> Closed; if current is Closed and action is \"open\" -> Open; if current is Closed and action is \"lock\" -> Locked; if current is Locked and action is \"unlock\" -> Closed; otherwise return current state unchanged. Use a discard arm: `_ => current`.",
+   "first": {
+    "errors": 8,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 17: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 17: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type.",
+     "line 18: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 18: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type.",
+     "line 19: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 19: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type.",
+     "line 20: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 20: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type."
+    ]
+   },
+   "final": {
+    "errors": 8,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 17: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 17: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type.",
+     "line 18: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 18: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type.",
+     "line 19: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 19: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type.",
+     "line 20: error CS0411: The type arguments for method 'TupleExtensions.Deconstruct<T1, T2>(Tuple<T1, T2>, out T1, out T2)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 20: error CS8129: No suitable 'Deconstruct' instance or extension method was found for type 'DoorState', with 2 out parameters and a void return type."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic enum DoorState { Open, Closed, Locked }\n\npublic static class Solution\n{\n    public static DoorState Transition(DoorState current, string action)\n    {\n        return current switch\n        {\n            (DoorState.Open, \"close\") => DoorState.Closed,\n            (DoorState.Closed, \"open\") => DoorState.Open,\n            (DoorState.Closed, \"lock\") => DoorState.Locked,\n            (DoorState.Locked, \"unlock\") => DoorState.Closed,\n            _ => current\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string GetTemperatureCategory(int celsius)` in a static class Solution that returns \"Freezing\" for <= 0, \"Cold\" for <= 15, \"Mild\" for <= 25, \"Hot\" for <= 35, and \"Extreme\" otherwise, using a switch expression with relational patterns.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string GetTemperatureCategory(int celsius)\n    {\n        return celsius switch\n        {\n            <= 0 => \"Freezing\",\n            <= 15 => \"Cold\",\n            <= 25 => \"Mild\",\n            <= 35 => \"Hot\",\n            _ => \"Extreme\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Write a static method `public static string GetHttpStatusCategory(int statusCode)` in a static class Solution that returns \"Informational\" for 100-199, \"Success\" for 200-299, \"Redirection\" for 300-399, \"ClientError\" for 400-499, \"ServerError\" for 500-599, and \"Unknown\" otherwise, using a switch expression with relational and logical patterns.",
+   "first": {
+    "errors": 5,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 8: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 9: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 10: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 11: error CS0029: Cannot implicitly convert type 'bool' to 'int'"
+    ]
+   },
+   "final": {
+    "errors": 5,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 8: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 9: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 10: error CS0029: Cannot implicitly convert type 'bool' to 'int'",
+     "line 11: error CS0029: Cannot implicitly convert type 'bool' to 'int'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string GetHttpStatusCategory(int statusCode)\n    {\n        return statusCode switch\n        {\n            100 <= statusCode && statusCode <= 199 => \"Informational\",\n            200 <= statusCode && statusCode <= 299 => \"Success\",\n            300 <= statusCode && statusCode <= 399 => \"Redirection\",\n            400 <= statusCode && statusCode <= 499 => \"ClientError\",\n            500 <= statusCode && statusCode <= 599 => \"ServerError\",\n            _ => \"Unknown\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define `public enum TrafficLight { Red, Yellow, Green }` and a static method `public static TrafficLight Next(TrafficLight light)` in a static class Solution that returns Green after Red, Yellow after Green, and Red after Yellow, using a switch expression.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public enum TrafficLight { Red, Yellow, Green }\n\npublic static class Solution\n{\n    public static TrafficLight Next(TrafficLight light)\n    {\n        return light switch\n        {\n            TrafficLight.Red => TrafficLight.Green,\n            TrafficLight.Green => TrafficLight.Yellow,\n            TrafficLight.Yellow => TrafficLight.Red,\n            _ => throw new ArgumentException(\"Invalid traffic light state\")\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define records `Circle(double Radius)`, `Rectangle(double Width, double Height)`, and `Triangle(double Base, double Height)`. Write a static method `public static double Area(object? shape)` in a static class Solution that returns the area for Circle, Rectangle, Triangle, and 0 for null or unknown shapes, using a switch expression with type patterns and a null pattern.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static double Area(object? shape)\n    {\n        return shape switch\n        {\n            Circle circle => circle.Radius * circle.Radius * Math.PI,\n            Rectangle rectangle => rectangle.Width * rectangle.Height,\n            Triangle triangle => triangle.Base * triangle.Height / 2,\n            _ => 0\n        };\n    }\n}\n\npublic record Circle(double Radius);\npublic record Rectangle(double Width, double Height);\npublic record Triangle(double Base, double Height);"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define `public enum OrderStatus { Pending, Paid, Shipped, Delivered, Cancelled }`. Write a static method `public static OrderStatus NextOrderStatus(OrderStatus status)` in a static class Solution that returns Paid for Pending, Shipped for Paid, Delivered for Shipped, leaves Delivered and Cancelled unchanged, and throws ArgumentOutOfRangeException for unknown values, using a switch expression with or patterns.",
+   "first": {
+    "errors": 10,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS0246: The type or namespace name 'OrderStatus' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 5: error CS0246: The type or namespace name 'OrderStatus' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 9: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 10: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 11: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 12: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 13: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 14: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 15: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 16: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 29: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 29: error CS0103: The name 'OrderStatus' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 10,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS0246: The type or namespace name 'OrderStatus' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 5: error CS0246: The type or namespace name 'OrderStatus' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 9: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 10: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 11: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 12: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 13: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 14: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 15: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 16: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 29: error CS0103: The name 'OrderStatus' does not exist in the current context",
+     "line 29: error CS0103: The name 'OrderStatus' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static OrderStatus NextOrderStatus(OrderStatus status)\n    {\n        switch (status)\n        {\n            case OrderStatus.Pending:\n                return OrderStatus.Paid;\n            case OrderStatus.Paid:\n                return OrderStatus.Shipped;\n            case OrderStatus.Shipped:\n                return OrderStatus.Delivered;\n            case OrderStatus.Delivered:\n            case OrderStatus.Cancelled:\n                return status;\n            default:\n                throw new ArgumentOutOfRangeException(nameof(status), \"Unknown order status\");\n        }\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define `public enum LogLevel { Trace, Debug, Info, Warning, Error, Critical }`. Write a static method `public static string GetSeverity(LogLevel level)` in a static class Solution that returns \"Low\" for Trace and Debug, \"Medium\" for Info, \"High\" for Warning, and \"Critical\" for Error and Critical, using a switch expression with or patterns.",
+   "first": {
+    "errors": 7,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS0246: The type or namespace name 'LogLevel' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 9: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 9: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 10: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 11: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 12: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 12: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 23: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 24: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 25: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 26: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 27: error CS0103: The name 'LogLevel' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 7,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS0246: The type or namespace name 'LogLevel' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 9: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 9: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 10: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 11: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 12: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 12: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 23: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 24: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 25: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 26: error CS0103: The name 'LogLevel' does not exist in the current context",
+     "line 27: error CS0103: The name 'LogLevel' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static string GetSeverity(LogLevel level)\n    {\n        return level switch\n        {\n            LogLevel.Trace or LogLevel.Debug => \"Low\",\n            LogLevel.Info => \"Medium\",\n            LogLevel.Warning => \"High\",\n            LogLevel.Error or LogLevel.Critical => \"Critical\",\n            _ => throw new ArgumentException(\"Invalid log level\")\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define `public record User(string Name, string Role, bool IsActive)`. Write a static method `public static string GetAccess(User? user)` in a static class Solution that returns \"No user\" for null, \"Inactive\" when the user is not active, \"Admin access\" for role \"admin\", \"Editor access\" for role \"editor\", \"Viewer access\" for role \"viewer\", and \"Unknown role\" otherwise, using a switch expression with property patterns and a null pattern.",
+   "first": {
+    "errors": 27,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS1513: } expected",
+     "line 12: error CS1003: Syntax error, '=>' expected",
+     "line 12: error CS1525: Invalid expression term '='",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1513: } expected",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1513: } expected",
+     "line 12: error CS8503: A property subpattern requires a reference to the property or field to be matched, e.g. '{ Name: IsActive }'",
+     "line 12: error CS0103: The name 'IsActive' does not exist in the current context",
+     "line 12: warning CS0162: Unreachable code detected",
+     "line 13: error CS1002: ; expected",
+     "line 13: error CS1513: } expected"
+    ]
+   },
+   "final": {
+    "errors": 27,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS1513: } expected",
+     "line 12: error CS1003: Syntax error, '=>' expected",
+     "line 12: error CS1525: Invalid expression term '='",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1513: } expected",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1513: } expected",
+     "line 12: error CS8503: A property subpattern requires a reference to the property or field to be matched, e.g. '{ Name: IsActive }'",
+     "line 12: error CS0103: The name 'IsActive' does not exist in the current context",
+     "line 12: warning CS0162: Unreachable code detected",
+     "line 13: error CS1002: ; expected",
+     "line 13: error CS1513: } expected"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic record User(string Name, string Role, bool IsActive);\n\npublic static class Solution\n{\n    public static string GetAccess(User? user)\n    {\n        return user switch\n        {\n            null => \"No user\",\n            { IsActive = false } => \"Inactive\",\n            { Role = \"admin\" } => \"Admin access\",\n            { Role = \"editor\" } => \"Editor access\",\n            { Role = \"viewer\" } => \"Viewer access\",\n            _ => \"Unknown role\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-switch",
+   "prompt": "Define an abstract record `PaymentState`, and records `PendingPayment(decimal Amount) : PaymentState`, `CompletedPayment(decimal Amount, string? TransactionId) : PaymentState`, and `FailedPayment(decimal Amount, string? Reason) : PaymentState`. Write a static method `public static string DescribePayment(PaymentState? state)` in a static class Solution that returns \"No payment\" for null, \"Pending\" for PendingPayment with a positive amount, \"Invalid pending\" for non-positive PendingPayment, \"Completed\" for CompletedPayment with a non-empty TransactionId, \"Invalid completed\" otherwise, \"Failed\" for FailedPayment with a non-empty Reason, \"Invalid failed\" otherwise, and \"Unknown payment\" for unknown states, using a switch expression with type and property patterns.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 0: error KITE: kite crashed or timed out"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 0: error KITE: kite crashed or timed out"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic abstract record PaymentState\n{\n    public abstract decimal Amount { get; }\n}\n\npublic record PendingPayment(decimal Amount) : PaymentState\n{\n    public override decimal Amount => Amount;\n}\n\npublic record CompletedPayment(decimal Amount, string? TransactionId) : PaymentState\n{\n    public override decimal Amount => Amount;\n}\n\npublic record FailedPayment(decimal Amount, string? Reason) : PaymentState\n{\n    public override decimal Amount => Amount;\n}\n\npublic static class Solution\n{\n    public static string DescribePayment(PaymentState? state)\n    {\n        return state switch\n        {\n            null => \"No payment\",\n            PendingPayment pending => pending.Amount > 0 ? \"Pending\" : \"Invalid pending\",\n            CompletedPayment completed => completed.TransactionId != null ? \"Completed\" : \"Invalid completed\",\n            FailedPayment failed => failed.Reason != null ? \"Failed\" : \"Invalid failed\",\n            _ => \"Unknown payment\"\n        };\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int SumSquares(int n)` in a static class Solution that returns the sum 1^2 + 2^2 + ... + n^2 for n >= 0, using a loop. For n <= 0 return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int SumSquares(int n)\n    {\n        if (n <= 0) return 0;\n        int sum = 0;\n        for (int i = 1; i <= n; i++)\n        {\n            sum += i * i;\n        }\n        return sum;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int CountVowels(string s)` in a static class Solution that returns the number of vowels (a, e, i, o, u, case-insensitive) in s, using a loop.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static int CountVowels(string s)\n    {\n        int count = 0;\n        foreach (char c in s)\n        {\n            if (\"aeiou\".Contains(char.ToLower(c)))\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int Fibonacci(int n)` in a static class Solution that returns the nth Fibonacci number using recursion, where Fibonacci(0) = 0, Fibonacci(1) = 1, and n >= 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int Fibonacci(int n)\n    {\n        if (n == 0) return 0;\n        if (n == 1) return 1;\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static string ReverseString(string s)` in a static class Solution that returns s reversed, using a loop.",
+   "first": {
+    "errors": 2,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 1: error CS0106: The modifier 'public' is not valid for this item",
+     "line 1: error CS8805: Program using top-level statements must be an executable.",
+     "line 1: warning CS8321: The local function 'ReverseString' is declared but never used",
+     "line 24: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 25: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 26: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 27: error CS0103: The name 'Solution' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 1: error CS0106: The modifier 'public' is not valid for this item",
+     "line 1: error CS8805: Program using top-level statements must be an executable.",
+     "line 1: warning CS8321: The local function 'ReverseString' is declared but never used",
+     "line 24: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 25: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 26: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 27: error CS0103: The name 'Solution' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static string ReverseString(string s)\n{\n    char[] charArray = s.ToCharArray();\n    int left = 0;\n    int right = charArray.Length - 1;\n\n    while (left < right)\n    {\n        char temp = charArray[left];\n        charArray[left] = charArray[right];\n        charArray[right] = temp;\n        left++;\n        right--;\n    }\n\n    return new string(charArray);\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static long Factorial(int n)` in a static class Solution that returns n! for n >= 0 using recursion. Factorial(0) = 1.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Factorial(int n)\n    {\n        if (n == 0)\n        {\n            return 1;\n        }\n        else\n        {\n            return n * Factorial(n - 1);\n        }\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int SumEven(IReadOnlyList<int> numbers)` in a static class Solution that returns the sum of all even numbers in the list using a loop. If the list is empty, return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int SumEven(IReadOnlyList<int> numbers)\n    {\n        if (numbers.Count == 0)\n        {\n            return 0;\n        }\n\n        int sum = 0;\n        foreach (int number in numbers)\n        {\n            if (number % 2 == 0)\n            {\n                sum += number;\n            }\n        }\n\n        return sum;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int SumFirstN(int n)` in a static class Solution that returns the sum 1 + 2 + ... + n using recursion. For n <= 0 return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int SumFirstN(int n)\n    {\n        if (n <= 0)\n        {\n            return 0;\n        }\n        return n + SumFirstN(n - 1);\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int CountVowels(string s)` in a static class Solution that counts the vowels a, e, i, o, u in either uppercase or lowercase. The parameter s is non-null.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static int CountVowels(string s)\n    {\n        int count = 0;\n        foreach (char c in s)\n        {\n            if (\"aeiou\".Contains(char.ToLower(c)))\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int FirstNegativeIndex(int[] arr)` in a static class Solution that returns the index of the first negative number in arr, or -1 if there are no negative numbers.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int FirstNegativeIndex(int[] arr)\n    {\n        for (int i = 0; i < arr.Length; i++)\n        {\n            if (arr[i] < 0)\n            {\n                return i;\n            }\n        }\n        return -1;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int ReverseDigits(int n)` in a static class Solution that returns the integer formed by reversing the decimal digits of n. Assume n >= 0.",
+   "first": {
+    "errors": 2,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 1: error CS0106: The modifier 'public' is not valid for this item",
+     "line 1: error CS8805: Program using top-level statements must be an executable.",
+     "line 1: warning CS8321: The local function 'ReverseDigits' is declared but never used",
+     "line 17: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 18: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 19: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 20: error CS0103: The name 'Solution' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 1: error CS0106: The modifier 'public' is not valid for this item",
+     "line 1: error CS8805: Program using top-level statements must be an executable.",
+     "line 1: warning CS8321: The local function 'ReverseDigits' is declared but never used",
+     "line 17: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 18: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 19: error CS0103: The name 'Solution' does not exist in the current context",
+     "line 20: error CS0103: The name 'Solution' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static int ReverseDigits(int n)\n{\n    int reversed = 0;\n    while (n > 0)\n    {\n        reversed = reversed * 10 + n % 10;\n        n /= 10;\n    }\n    return reversed;\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static long Factorial(int n)` in a static class Solution that returns n! recursively. Assume 0 <= n <= 20.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Factorial(int n)\n    {\n        if (n == 0)\n            return 1;\n        else\n            return n * Factorial(n - 1);\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int CountOccurrences(int[] arr, int target)` in a static class Solution that returns how many times target appears in arr.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int CountOccurrences(int[] arr, int target)\n    {\n        int count = 0;\n        foreach (int num in arr)\n        {\n            if (num == target)\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static bool IsSortedAscending(int[] arr)` in a static class Solution that returns true if arr is sorted in nondecreasing order, and false otherwise.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static bool IsSortedAscending(int[] arr)\n    {\n        for (int i = 0; i < arr.Length - 1; i++)\n        {\n            if (arr[i] > arr[i + 1])\n            {\n                return false;\n            }\n        }\n        return true;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int BinarySearch(int[] sorted, int target)` in a static class Solution that returns the index of target in sorted, or -1 if target is not present. Assume sorted is sorted in ascending order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int BinarySearch(int[] sorted, int target)\n    {\n        int left = 0;\n        int right = sorted.Length - 1;\n\n        while (left <= right)\n        {\n            int mid = left + (right - left) / 2;\n            if (sorted[mid] == target)\n            {\n                return mid;\n            }\n            else if (sorted[mid] < target)\n            {\n                left = mid + 1;\n            }\n            else\n            {\n                right = mid - 1;\n            }\n        }\n\n        return -1;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int CountVowels(string s)` in a static class Solution that returns the number of vowels (a, e, i, o, u, case-insensitive) in the given string s. Use a loop.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static int CountVowels(string s)\n    {\n        int count = 0;\n        foreach (char c in s)\n        {\n            if (\"aeiou\".Contains(char.ToLower(c)))\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int SumSquares(int n)` in a static class Solution that returns the sum of squares of the first n positive integers (1^2 + 2^2 + ... + n^2) using recursion. If n <= 0, return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static int SumSquares(int n)\n    {\n        if (n <= 0)\n        {\n            return 0;\n        }\n        return n * n + SumSquares(n - 1);\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int Fibonacci(int n)` in a static class Solution that returns the nth Fibonacci number using recursion, where Fibonacci(0) = 0, Fibonacci(1) = 1, and Fibonacci(n) = Fibonacci(n-1) + Fibonacci(n-2) for n >= 2. Assume n >= 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static int Fibonacci(int n)\n    {\n        if (n == 0) return 0;\n        if (n == 1) return 1;\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static long Factorial(int n)` in a static class Solution that returns n! (the factorial of n) using a loop. For n <= 1, return 1. Assume n is non-negative.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static long Factorial(int n)\n    {\n        if (n <= 1)\n        {\n            return 1;\n        }\n\n        long result = 1;\n        for (int i = 2; i <= n; i++)\n        {\n            result *= i;\n        }\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static string Reverse(string s)` in a static class Solution that returns the reverse of the string s using recursion. Do not use built-in Reverse.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string Reverse(string s)\n    {\n        if (string.IsNullOrEmpty(s))\n            return s;\n\n        return Reverse(s.Substring(1)) + s[0];\n    }\n}"
+  },
+  {
+   "family": "cs-loops",
+   "prompt": "Write a static method `public static int SumDigits(int n)` in a static class Solution that returns the sum of the digits of a non-negative integer n using recursion. For example, SumDigits(123) = 6.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int SumDigits(int n)\n    {\n        if (n == 0) return 0;\n        return n % 10 + SumDigits(n / 10);\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static int ParseInt(string s)` in a static class Solution that parses a string into an integer. The string may contain leading/trailing whitespace. If the string is not a valid integer, throw a FormatException. Use int.Parse with NumberStyles.Integer and CultureInfo.InvariantCulture.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Globalization;\n\npublic static class Solution\n{\n    public static int ParseInt(string s)\n    {\n        if (string.IsNullOrWhiteSpace(s))\n        {\n            throw new FormatException(\"Input string is null or empty\");\n        }\n\n        int result;\n        if (!int.TryParse(s.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out result))\n        {\n            throw new FormatException(\"Input string is not a valid integer\");\n        }\n\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static double ParseDouble(string s)` in a static class Solution that parses a string into a double. The string may contain leading/trailing whitespace. Use invariant culture. If invalid, throw FormatException.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Globalization;\n\npublic static class Solution\n{\n    public static double ParseDouble(string s)\n    {\n        double result;\n        if (!double.TryParse(s.Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out result))\n        {\n            throw new FormatException(\"Invalid input\");\n        }\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static List<int> ParseIntList(string s)` in a static class Solution that parses a comma-separated string of integers into a List<int>. The string may have spaces around numbers. If the string is empty or whitespace, return an empty list. If any part is not a valid integer, throw FormatException.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<int> ParseIntList(string s)\n    {\n        if (string.IsNullOrWhiteSpace(s))\n        {\n            return new List<int>();\n        }\n\n        return s.Split(',')\n                   .Select(int.Parse)\n                   .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Define a record `public record Person(string Name, int Age);` at top level. Write a static method `public static Person ParsePerson(string line)` in a static class Solution that parses a line of the form \"Name, Age\" into a Person. Trim whitespace from name and age. If the line does not contain exactly one comma, or age is not a valid integer, throw FormatException.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS1061: 'int' does not contain a definition for 'HasValue' and no accessible extension method 'HasValue' accepting a first argument of type 'int' could be found (are you missing a using directive or an assembly reference?)",
+     "line 27: error CS1061: 'int' does not contain a definition for 'Value' and no accessible extension method 'Value' accepting a first argument of type 'int' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS1061: 'int' does not contain a definition for 'HasValue' and no accessible extension method 'HasValue' accepting a first argument of type 'int' could be found (are you missing a using directive or an assembly reference?)",
+     "line 27: error CS1061: 'int' does not contain a definition for 'Value' and no accessible extension method 'Value' accepting a first argument of type 'int' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic record Person(string Name, int Age);\n\npublic static class Solution\n{\n    public static Person ParsePerson(string line)\n    {\n        if (string.IsNullOrWhiteSpace(line))\n        {\n            throw new FormatException(\"Line cannot be null or empty.\");\n        }\n\n        var parts = line.Split(',');\n        if (parts.Length != 2)\n        {\n            throw new FormatException(\"Line must contain exactly one comma.\");\n        }\n\n        var name = parts[0].Trim();\n        var age = int.TryParse(parts[1].Trim(), out int ageValue);\n        if (!ageValue.HasValue)\n        {\n            throw new FormatException(\"Age must be a valid integer.\");\n        }\n\n        return new Person(name, ageValue.Value);\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Define a record `public record Person(string Name, int Age);` at top level. Write a static method `public static List<Person> ParsePeople(string text)` in a static class Solution that parses multiple lines, each of the form \"Name, Age\", into a list of Person. Ignore empty lines (lines that are null, empty, or whitespace). If any non-empty line is invalid, throw FormatException.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic record Person(string Name, int Age);\n\npublic static class Solution\n{\n    public static List<Person> ParsePeople(string text)\n    {\n        var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);\n        var people = new List<Person>();\n\n        foreach (var line in lines)\n        {\n            if (string.IsNullOrWhiteSpace(line))\n            {\n                continue;\n            }\n\n            var parts = line.Split(',');\n            if (parts.Length != 2)\n            {\n                throw new FormatException(\"Invalid line format\");\n            }\n\n            var name = parts[0].Trim();\n            int age;\n            if (!int.TryParse(parts[1], out age))\n            {\n                throw new FormatException(\"Invalid age\");\n            }\n\n            people.Add(new Person(name, age));\n        }\n\n        return people;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Dictionary<string, string> ParseKeyValues(string s)` in a static class Solution that parses a string of key-value pairs separated by semicolons, where each pair is \"key=value\". Keys and values are trimmed. If the string is empty or whitespace, return an empty dictionary. If a pair is missing '=', or if a key is empty, or if a duplicate key exists, throw FormatException.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'Handles empty and invalid' failed: Index was outside the bounds of the array."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'Handles empty and invalid' failed: Index was outside the bounds of the array."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<string, string> ParseKeyValues(string s)\n    {\n        if (string.IsNullOrWhiteSpace(s))\n        {\n            return new Dictionary<string, string>();\n        }\n\n        var keyValuePairs = s.Split(';').Select(pair => pair.Trim()).ToDictionary(pair => pair.Split('=')[0], pair => pair.Split('=')[1]);\n\n        foreach (var pair in keyValuePairs)\n        {\n            if (string.IsNullOrEmpty(pair.Key) || string.IsNullOrEmpty(pair.Value))\n            {\n                throw new FormatException(\"Key or value is empty.\");\n            }\n        }\n\n        var duplicateKeys = keyValuePairs.GroupBy(pair => pair.Key).Any(group => group.Count() > 1);\n        if (duplicateKeys)\n        {\n            throw new FormatException(\"Duplicate key found.\");\n        }\n\n        return keyValuePairs;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Define a record `public record Event(string Name, DateTime Date);` at top level. Write a static method `public static Event ParseEvent(string line)` in a static class Solution that parses a line of the form \"Name, yyyy-MM-dd\" into an Event. Trim whitespace. If the line is invalid, throw FormatException.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 19: error CS0103: The name 'CultureInfo' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 19: error CS0103: The name 'CultureInfo' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Event(string Name, DateTime Date);\n\npublic static class Solution\n{\n    public static Event ParseEvent(string line)\n    {\n        if (string.IsNullOrWhiteSpace(line))\n        {\n            throw new FormatException(\"Line cannot be null or empty\");\n        }\n\n        var parts = line.Split(',');\n        if (parts.Length != 2)\n        {\n            throw new FormatException(\"Line must contain exactly two parts separated by a comma\");\n        }\n\n        var name = parts[0].Trim();\n        var date = DateTime.ParseExact(parts[1], \"yyyy-MM-dd\", CultureInfo.InvariantCulture);\n\n        return new Event(name, date);\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static int ParseInt(string s)` in a static class Solution that parses the entire string as an integer and returns it. Throw FormatException if the input is not a valid integer.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static int ParseInt(string s)\n    {\n        if (string.IsNullOrEmpty(s))\n        {\n            throw new FormatException(\"Input string is null or empty\");\n        }\n\n        if (!int.TryParse(s, out int result))\n        {\n            throw new FormatException(\"Input string is not a valid integer\");\n        }\n\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Point ParsePoint(string s)` in a static class Solution that parses a string of the form \"x,y\" into a Point record. The Point record should be `public record Point(int X, int Y);`. Throw FormatException if the input does not contain exactly two comma-separated integers. Trim whitespace around each part.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 30: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 39: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 40: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 41: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 30: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 39: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 40: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 41: error CS0246: The type or namespace name 'Point' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static Point ParsePoint(string s)\n    {\n        if (string.IsNullOrWhiteSpace(s))\n        {\n            throw new FormatException(\"Input string is null or empty.\");\n        }\n\n        var parts = s.Trim().Split(',');\n        if (parts.Length != 2)\n        {\n            throw new FormatException(\"Input string does not contain exactly two comma-separated integers.\");\n        }\n\n        int x, y;\n        if (!int.TryParse(parts[0], out x) || !int.TryParse(parts[1], out y))\n        {\n            throw new FormatException(\"Invalid integer values in the input string.\");\n        }\n\n        return new Point(x, y);\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Person ParsePerson(string s)` in a static class Solution that parses a string of the form \"name:age\" into a Person record. The Person record should be `public record Person(string Name, int Age);`. Throw FormatException if the input does not contain exactly one colon. Trim whitespace around the name and age.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static Person ParsePerson(string s)\n    {\n        if (s == null || s.Length == 0)\n        {\n            throw new FormatException(\"Input string is null or empty.\");\n        }\n\n        string[] parts = s.Split(':');\n        if (parts.Length != 2)\n        {\n            throw new FormatException(\"Input string does not contain exactly one colon.\");\n        }\n\n        string name = parts[0].Trim();\n        string ageStr = parts[1].Trim();\n\n        if (!int.TryParse(ageStr, out int age))\n        {\n            throw new FormatException(\"Age is not a valid integer.\");\n        }\n\n        return new Person(name, age);\n    }\n}\n\npublic record Person(string Name, int Age);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static List<Entry> ParseEntries(string text)` in a static class Solution that parses a semicolon-separated list of key=value pairs into a list of Entry records. The Entry record should be `public record Entry(string Key, int Value);`. Ignore empty segments caused by trailing semicolons. Throw FormatException if any non-empty segment is not exactly key=value with an integer value. Trim whitespace around keys and values.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parses key-value entries' failed: Text cannot be null or whitespace"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parses key-value entries' failed: Text cannot be null or whitespace"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<Entry> ParseEntries(string text)\n    {\n        if (string.IsNullOrWhiteSpace(text))\n        {\n            throw new ArgumentException(\"Text cannot be null or whitespace\");\n        }\n\n        var entries = new List<Entry>();\n        var segments = text.Split(';').Where(s => !string.IsNullOrWhiteSpace(s));\n\n        foreach (var segment in segments)\n        {\n            var parts = segment.Split('=');\n            if (parts.Length != 2)\n            {\n                throw new FormatException(\"Each segment must contain exactly one '='\");\n            }\n\n            var key = parts[0].Trim();\n            var value = parts[1].Trim();\n\n            if (!int.TryParse(value, out int intValue))\n            {\n                throw new FormatException(\"Value must be an integer\");\n            }\n\n            entries.Add(new Entry(key, intValue));\n        }\n\n        return entries;\n    }\n}\n\npublic record Entry(string Key, int Value);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static List<Student> ParseStudents(string text)` in a static class Solution that parses multiline text where each non-empty line is \"Name,Score\". Return a list of Student records. The Student record should be `public record Student(string Name, int Score);`. Skip empty lines. Throw FormatException if a non-empty line does not contain exactly one comma. Trim whitespace around name and score.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<Student> ParseStudents(string text)\n    {\n        if (string.IsNullOrWhiteSpace(text))\n        {\n            throw new ArgumentException(\"Text cannot be null or whitespace\");\n        }\n\n        var lines = text.Split(new[] { '\\n', '\\r' }, StringSplitOptions.RemoveEmptyEntries);\n        var students = new List<Student>();\n\n        foreach (var line in lines)\n        {\n            if (string.IsNullOrWhiteSpace(line))\n            {\n                continue;\n            }\n\n            var parts = line.Split(',');\n            if (parts.Length != 2)\n            {\n                throw new FormatException(\"Each non-empty line must contain exactly one comma\");\n            }\n\n            var name = parts[0].Trim();\n            var score = int.Parse(parts[1].Trim());\n\n            students.Add(new Student(name, score));\n        }\n\n        return students;\n    }\n}\n\npublic record Student(string Name, int Score);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Code ParseCode(string s)` in a static class Solution that parses a fixed-width string where the first 4 characters are an integer ID and the rest is a string value. Return a Code record `public record Code(int Id, string Value);`. Throw FormatException if the string is shorter than 5 characters.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 26: error CS0246: The type or namespace name 'Code' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 27: error CS0246: The type or namespace name 'Code' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 28: error CS0246: The type or namespace name 'Code' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 26: error CS0246: The type or namespace name 'Code' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 27: error CS0246: The type or namespace name 'Code' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 28: error CS0246: The type or namespace name 'Code' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static Code ParseCode(string s)\n    {\n        if (s.Length < 5)\n        {\n            throw new FormatException(\"String is shorter than 5 characters\");\n        }\n\n        int id = int.Parse(s.Substring(0, 4));\n        string value = s.Substring(4);\n\n        return new Code(id, value);\n    }\n\n    public record Code(int Id, string Value);\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Setting ParseSetting(string s)` in a static class Solution that parses a string of the form \"name=true\" or \"name=false\" into a Setting record. The Setting record should be `public record Setting(string Name, bool Enabled);`. Throw FormatException if the input is not exactly name=boolean. Trim whitespace around name and boolean. The boolean part must be exactly \"true\" or \"false\" (case-sensitive).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static Setting ParseSetting(string s)\n    {\n        if (string.IsNullOrWhiteSpace(s))\n            throw new FormatException(\"Input string is null or empty.\");\n\n        var parts = s.Split('=');\n        if (parts.Length != 2)\n            throw new FormatException(\"Input string is not in the correct format.\");\n\n        var name = parts[0].Trim();\n        var value = parts[1].Trim().ToLower();\n\n        if (value != \"true\" && value != \"false\")\n            throw new FormatException(\"Boolean value is not 'true' or 'false'.\");\n\n        return new Setting(name, value == \"true\");\n    }\n}\n\npublic record Setting(string Name, bool Enabled);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Range ParseRange(string s)` in a static class Solution that parses a string of the form \"start-end\" into a Range record. The Range record should be `public record Range(int Start, int End);`. Throw FormatException if the input does not contain exactly one hyphen. Trim whitespace around start and end. Negative numbers are not supported.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 36: error CS0019: Operator '==' cannot be applied to operands of type 'Range' and 'Range'",
+     "line 37: error CS0019: Operator '==' cannot be applied to operands of type 'Range' and 'Range'",
+     "line 38: error CS0019: Operator '==' cannot be applied to operands of type 'Range' and 'Range'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 36: error CS0019: Operator '==' cannot be applied to operands of type 'Range' and 'Range'",
+     "line 37: error CS0019: Operator '==' cannot be applied to operands of type 'Range' and 'Range'",
+     "line 38: error CS0019: Operator '==' cannot be applied to operands of type 'Range' and 'Range'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\n\npublic static class Solution\n{\n    public static Range ParseRange(string s)\n    {\n        if (string.IsNullOrWhiteSpace(s))\n            throw new FormatException(\"Input string is null or empty.\");\n\n        var parts = s.Split('-');\n        if (parts.Length != 2)\n            throw new FormatException(\"Input string does not contain exactly one hyphen.\");\n\n        int start, end;\n        if (!int.TryParse(parts[0], out start) || !int.TryParse(parts[1], out end))\n            throw new FormatException(\"Invalid range values.\");\n\n        if (start < 0 || end < 0)\n            throw new FormatException(\"Negative numbers are not supported.\");\n\n        return new Range(start, end);\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static int[] ParseInts(string? text)` in a static class Solution that parses a comma-separated list of integers, trims whitespace around each item, ignores empty or invalid items, and returns an int array. If text is null, empty, or whitespace, return an empty array.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 23: error CS0029: Cannot implicitly convert type 'string[]' to 'int[]'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 23: error CS0029: Cannot implicitly convert type 'string[]' to 'int[]'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static int[] ParseInts(string? text)\n    {\n        if (string.IsNullOrWhiteSpace(text))\n        {\n            return new int[0];\n        }\n\n        var items = text.Split(',')\n            .Select(item => item.Trim())\n            .Where(item => int.TryParse(item, out _))\n            .ToArray();\n\n        return items;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static List<ScoreEntry> ParseScores(string? text)` in a static class Solution that parses non-empty lines formatted as `Name=Score`, trims whitespace, parses the score as an integer, skips malformed lines, and returns a list of ScoreEntry. Define top-level record `public sealed record ScoreEntry(string Name, int Score);`.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 18: warning CS8619: Nullability of reference types in value of type 'List<ScoreEntry?>' doesn't match target type 'List<ScoreEntry>'."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": true,
+    "messages": [
+     "line 18: warning CS8619: Nullability of reference types in value of type 'List<ScoreEntry?>' doesn't match target type 'List<ScoreEntry>'."
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<ScoreEntry> ParseScores(string? text)\n    {\n        if (string.IsNullOrEmpty(text))\n        {\n            return new List<ScoreEntry>();\n        }\n\n        return text.Split(new[] { '\\n' }, StringSplitOptions.RemoveEmptyEntries)\n                      .Select(line => ParseLine(line))\n                      .Where(entry => entry != null)\n                      .ToList();\n    }\n\n    private static ScoreEntry? ParseLine(string line)\n    {\n        var parts = line.Split('=');\n        if (parts.Length != 2)\n        {\n            return null;\n        }\n\n        var name = parts[0].Trim();\n        int score;\n        if (!int.TryParse(parts[1], out score))\n        {\n            return null;\n        }\n\n        return new ScoreEntry(name, score);\n    }\n}\n\npublic sealed record ScoreEntry(string Name, int Score);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Dictionary<string, int> ParseSettings(string? text)` in a static class Solution that parses semicolon-separated `key=value` pairs, trims whitespace, parses integer values, ignores malformed or empty pairs, and returns a dictionary where later duplicate keys overwrite earlier ones. If text is null/empty/whitespace, return an empty dictionary.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static Dictionary<string, int> ParseSettings(string? text)\n    {\n        if (string.IsNullOrWhiteSpace(text))\n        {\n            return new Dictionary<string, int>();\n        }\n\n        var settings = new Dictionary<string, int>();\n        var lines = text.Split(';').Where(line => !string.IsNullOrWhiteSpace(line));\n\n        foreach (var line in lines)\n        {\n            var parts = line.Split('=');\n            if (parts.Length == 2)\n            {\n                var key = parts[0].Trim();\n                var value = int.TryParse(parts[1], out int intValue) ? intValue : 0;\n                settings[key] = intValue;\n            }\n        }\n\n        return settings;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Point? ParsePoint(string? text)` in a static class Solution that parses a string like `(x,y)` into a Point record, trims whitespace, parses both coordinates as integers, and returns null for malformed input. Define top-level record `public sealed record Point(int X, int Y);`.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parses points' failed: basic"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parses points' failed: basic"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\n\npublic static class Solution\n{\n    public static Point? ParsePoint(string? text)\n    {\n        if (string.IsNullOrWhiteSpace(text))\n        {\n            return null;\n        }\n\n        var trimmedText = text.Trim();\n        var parts = trimmedText.Split(',');\n\n        if (parts.Length != 2)\n        {\n            return null;\n        }\n\n        int x, y;\n        if (!int.TryParse(parts[0], out x) || !int.TryParse(parts[1], out y))\n        {\n            return null;\n        }\n\n        return new Point(x, y);\n    }\n}\n\npublic sealed record Point(int X, int Y);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static List<Sale> ParseSales(string? text)` in a static class Solution that parses lines formatted as `Product:Quantity:UnitPrice`, trims whitespace, parses Quantity as int and UnitPrice as decimal using invariant culture, skips malformed or empty lines, and returns a list of Sale. Define top-level record `public sealed record Sale(string Product, int Quantity, decimal UnitPrice);`.",
+   "first": {
+    "errors": 3,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 18: warning CS8619: Nullability of reference types in value of type 'List<Sale?>' doesn't match target type 'List<Sale>'.",
+     "line 41: error CS1615: Argument 2 may not be passed with the 'out' keyword",
+     "line 41: error CS1503: Argument 3: cannot convert from 'System.Globalization.NumberStyles' to 'System.IFormatProvider?'",
+     "line 41: error CS1620: Argument 4 must be passed with the 'out' keyword"
+    ]
+   },
+   "final": {
+    "errors": 3,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 18: warning CS8619: Nullability of reference types in value of type 'List<Sale?>' doesn't match target type 'List<Sale>'.",
+     "line 41: error CS1615: Argument 2 may not be passed with the 'out' keyword",
+     "line 41: error CS1503: Argument 3: cannot convert from 'System.Globalization.NumberStyles' to 'System.IFormatProvider?'",
+     "line 41: error CS1620: Argument 4 must be passed with the 'out' keyword"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic static class Solution\n{\n    public static List<Sale> ParseSales(string? text)\n    {\n        if (string.IsNullOrEmpty(text))\n        {\n            return new List<Sale>();\n        }\n\n        return text.Split(new[] { '\\n', '\\r' }, StringSplitOptions.RemoveEmptyEntries)\n                      .Select(line => ParseLine(line))\n                      .Where(sale => sale != null)\n                      .ToList();\n    }\n\n    private static Sale? ParseLine(string line)\n    {\n        var parts = line.Split(':');\n        if (parts.Length != 3)\n        {\n            return null;\n        }\n\n        var product = parts[0].Trim();\n        if (string.IsNullOrEmpty(product))\n        {\n            return null;\n        }\n\n        int quantity;\n        decimal unitPrice;\n\n        if (!int.TryParse(parts[1], out quantity) || !decimal.TryParse(parts[2], out unitPrice, System.Globalization.NumberStyles.Currency, System.Globalization.CultureInfo.InvariantCulture))\n        {\n            return null;\n        }\n\n        return new Sale(product, quantity, unitPrice);\n    }\n}\n\npublic sealed record Sale(string Product, int Quantity, decimal UnitPrice);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static double[] ParseDoubles(string? text)` in a static class Solution that splits text on whitespace, parses each token as a double using invariant culture, ignores invalid tokens and empty tokens, and returns a double array. If text is null/empty/whitespace, return an empty array.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 23: error CS0103: The name 'NumberStyles' does not exist in the current context",
+     "line 23: error CS0103: The name 'NumberFormatInfo' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 23: error CS0103: The name 'NumberStyles' does not exist in the current context",
+     "line 23: error CS0103: The name 'NumberFormatInfo' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nusing System.Collections.Generic;\n\npublic static class Solution\n{\n    public static double[] ParseDoubles(string? text)\n    {\n        if (string.IsNullOrWhiteSpace(text))\n        {\n            return new double[0];\n        }\n\n        var tokens = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);\n        var result = new double[tokens.Length];\n\n        for (int i = 0; i < tokens.Length; i++)\n        {\n            if (double.TryParse(tokens[i], NumberStyles.Any, NumberFormatInfo.InvariantCulture, out double value))\n            {\n                result[i] = value;\n            }\n        }\n\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Person? ParsePerson(string? text)` in a static class Solution that parses `Name,Age,IsActive`, trims each field, parses Age as int and IsActive as bool, and returns null for malformed input. Define top-level record `public sealed record Person(string Name, int Age, bool IsActive);`.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "using System;\nusing System.Text.RegularExpressions;\n\npublic static class Solution\n{\n    public static Person? ParsePerson(string? text)\n    {\n        if (string.IsNullOrEmpty(text))\n        {\n            return null;\n        }\n\n        var fields = Regex.Split(text, @\"\\s*,\\s*\");\n        if (fields.Length != 3)\n        {\n            return null;\n        }\n\n        var name = fields[0].Trim();\n        int age;\n        if (!int.TryParse(fields[1], out age))\n        {\n            return null;\n        }\n\n        bool isActive;\n        if (!bool.TryParse(fields[2], out isActive))\n        {\n            return null;\n        }\n\n        return new Person(name, age, isActive);\n    }\n}\n\npublic sealed record Person(string Name, int Age, bool IsActive);"
+  },
+  {
+   "family": "cs-parsing",
+   "prompt": "Write a static method `public static Color? ParseHexColor(string? text)` in a static class Solution that parses a hex color string like `#RRGGBB`, trims whitespace, parses each two-character component as a byte using hex style, and returns null for malformed input. Define top-level record `public sealed record Color(byte Red, byte Green, byte Blue);`.",
+   "first": {
+    "errors": 3,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 27: error CS1503: Argument 2: cannot convert from 'int' to 'System.IFormatProvider?'",
+     "line 28: error CS1503: Argument 2: cannot convert from 'int' to 'System.IFormatProvider?'",
+     "line 29: error CS1503: Argument 2: cannot convert from 'int' to 'System.IFormatProvider?'"
+    ]
+   },
+   "final": {
+    "errors": 3,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 27: error CS1503: Argument 2: cannot convert from 'int' to 'System.IFormatProvider?'",
+     "line 28: error CS1503: Argument 2: cannot convert from 'int' to 'System.IFormatProvider?'",
+     "line 29: error CS1503: Argument 2: cannot convert from 'int' to 'System.IFormatProvider?'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "using System;\nusing System.Text.RegularExpressions;\n\npublic static class Solution\n{\n    public static Color? ParseHexColor(string? text)\n    {\n        if (string.IsNullOrWhiteSpace(text))\n        {\n            return null;\n        }\n\n        text = text.Trim();\n\n        if (!Regex.IsMatch(text, @\"^#[0-9A-Fa-f]{6}$\"))\n        {\n            return null;\n        }\n\n        var parts = text.Substring(1).ToCharArray();\n\n        if (parts.Length != 3)\n        {\n            return null;\n        }\n\n        byte red = Convert.ToByte(parts[0], 16);\n        byte green = Convert.ToByte(parts[1], 16);\n        byte blue = Convert.ToByte(parts[2], 16);\n\n        return new Color(red, green, blue);\n    }\n}\n\npublic sealed record Color(byte Red, byte Green, byte Blue);"
+  }
+ ]
+}

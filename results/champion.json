@@ -1,0 +1,23 @@
+{
+  "dataset": "kite",
+  "kind": "code",
+  "candidate": "r3-coder1.5b-i750",
+  "model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit",
+  "run": "2026-10-11 round 3",
+  "set_at": "2026-10-11 17:37",
+  "chosen_on": "valid: Kite passes 70.4%, C# passes 75.0% (stock 75.0%, rule: within 2 points)",
+  "test": {
+    "kite": {
+      "compiles": 0.834,
+      "passes": 0.694,
+      "passes_after_repairs": 0.702,
+      "csharp_leak": 0.0
+    },
+    "csharp_guard": {
+      "passes": 0.641,
+      "stock_passes": 0.641,
+      "compiles": 0.846,
+      "stock_compiles": 0.744
+    }
+  }
+}

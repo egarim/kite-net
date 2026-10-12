@@ -1,0 +1,5 @@
+module Leak
+
+fn csharpy(a: int) -> int
+    var b = a;
+    return b && true

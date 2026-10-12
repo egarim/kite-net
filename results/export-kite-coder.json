@@ -1,0 +1,24 @@
+{
+  "name": "kite-coder",
+  "gguf": "kite-coder-q4_k_m.gguf",
+  "quant": "Q4_K_M",
+  "kind": "code",
+  "dataset": "code-kite",
+  "candidate": "r3-coder1.5b-i750",
+  "base_model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit",
+  "run": "2026-10-11 round 3",
+  "test": {
+    "kite": {
+      "compiles": 0.834,
+      "passes": 0.694,
+      "passes_after_repairs": 0.702,
+      "csharp_leak": 0.0
+    },
+    "csharp_guard": {
+      "passes": 0.641,
+      "stock_passes": 0.641,
+      "compiles": 0.846,
+      "stock_compiles": 0.744
+    }
+  }
+}

@@ -1,0 +1,9 @@
+module Ca
+
+fn some(xs: list<int>) -> bool
+    if xs.Count() > 0
+        return true
+    return xs.Any()
+
+fn main()
+    print(some([1, 2]))

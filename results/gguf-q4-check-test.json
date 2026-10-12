@@ -1,0 +1,1336 @@
+{
+ "model": "kite-coder",
+ "adapter": null,
+ "split": "test",
+ "repairs": 0,
+ "metrics": {
+  "compiles": 0.8333333333333334,
+  "passes": 0.75,
+  "clean": 0.8333333333333334,
+  "csharp_leak": 0.0,
+  "warnings_per_compiled": 0.0,
+  "tokens_per_s": 149.29158734920895
+ },
+ "results": [
+  {
+   "family": "clinic",
+   "prompt": "Write fn waiting_time(a: Appointment) -> int that returns how many minutes the patient waited. Define Appointment as record(patient: Patient, doctor: str, day: int, scheduled: int, seen: int) and Patient as record(name: str, age: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'waiting_time' failed: line 10: waiting_time(a) == 20"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'waiting_time' failed: line 10: waiting_time(a) == 20"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, day: int, scheduled: int, seen: int)\n\nfn waiting_time(a: Appointment) -> int =\n    a.scheduled - a.seen"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn average_wait(appts: list<Appointment>) -> dec that returns the average waiting time in minutes, or 0.0 if there are no appointments. Use the same Patient and Appointment records.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 2: error CS0246: The type or namespace name 'datetime' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 2: error CS0246: The type or namespace name 'datetime' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 12: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 13: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 14: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 2: error CS0246: The type or namespace name 'datetime' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 2: error CS0246: The type or namespace name 'datetime' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 12: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 13: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 14: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, start: datetime, end: datetime)\n\nfn average_wait(appts: list<Appointment>) -> dec\n    if len(appts) == 0\n        return 0.0\n    let total = sum(appts, a => a.end - a.start)\n    return total / dec(len(appts))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn today_appointments(appts: list<Appointment>, day: int) -> list<Appointment> that returns only appointments scheduled for the given day. Use the same Patient and Appointment records.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 10: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 11: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 10: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 11: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, day: int)\n\nfn today_appointments(appts: list<Appointment>, day: int) -> list<Appointment> =\n    appts |> filter(a => a.day == day)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn count_by_doctor(appts: list<Appointment>) -> list<DoctorCount> that returns a list of DoctorCount records, one per doctor, with the number of appointments. Sort the result by doctor name. Define DoctorCount as record(doctor: str, count: int). Use the same Patient and Appointment records.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 8: error CS0246: The type or namespace name 'Patient' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 9: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 10: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 11: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 12: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 13: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 20: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 8: error CS0246: The type or namespace name 'Patient' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 9: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 10: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 11: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 12: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 13: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 20: error CS0246: The type or namespace name 'Appointment' could not be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type DoctorCount = record(doctor: str, count: int)\n\nfn count_by_doctor(appts: list<Appointment>) -> list<DoctorCount>\n    let doctors = distinct(map(appts, a => a.doctor))\n    return doctors |> map(d => DoctorCount(d, len(filter(appts, a => a.doctor == d))))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define Status as enum(Waiting, Seen, Cancelled). Extend Appointment to include a status field of type Status: record(patient: Patient, doctor: str, day: int, scheduled: int, seen: int, status: Status). Write fn seen_count(appts: list<Appointment>) -> int that counts how many appointments have status Seen. Use Patient record as before.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Status = enum(Waiting, Seen, Cancelled)\n\ntype Patient = record(name: str, age: int)\n\ntype Appointment = record(patient: Patient, doctor: str, day: int, scheduled: int, seen: int, status: Status)\n\nfn seen_count(appts: list<Appointment>) -> int =\n    appts |> count(a => a.status == Status.Seen)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn busiest_doctor(appts: list<Appointment>) -> str that returns the doctor with the most appointments, or an empty string if there are no appointments. Use the same Patient, Appointment, and DoctorCount records from earlier.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 8: error CS1061: 'Patient' does not contain a definition for 'doctor' and no accessible extension method 'doctor' accepting a first argument of type 'Patient' could be found (are you missing a using directive or an assembly reference?)",
+     "line 11: error CS0029: Cannot implicitly convert type 'KiteApp.DoctorCount' to 'string'",
+     "line 14: error CS1729: 'Patient' does not contain a constructor that takes 2 arguments",
+     "line 15: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 16: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 17: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 18: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 19: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 8: error CS1061: 'Patient' does not contain a definition for 'doctor' and no accessible extension method 'doctor' accepting a first argument of type 'Patient' could be found (are you missing a using directive or an assembly reference?)",
+     "line 11: error CS0029: Cannot implicitly convert type 'KiteApp.DoctorCount' to 'string'",
+     "line 14: error CS1729: 'Patient' does not contain a constructor that takes 2 arguments",
+     "line 15: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 16: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 17: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 18: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments",
+     "line 19: error CS1729: 'Appointment' does not contain a constructor that takes 5 arguments"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str)\ntype Appointment = record(patient: Patient, start: str, end: str)\ntype DoctorCount = record(doctor: str, count: int)\n\nfn busiest_doctor(appts: list<Appointment>) -> str\n    let counts = map<DoctorCount, int>()\n    for a in appts\n        let d = a.patient.doctor\n        counts[d] = get(counts, d, 0) + 1\n    let best = max_by(keys(counts), d => get(counts, d, 0))\n    return best"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str). Write fn waiting_minutes(a: Appointment) -> int that returns how many minutes the patient waited, i.e. seen - start.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\n\nfn waiting_minutes(a: Appointment) -> int = a.seen - a.start"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str). Write fn todays_list(appointments: list<Appointment>, day: str) -> list<str> that returns the names of patients with appointments on the given day, sorted by start time ascending.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\n\nfn todays_list(appointments: list<Appointment>, day: str) -> list<str> =\n    appointments |> filter(a => a.day == day) |> sort_by(a => a.start) |> map(a => a.patient.name)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str). Also define type DoctorCount = record(doctor: str, count: int). Write fn doctor_counts(appointments: list<Appointment>) -> list<DoctorCount> that returns one DoctorCount per doctor, sorted by doctor name, with the number of appointments.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\ntype DoctorCount = record(doctor: str, count: int)\n\nfn doctor_counts(appointments: list<Appointment>) -> list<DoctorCount>\n    let groups = group_by(appointments, a => a.doctor)\n    return keys(groups) |> sort |> map(d => DoctorCount(d, len(get(groups, d, list<Appointment>()))))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str). Write fn total_wait_minutes(appointments: list<Appointment>, doctor: str, day: str) -> int that sums the waiting time (seen - start) for all appointments for the given doctor on the given day. Return 0 if there are none.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\n\nfn total_wait_minutes(appointments: list<Appointment>, doctor: str, day: str) -> int =\n    appointments |> filter(a => a.doctor == doctor and a.day == day) |> sum(a => a.seen - a.start)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str). Write fn average_wait(appointments: list<Appointment>) -> dec that returns the average waiting time (seen - start) across all appointments. Return 0.0 if the list is empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\n\nfn average_wait(appointments: list<Appointment>) -> dec\n    if len(appointments) == 0\n        return 0.0\n    let total = sum(appointments, a => a.seen - a.start)\n    return dec(total) / dec(len(appointments))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int), type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str), and type DoctorCount = record(doctor: str, count: int). Write fn busiest_doctor(appointments: list<Appointment>) -> str? that returns the name of the doctor with the most appointments, or none if there are no appointments. If there is a tie, return the doctor whose name comes first alphabetically. Write any helper function needed.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\ntype DoctorCount = record(doctor: str, count: int)\n\nfn busiest_doctor(appointments: list<Appointment>) -> str?\n    let counts: map<str, int> = map<str, int>()\n    for a in appointments\n        counts[a.doctor] = get(counts, a.doctor, 0) + 1\n    let best = keys(counts) |> sort |> max_by(d => get(counts, d, 0))\n    return best"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str). Write fn patients_older_than(appointments: list<Appointment>, age: int) -> list<str> that returns the distinct names of patients whose age is greater than the given age, sorted alphabetically.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'patients older than' failed: line 14: patients_older_than(appts, 29) |> join(\",\") == \"Ana,Bob\""
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'patients older than' failed: line 14: patients_older_than(appts, 29) |> join(\",\") == \"Ana,Bob\""
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\n\nfn patients_older_than(appointments: list<Appointment>, age: int) -> list<str> =\n    appointments |> filter(a => a.patient.age > age) |> map(a => a.patient.name) |> sort"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Assume type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str). Also define type DaySummary = record(day: str, count: int, total_wait: int). Write fn summarize_day(appointments: list<Appointment>, day: str) -> DaySummary that returns the number of appointments and the total waiting time (seen - start) for that day.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, start: int, seen: int, day: str)\ntype DaySummary = record(day: str, count: int, total_wait: int)\n\nfn summarize_day(appointments: list<Appointment>, day: str) -> DaySummary\n    let day_appointments = appointments |> filter(a => a.day == day)\n    let count = len(day_appointments)\n    let total_wait = sum(day_appointments, a => a.seen - a.start)\n    return DaySummary(day, count, total_wait)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define a patient record as type Patient = record(name: str, age: int). Write fn is_senior(p: Patient) -> bool that returns true when the patient's age is at least 65.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\n\nfn is_senior(p: Patient) -> bool =\n    p.age >= 65"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, scheduled: int, seen: int). Write fn wait_minutes(a: Appointment) -> int that returns how many minutes the patient waited, computed as seen - scheduled.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, scheduled: int, seen: int)\n\nfn wait_minutes(a: Appointment) -> int = a.seen - a.scheduled"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, doctor: str, day: int, time: int). Write fn today_list(appts: list<Appointment>, day: int) -> list<str> that returns patient names for appointments on the given day, sorted by time from earliest to latest.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, day: int, time: int)\n\nfn today_list(appts: list<Appointment>, day: int) -> list<str> =\n    appts |> filter(a => a.day == day) |> sort_by(a => a.time) |> map(a => a.patient)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, scheduled: int, seen: int). Write fn average_wait(appts: list<Appointment>) -> dec that returns the average waiting time (seen - scheduled), or 0.0 if there are no appointments.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, scheduled: int, seen: int)\n\nfn average_wait(appts: list<Appointment>) -> dec\n    let total = sum(appts, a => a.seen - a.scheduled)\n    let n = len(appts)\n    if n == 0\n        return 0.0\n    return dec(total) / dec(n)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, scheduled: int, seen: int). Write fn wait_minutes(a: Appointment) -> int and fn max_wait(appts: list<Appointment>) -> int. wait_minutes returns seen - scheduled. max_wait returns the largest waiting time, or -1 if the list is empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, scheduled: int, seen: int)\n\nfn wait_minutes(a: Appointment) -> int = a.seen - a.scheduled\n\nfn max_wait(appts: list<Appointment>) -> int\n    if len(appts) == 0\n        return -1\n    let best = max_by(appts, a => wait_minutes(a))\n    return wait_minutes(best)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, scheduled: int, seen: int). Write fn urgent_patients(appts: list<Appointment>, threshold: int) -> list<str> that returns patient names whose waiting time (seen - scheduled) is at least threshold, sorted from longest wait to shortest, with duplicates removed.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'urgent_patients' failed: line 17: urgent_patients(appts, 5) |> join(\",\") == \"A,C,B\""
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'urgent_patients' failed: line 17: urgent_patients(appts, 5) |> join(\",\") == \"A,C,B\""
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, scheduled: int, seen: int)\n\nfn urgent_patients(appts: list<Appointment>, threshold: int) -> list<str> =\n    appts |> filter(a => a.seen - a.scheduled >= threshold) |> map(a => a.patient) |> distinct |> sort"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, doctor: str). Write fn doctor_load(appts: list<Appointment>) -> list<str> that returns one line per doctor in alphabetical order, formatted as \"Doctor: count\", e.g. \"Dr X: 2\".",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 6: error CS0411: The type arguments for method 'Std.keys<K, V>(Dictionary<K, V>)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 6: error CS7036: There is no argument given that corresponds to the required parameter 'fallback' of 'Std.get<K, V>(Dictionary<K, V>, K, V)'"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 6: error CS0411: The type arguments for method 'Std.keys<K, V>(Dictionary<K, V>)' cannot be inferred from the usage. Try specifying the type arguments explicitly.",
+     "line 6: error CS7036: There is no argument given that corresponds to the required parameter 'fallback' of 'Std.get<K, V>(Dictionary<K, V>, K, V)'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str)\n\nfn doctor_load(appts: list<Appointment>) -> list<str>\n    let doctors = appts |> map(a => a.doctor)\n    let counts = doctors |> group_by(d => d) |> map(kv => kv.Value |> len)\n    let result = counts |> keys |> sort |> map(d => \"Doctor: {counts |> get(d)}\")\n    return result"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn total_wait(appts: list<Appointment>) -> int that returns the sum of the wait field of all appointments. Define type Appointment = record(patient: str, doctor: str, wait: int, duration: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, wait: int, duration: int)\n\nfn total_wait(appts: list<Appointment>) -> int =\n    appts |> sum(a => a.wait)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn doctor_schedule(appts: list<Appointment>, doctor: str) -> list<Appointment> that returns appointments for the given doctor, sorted by start time. Define type Appointment = record(patient: str, doctor: str, start: int, duration: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, start: int, duration: int)\n\nfn doctor_schedule(appts: list<Appointment>, doctor: str) -> list<Appointment> =\n    appts |> filter(a => a.doctor == doctor) |> sort_by(a => a.start)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn counts_by_doctor(appts: list<Appointment>) -> list<DoctorCount> returning each doctor and the number of their appointments, sorted by doctor name. Define type Appointment = record(patient: str, doctor: str, wait: int, duration: int) and type DoctorCount = record(doctor: str, count: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, wait: int, duration: int)\ntype DoctorCount = record(doctor: str, count: int)\n\nfn counts_by_doctor(appts: list<Appointment>) -> list<DoctorCount> =\n    appts\n    |> group_by(a => a.doctor)\n    |> map(kv => DoctorCount(kv.Key, len(kv.Value)))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn average_wait(appts: list<Appointment>) -> dec returning the average wait in minutes, or 0.0 if there are no appointments. Define type Appointment = record(patient: str, doctor: str, wait: int, duration: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, wait: int, duration: int)\n\nfn average_wait(appts: list<Appointment>) -> dec\n    if len(appts) == 0\n        return 0.0\n    let total_wait = sum(appts, a => a.wait)\n    return dec(total_wait) / dec(len(appts))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn longest_wait_patient(appts: list<Appointment>) -> Patient? returning the patient with the longest wait, or none if there are no appointments. Define type Patient = record(name: str, age: int) and type Appointment = record(patient: Patient, doctor: str, wait: int, duration: int).",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS0029: Cannot implicitly convert type 'KiteApp.Appointment' to 'KiteApp.Patient'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS0029: Cannot implicitly convert type 'KiteApp.Appointment' to 'KiteApp.Patient'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\ntype Appointment = record(patient: Patient, doctor: str, wait: int, duration: int)\n\nfn longest_wait_patient(appts: list<Appointment>) -> Patient? =\n    if len(appts) == 0 then none else max_by(appts, a => a.wait)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn age_group(age: int) -> AgeGroup that returns Child for age < 18, Adult for 18 to 64, and Senior for 65 or older. Define type AgeGroup = enum(Child, Adult, Senior).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type AgeGroup = enum(Child, Adult, Senior)\n\nfn age_group(age: int) -> AgeGroup = when age\n    < 18 -> AgeGroup.Child\n    < 65 -> AgeGroup.Adult\n    else -> AgeGroup.Senior"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn doctor_minutes(appts: list<Appointment>) -> list<DoctorLoad> returning each doctor and total scheduled minutes, sorted by doctor. Define type Appointment = record(patient: str, doctor: str, wait: int, duration: int) and type DoctorLoad = record(doctor: str, minutes: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, wait: int, duration: int)\ntype DoctorLoad = record(doctor: str, minutes: int)\n\nfn doctor_minutes(appts: list<Appointment>) -> list<DoctorLoad> =\n    appts\n    |> group_by(a => a.doctor)\n    |> map(kv => DoctorLoad(kv.Key, sum(kv.Value, a => a.duration)))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn waiting_over(appts: list<Appointment>, mins: int) -> list<str> returning the names of patients whose wait is greater than mins, sorted alphabetically. Define type Appointment = record(patient: str, doctor: str, wait: int, duration: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, wait: int, duration: int)\n\nfn waiting_over(appts: list<Appointment>, mins: int) -> list<str> =\n    appts |> filter(a => a.wait > mins) |> map(a => a.patient) |> sort"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Write fn waiting_minutes(arrival: int, start: int) -> int that returns how many minutes a patient waits: start minus arrival if start is after arrival, otherwise 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "fn waiting_minutes(arrival: int, start: int) -> int =\n    if start > arrival then start - arrival else 0"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Patient = record(name: str, age: int). Write fn patient_category(p: Patient) -> str that returns \"child\" if age is under 18, \"adult\" if under 65, otherwise \"senior\".",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Patient = record(name: str, age: int)\n\nfn patient_category(p: Patient) -> str = when p.age\n    < 18 -> \"child\"\n    < 65 -> \"adult\"\n    else -> \"senior\""
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, doctor: str, arrival: int, start: int). Write fn waiting(a: Appointment) -> int that returns the waiting minutes: start minus arrival if start is after arrival, otherwise 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, arrival: int, start: int)\n\nfn waiting(a: Appointment) -> int =\n    if a.start > a.arrival then a.start - a.arrival else 0"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int). Write fn todays_appointments(day: int, appointments: list<Appointment>) -> list<Appointment> that returns appointments for the given day, sorted by start time.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int)\n\nfn todays_appointments(day: int, appointments: list<Appointment>) -> list<Appointment> =\n    appointments |> filter(a => a.day == day) |> sort_by(a => a.start)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int) and type DoctorCount = record(doctor: str, count: int). Write fn doctor_counts(appointments: list<Appointment>) -> list<DoctorCount> that returns one DoctorCount per doctor, with the number of appointments, sorted by doctor name.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int)\ntype DoctorCount = record(doctor: str, count: int)\n\nfn doctor_counts(appointments: list<Appointment>) -> list<DoctorCount>\n    let counts: map<str, int> = map<str, int>()\n    for a in appointments\n        counts[a.doctor] = get(counts, a.doctor, 0) + 1\n    return keys(counts) |> sort |> map(d => DoctorCount(d, counts[d]))"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Status = enum(Scheduled, Cancelled, Completed) and type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int, status: Status). Write fn active_today(day: int, appointments: list<Appointment>) -> list<Appointment> that returns appointments on the given day whose status is not Cancelled, sorted by start time.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS0023: Operator '!' cannot be applied to operand of type 'Status'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS0023: Operator '!' cannot be applied to operand of type 'Status'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Status = enum(Scheduled, Cancelled, Completed)\ntype Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int, status: Status)\n\nfn active_today(day: int, appointments: list<Appointment>) -> list<Appointment> =\n    appointments |> filter(a => a.day == day and not a.status == Status.Cancelled) |> sort_by(a => a.start)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int). Write fn waiting(a: Appointment) -> int, fn average_waiting(appointments: list<Appointment>) -> dec, and fn longest_wait(appointments: list<Appointment>) -> int. waiting returns start minus arrival if start is after arrival, otherwise 0. average_waiting returns the average waiting time, or 0.0 for an empty list. longest_wait returns the largest waiting time, or 0 for an empty list.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS0266: Cannot implicitly convert type 'decimal' to 'int'. An explicit conversion exists (are you missing a cast?)",
+     "line 9: error CS1501: No overload for method 'max_of' takes 2 arguments"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS0266: Cannot implicitly convert type 'decimal' to 'int'. An explicit conversion exists (are you missing a cast?)",
+     "line 9: error CS1501: No overload for method 'max_of' takes 2 arguments"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int)\n\nfn waiting(a: Appointment) -> int =\n    if a.start > a.arrival then a.start - a.arrival else 0.0\n\nfn average_waiting(appointments: list<Appointment>) -> dec =\n    if len(appointments) == 0 then 0.0 else sum(appointments, a => a.start - a.arrival) / dec(len(appointments))\n\nfn longest_wait(appointments: list<Appointment>) -> int =\n    if len(appointments) == 0 then 0\n    else max_of(appointments, a => a.start - a.arrival)"
+  },
+  {
+   "family": "clinic",
+   "prompt": "Define type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int) and type DoctorLoad = record(doctor: str, count: int, total_wait: int). Write fn wait(a: Appointment) -> int (start minus arrival if start is after arrival, otherwise 0) and fn doctor_load(appointments: list<Appointment>) -> list<DoctorLoad> that returns one DoctorLoad per doctor with the number of appointments and total waiting time, sorted by doctor name.",
+   "first": {
+    "errors": 9,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS1519: Invalid token '(' in a member declaration",
+     "line 4: error CS0246: The type or namespace name 'startminusarrivalifstartisafterarrival' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 4: error CS0246: The type or namespace name 'otherwise0' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 4: error CS0708: 'wait': cannot declare instance members in a static class",
+     "line 4: error CS0161: 'Main.wait(Appointment)': not all code paths return a value",
+     "line 8: error CS1501: No overload for method 'distinct' takes 2 arguments",
+     "line 9: error CS0019: Operator '==' cannot be applied to operands of type 'string' and 'T'",
+     "line 10: error CS0120: An object reference is required for the non-static field, method, or property 'Main.wait(Appointment)'",
+     "line 12: error CS1503: Argument 1: cannot convert from 'T' to 'string'"
+    ]
+   },
+   "final": {
+    "errors": 9,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS1519: Invalid token '(' in a member declaration",
+     "line 4: error CS0246: The type or namespace name 'startminusarrivalifstartisafterarrival' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 4: error CS0246: The type or namespace name 'otherwise0' could not be found (are you missing a using directive or an assembly reference?)",
+     "line 4: error CS0708: 'wait': cannot declare instance members in a static class",
+     "line 4: error CS0161: 'Main.wait(Appointment)': not all code paths return a value",
+     "line 8: error CS1501: No overload for method 'distinct' takes 2 arguments",
+     "line 9: error CS0019: Operator '==' cannot be applied to operands of type 'string' and 'T'",
+     "line 10: error CS0120: An object reference is required for the non-static field, method, or property 'Main.wait(Appointment)'",
+     "line 12: error CS1503: Argument 1: cannot convert from 'T' to 'string'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Appointment = record(patient: str, doctor: str, day: int, arrival: int, start: int)\ntype DoctorLoad = record(doctor: str, count: int, total_wait: int)\n\nfn wait(a: Appointment) -> int (start minus arrival if start is after arrival, otherwise 0)\n\nfn doctor_load(appointments: list<Appointment>) -> list<DoctorLoad>\n    let loads: list<DoctorLoad> = []\n    for d in distinct(appointments, a => a.doctor)\n        let group = appointments |> filter(a => a.doctor == d)\n        let total_wait = group |> sum(a => wait(a))\n        let count = len(group)\n        push(loads, DoctorLoad(d, count, total_wait))\n    return loads"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Write fn shipping_cost(weight: dec) -> dec that returns 0.0 for weight 0.0, 2.5 for weight < 1.0, 5.0 for weight < 5.0, and 10.0 otherwise.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "fn shipping_cost(weight: dec) -> dec = when weight\n    0.0 -> 0.0\n    < 1.0 -> 2.5\n    < 5.0 -> 5.0\n    else -> 10.0"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(id: str, city: str, weight: dec). Write fn total_weight(packages: list<Package>) -> dec that returns the sum of all package weights.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn total_weight(packages: list<Package>) -> dec =\n    packages |> sum(p => p.weight)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(id: str, city: str, weight: dec). Write fn heavy_packages(packages: list<Package>, min_weight: dec) -> list<Package> that returns packages with weight >= min_weight, heaviest first.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn heavy_packages(packages: list<Package>, min_weight: dec) -> list<Package> =\n    packages |> filter(p => p.weight >= min_weight) |> sort_by_desc(p => p.weight)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(id: str, city: str, weight: dec). Write fn heaviest(packages: list<Package>) -> Package that returns the package with the largest weight. Assume the list is non-empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn heaviest(packages: list<Package>) -> Package =\n    max_by(packages, p => p.weight)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(id: str, city: str, weight: dec). Write fn cities(packages: list<Package>) -> list<str> that returns the distinct city names in alphabetical order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn cities(packages: list<Package>) -> list<str> =\n    packages |> map(p => p.city) |> distinct |> sort"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(id: str, city: str, weight: dec). Write fn by_city(packages: list<Package>) -> map<str, list<Package>> that groups packages by their city.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn by_city(packages: list<Package>) -> map<str, list<Package>> =\n    group_by(packages, p => p.city)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(id: str, city: str, weight: dec). Write fn shipping_cost(weight: dec) -> dec that returns 0.0 for weight 0.0, 2.5 for weight < 1.0, 5.0 for weight < 5.0, and 10.0 otherwise. Then write fn total_shipping(packages: list<Package>) -> dec that sums shipping_cost(p.weight) over all packages.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn shipping_cost(weight: dec) -> dec = when weight\n    0.0 -> 0.0\n    < 1.0 -> 2.5\n    < 5.0 -> 5.0\n    else -> 10.0\n\nfn total_shipping(packages: list<Package>) -> dec =\n    packages |> sum(p => shipping_cost(p.weight))"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(id: str, city: str, weight: dec). Write fn heaviest_by_city(packages: list<Package>) -> list<Package> that returns the heaviest package for each city, sorted by city name.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error KT000: after |> comes a function call, like |> map(x => x * 2)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error KT000: after |> comes a function call, like |> map(x => x * 2)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn heaviest_by_city(packages: list<Package>) -> list<Package>\n    let grouped = group_by(packages, p => p.city)\n    return keys(grouped) |> sort |> map(c => last(get(grouped, c, list<Package>()))"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Write fn shipping_cost(weight: dec) -> dec that returns 5.0 for weights up to 1.0, 10.0 for weights up to 5.0, and 20.0 otherwise.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'shipping cost bands' failed: line 8: shipping_cost(1.0) == 5.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'shipping cost bands' failed: line 8: shipping_cost(1.0) == 5.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn shipping_cost(weight: dec) -> dec = when weight\n    < 1.0 -> 5.0\n    < 5.0 -> 10.0\n    else -> 20.0"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(name: str, weight: dec, city: str). Write fn is_heavy(pkg: Package) -> bool that returns true when pkg.weight is greater than 10.0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(name: str, weight: dec, city: str)\n\nfn is_heavy(pkg: Package) -> bool =\n    pkg.weight > 10.0"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using type Package = record(name: str, weight: dec, city: str), write fn total_weight(packages: list<Package>) -> dec that adds all package weights.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(name: str, weight: dec, city: str)\n\nfn total_weight(packages: list<Package>) -> dec =\n    packages |> sum(p => p.weight)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using type Package = record(name: str, weight: dec, city: str), write fn heaviest(packages: list<Package>) -> Package that returns the package with the greatest weight. You may assume the list is non-empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(name: str, weight: dec, city: str)\n\nfn heaviest(packages: list<Package>) -> Package =\n    max_by(packages, p => p.weight)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using type Package = record(name: str, weight: dec, city: str), write fn group_by_city(packages: list<Package>) -> map<str, list<Package>> that groups packages by their city.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(name: str, weight: dec, city: str)\n\nfn group_by_city(packages: list<Package>) -> map<str, list<Package>> =\n    group_by(packages, p => p.city)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define type Package = record(name: str, weight: dec, city: str). Write fn shipping_cost(pkg: Package) -> dec using these bands: up to 1.0 kg costs 5.0, up to 5.0 kg costs 10.0, otherwise 20.0. Also write fn shipping_total(packages: list<Package>) -> dec that sums shipping_cost for each package.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(name: str, weight: dec, city: str)\n\nfn shipping_cost(pkg: Package) -> dec = when pkg.weight\n    < 1.0 -> 5.0\n    < 5.0 -> 10.0\n    else -> 20.0\n\nfn shipping_total(packages: list<Package>) -> dec =\n    packages |> sum(p => shipping_cost(p))"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using type Package = record(name: str, weight: dec, city: str), write fn heavy_packages(packages: list<Package>) -> list<Package> that returns only packages heavier than 10.0, and fn heavy_names(packages: list<Package>) -> list<str> that returns the names of those heavy packages in the same order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(name: str, weight: dec, city: str)\n\nfn heavy_packages(packages: list<Package>) -> list<Package> =\n    packages |> filter(p => p.weight > 10.0)\n\nfn heavy_names(packages: list<Package>) -> list<str> =\n    heavy_packages(packages) |> map(p => p.name)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using type Package = record(name: str, weight: dec, city: str), write fn city_counts(packages: list<Package>) -> list<str> that groups packages by city and returns strings like \"London: 2\", sorted alphabetically by city.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(name: str, weight: dec, city: str)\n\nfn city_counts(packages: list<Package>) -> list<str>\n    let groups = group_by(packages, p => p.city)\n    let counts = keys(groups) |> map(c => \"{c}: {len(get(groups, c, list<Package>()))}\")\n    return counts |> sort"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Write fn shipping_cost(weight: dec) -> dec that returns 5.0 for weight up to 1.0, 10.0 for weight up to 5.0, and 20.0 otherwise. Use a when expression.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'shipping cost bands' failed: line 8: shipping_cost(1.0) == 5.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'shipping cost bands' failed: line 8: shipping_cost(1.0) == 5.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn shipping_cost(weight: dec) -> dec = when weight\n    < 1.0 -> 5.0\n    < 5.0 -> 10.0\n    else -> 20.0"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using Package = record(id: str, city: str, weight: dec), write fn heaviest_weight(packages: list<Package>, fallback: dec) -> dec that returns the maximum package weight, or fallback if the list is empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn heaviest_weight(packages: list<Package>, fallback: dec) -> dec =\n    if len(packages) == 0 then fallback else max_by(packages, p => p.weight).weight"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using Package = record(id: str, city: str, weight: dec), write fn group_by_city(packages: list<Package>) -> map<str, list<Package>> that groups packages by city.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn group_by_city(packages: list<Package>) -> map<str, list<Package>> =\n    group_by(packages, p => p.city)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using Package = record(id: str, city: str, weight: dec), write fn weight_in_city(packages: list<Package>, city: str) -> dec that sums the weights of packages whose city matches the given city.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn weight_in_city(packages: list<Package>, city: str) -> dec =\n    packages |> filter(p => p.city == city) |> sum(p => p.weight)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using Package = record(id: str, city: str, weight: dec), write fn heavy_count(packages: list<Package>, limit: dec) -> int that counts packages with weight greater than limit.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn heavy_count(packages: list<Package>, limit: dec) -> int =\n    count(packages, p => p.weight > limit)"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Define Package = record(id: str, city: str, weight: dec). Write fn shipping_cost(weight: dec) -> dec with bands: 5.0 for weight <= 1.0, 10.0 for weight <= 5.0, otherwise 20.0. Then write fn total_shipping(packages: list<Package>) -> dec that sums shipping_cost(p.weight) for all packages.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn shipping_cost(weight: dec) -> dec = when weight\n    <= 1.0 -> 5.0\n    <= 5.0 -> 10.0\n    else -> 20.0\n\nfn total_shipping(packages: list<Package>) -> dec =\n    packages |> sum(p => shipping_cost(p.weight))"
+  },
+  {
+   "family": "warehouse",
+   "prompt": "Using Package = record(id: str, city: str, weight: dec), write fn heaviest_weight_in_city(packages: list<Package>, city: str, fallback: dec) -> dec that returns the maximum weight among packages in the city, or fallback if there are none.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Package = record(id: str, city: str, weight: dec)\n\nfn heaviest_weight_in_city(packages: list<Package>, city: str, fallback: dec) -> dec\n    let in_city = packages |> filter(p => p.city == city)\n    if len(in_city) == 0\n        return fallback\n    return max_of(in_city |> map(p => p.weight))"
+  }
+ ]
+}

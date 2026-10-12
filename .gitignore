@@ -1,0 +1,9 @@
+.venv/
+datasets/
+adapters/
+fused/
+runs/
+__pycache__/
+compiler/Kite/bin/
+compiler/Kite/obj/
+.DS_Store

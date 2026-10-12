@@ -1,0 +1,1376 @@
+{
+ "model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit",
+ "adapter": "adapters/code-kite/r2-coder1.5b-i500",
+ "split": "valid",
+ "repairs": 0,
+ "metrics": {
+  "compiles": 0.8333333333333334,
+  "passes": 0.43333333333333335,
+  "clean": 0.7666666666666667,
+  "csharp_leak": 0.0,
+  "warnings_per_compiled": 0.08,
+  "tokens_per_s": 76.90739867527317
+ },
+ "results": [
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountVowels(string s)` in a static class Solution that returns the number of vowel letters (a, e, i, o, u, case-insensitive) in s.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts lowercase and uppercase vowels' failed: AEIOU has 5 vowels"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts lowercase and uppercase vowels' failed: AEIOU has 5 vowels"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountVowels(string s)\n    {\n        int count = 0;\n        foreach (char c in s)\n        {\n            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string ReverseWords(string s)` in a static class Solution that returns the words of s in reverse order, separated by single spaces. Treat any whitespace as separators, ignore leading/trailing whitespace, and collapse consecutive separators.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string ReverseWords(string s)\n    {\n        var words = s.Split(' ', StringSplitOptions.RemoveEmptyEntries);\n        Array.Reverse(words);\n        return string.Join(\" \", words);\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountOccurrences(string text, string substring)` in a static class Solution that returns the number of non-overlapping occurrences of substring in text. Return 0 if substring is empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts non-overlapping substring occurrences' failed: non-overlapping ana in banana"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts non-overlapping substring occurrences' failed: non-overlapping ana in banana"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountOccurrences(string text, string substring)\n    {\n        if (substring.Length == 0) return 0;\n        int count = 0;\n        for (int i = 0; i <= text.Length - substring.Length; i++)\n        {\n            if (text.Substring(i, substring.Length) == substring) count++;\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static bool IsPalindrome(string s)` in a static class Solution that returns true if s is a palindrome after ignoring non-alphanumeric characters and case.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'checks alphanumeric case-insensitive palindromes' failed: classic palindrome"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'checks alphanumeric case-insensitive palindromes' failed: classic palindrome"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static bool IsPalindrome(string s)\n    {\n        string t = s.Replace(\" \", \"\").ToLower();\n        int left = 0;\n        int right = t.Length - 1;\n        while (left < right)\n        {\n            if (t[left] != t[right])\n            {\n                return false;\n            }\n            left++;\n            right--;\n        }\n        return true;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string CapitalizeWords(string s)` in a static class Solution that returns s with each whitespace-separated word capitalized (first character uppercase, remaining characters lowercase), separated by single spaces. Leading/trailing whitespace is removed and consecutive whitespace is collapsed.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'capitalizes and normalizes words' failed: uppercases first and lowercases rest"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'capitalizes and normalizes words' failed: uppercases first and lowercases rest"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string CapitalizeWords(string s)\n    {\n        return string.Join(\" \", s.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(w => w.Substring(0, 1).ToUpper() + w.Substring(1)));\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string RemoveDuplicateCharacters(string s)` in a static class Solution that returns a string containing the first occurrence of each character from s, preserving their original order. Comparison is case-sensitive.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CS8603: Possible null reference return.",
+     "test 'removes duplicate characters preserving first occurrence' failed: banana becomes ban"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CS8603: Possible null reference return.",
+     "test 'removes duplicate characters preserving first occurrence' failed: banana becomes ban"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string RemoveDuplicateCharacters(string s)\n    {\n        HashSet<char> set = new HashSet<char>();\n        foreach (char c in s)\n        {\n            if (!set.Contains(c))\n            {\n                set.Add(c);\n            }\n        }\n        return set.ToString();\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string TruncateWithEllipsis(string s, int maxLength)` in a static class Solution that returns s if its length is at most maxLength. Otherwise, if maxLength >= 3, it returns the first maxLength - 3 characters followed by three dots. If 0 < maxLength < 3, it returns a string of maxLength dots. If maxLength <= 0, it returns an empty string.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'truncates strings with ellipsis rules' failed: fits exactly and is unchanged"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'truncates strings with ellipsis rules' failed: fits exactly and is unchanged"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string TruncateWithEllipsis(string s, int maxLength)\n    {\n        if (maxLength <= 0) return \"\";\n        if (maxLength >= 3) return $\"{s.Substring(0, maxLength - 3)}...\";\n        return maxLength == 1 ? \".\" : \".\";\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static Dictionary<char, int> CountCharacters(string s)` in a static class Solution that returns a dictionary mapping each character in s to the number of times it appears. Comparison is case-sensitive.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static Dictionary<char, int> CountCharacters(string s)\n    {\n        Dictionary<char, int> counts = new Dictionary<char, int>();\n        foreach (char c in s)\n        {\n            counts[c] = counts.GetValueOrDefault(c, 0) + 1;\n        }\n        return counts;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountChar(string s, char c)` in a static class Solution that returns the number of times the character c appears in s. The count is case-sensitive.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountChar(string s, char c)\n    {\n        int count = 0;\n        foreach (char ch in s)\n        {\n            if (ch == c)\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountVowels(string s)` in a static class Solution that returns the number of vowels (a, e, i, o, u) in s, ignoring case.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'CountVowels counts vowels' failed: all uppercase vowels"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'CountVowels counts vowels' failed: all uppercase vowels"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountVowels(string s)\n    {\n        int count = 0;\n        foreach (char c in s)\n        {\n            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string ReverseWords(string s)` in a static class Solution that reverses the order of whitespace-separated words in s and joins them with a single space, ignoring leading, trailing, and multiple whitespace. If there are no words, return an empty string.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'ReverseWords ignores extra whitespace' failed: tabs and newlines"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'ReverseWords ignores extra whitespace' failed: tabs and newlines"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string ReverseWords(string s)\n    {\n        string[] words = s.Split(' ', StringSplitOptions.RemoveEmptyEntries);\n        Array.Reverse(words);\n        return string.Join(\" \", words);\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountWords(string s)` in a static class Solution that returns the number of whitespace-separated words in s. Empty or whitespace-only strings return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'CountWords counts words' failed: empty string",
+     "test 'CountWords ignores whitespace' failed: spaces only"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'CountWords counts words' failed: empty string",
+     "test 'CountWords ignores whitespace' failed: spaces only"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountWords(string s)\n    {\n        return s.Split(' ').Length;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static bool IsPalindrome(string s)` in a static class Solution that returns true if s reads the same forward and backward, ignoring case and non-alphanumeric characters. Empty or no-alphanumeric strings are palindromes.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'IsPalindrome detects palindromes' failed: classic palindrome"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'IsPalindrome detects palindromes' failed: classic palindrome"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static bool IsPalindrome(string s)\n    {\n        string t = s.Replace(\" \", \"\").ToLower();\n        int left = 0;\n        int right = t.Length - 1;\n        while (left < right)\n        {\n            if (t[left] != t[right])\n            {\n                return false;\n            }\n            left++;\n            right--;\n        }\n        return true;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string RemoveDuplicateChars(string s)` in a static class Solution that returns a new string with duplicate characters removed, keeping only the first occurrence of each character. Comparison is case-sensitive.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CS8603: Possible null reference return.",
+     "test 'RemoveDuplicateChars removes duplicates' failed: banana becomes ban",
+     "test 'RemoveDuplicateChars is case sensitive' failed: uppercase and lowercase kept separately"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CS8603: Possible null reference return.",
+     "test 'RemoveDuplicateChars removes duplicates' failed: banana becomes ban",
+     "test 'RemoveDuplicateChars is case sensitive' failed: uppercase and lowercase kept separately"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string RemoveDuplicateChars(string s)\n    {\n        HashSet<char> set = new HashSet<char>();\n        foreach (char c in s)\n        {\n            if (!set.Contains(c))\n            {\n                set.Add(c);\n            }\n        }\n        return set.ToString();\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountSubstring(string s, string sub)` in a static class Solution that returns the number of non-overlapping occurrences of sub in s, case-sensitive. If sub is empty, return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'CountSubstring counts non-overlapping' failed: non-overlapping aa in aaaa"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'CountSubstring counts non-overlapping' failed: non-overlapping aa in aaaa"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountSubstring(string s, string sub)\n    {\n        if (sub.Length == 0) return 0;\n        int count = 0;\n        for (int i = 0; i <= s.Length - sub.Length; i++)\n        {\n            if (s.Substring(i, sub.Length) == sub) count++;\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountDigits(string s)` in a static class Solution that returns the number of decimal digit characters ('0' through '9') in s.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountDigits(string s)\n    {\n        int count = 0;\n        foreach (char c in s)\n        {\n            if (c >= '0' && c <= '9')\n            {\n                count++;\n            }\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountVowels(string s)` in a static class Solution that returns the number of vowels (a, e, i, o, u, case-insensitive) in s.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountVowels(string s)\n    {\n        return s.Count(c => has(\"aeiouAEIOU\", c));\n    }\n\n    private static bool has(string s, char c)\n    {\n        return s.IndexOf(c) >= 0;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string ReverseWords(string s)` in a static class Solution that reverses the order of space-separated words and joins them with single spaces, removing extra spaces.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string ReverseWords(string s)\n    {\n        string[] words = s.Split(' ', StringSplitOptions.RemoveEmptyEntries);\n        Array.Reverse(words);\n        return string.Join(\" \", words);\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountOccurrences(string text, string pattern)` in a static class Solution that returns the number of non-overlapping occurrences of pattern in text. If pattern is empty, return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts non-overlapping occurrences' failed: non-overlapping"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts non-overlapping occurrences' failed: non-overlapping"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountOccurrences(string text, string pattern)\n    {\n        if (pattern.Length == 0) return 0;\n        int count = 0;\n        for (int i = 0; i <= text.Length - pattern.Length; i++)\n        {\n            if (text.Substring(i, pattern.Length) == pattern) count++;\n        }\n        return count;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static bool IsPalindrome(string s)` in a static class Solution that returns true if s is a palindrome after ignoring non-alphanumeric characters and case.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'detects palindromes ignoring case and punctuation' failed: classic palindrome",
+     "test 'handles single characters and symbols' failed: only punctuation"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'detects palindromes ignoring case and punctuation' failed: classic palindrome",
+     "test 'handles single characters and symbols' failed: only punctuation"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static bool IsPalindrome(string s)\n    {\n        string t = s.Replace(\" \", \"\").ToLower();\n        int left = 0;\n        int right = t.Length - 1;\n        while (left < right)\n        {\n            if (t[left] != t[right])\n            {\n                return false;\n            }\n            left++;\n            right--;\n        }\n        return true;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static int CountWords(string s)` in a static class Solution that returns the number of space-separated words, ignoring leading, trailing, and repeated spaces.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS1503: Argument 1: cannot convert from 'char' to 'string?'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS1503: Argument 1: cannot convert from 'char' to 'string?'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountWords(string s)\n    {\n        return s.Count(w => !string.IsNullOrEmpty(w));\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string CapitalizeWords(string s)` in a static class Solution that capitalizes the first letter of each space-separated word and lowercases the rest, joining words with single spaces.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'handles extra spaces' failed: all caps lowered"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'handles extra spaces' failed: all caps lowered"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string CapitalizeWords(string s)\n    {\n        return string.Join(\" \", s.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(w => w.Substring(0, 1).ToUpper() + w.Substring(1)));\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static Dictionary<char, int> CountCharacters(string s)` in a static class Solution that returns a dictionary mapping each character in s to its frequency.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts character frequencies' failed: The given key 'h' was not present in the dictionary.",
+     "test 'handles empty string and case' failed: The given key 'a' was not present in the dictionary."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'counts character frequencies' failed: The given key 'h' was not present in the dictionary.",
+     "test 'handles empty string and case' failed: The given key 'a' was not present in the dictionary."
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static Dictionary<char, int> CountCharacters(string s)\n    {\n        Dictionary<char, int> counts = new Dictionary<char, int>();\n        foreach (char c in s)\n        {\n            counts[c]++;\n        }\n        return counts;\n    }\n}"
+  },
+  {
+   "family": "cs-strings",
+   "prompt": "Write a static method `public static string RemoveDuplicates(string s)` in a static class Solution that removes duplicate characters while preserving the first occurrence of each character.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CS8603: Possible null reference return.",
+     "test 'removes duplicate characters preserving first occurrence' failed: banana",
+     "test 'is case-sensitive' failed: case-sensitive duplicates"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: warning CS8603: Possible null reference return.",
+     "test 'removes duplicate characters preserving first occurrence' failed: banana",
+     "test 'is case-sensitive' failed: case-sensitive duplicates"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static string RemoveDuplicates(string s)\n    {\n        HashSet<char> set = new HashSet<char>();\n        foreach (char c in s)\n        {\n            if (!set.Contains(c))\n            {\n                set.Add(c);\n            }\n        }\n        return set.ToString();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static int SumEvenNumbers(List<int> numbers)` in a static class Solution that returns the sum of all even numbers in the list using LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int SumEvenNumbers(List<int> numbers)\n    {\n        return numbers.Where(n => n % 2 == 0).Sum();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a record `Person(string Name, int Age)`. Write a static method `public static List<string> GetAdultNamesSorted(List<Person> people)` in a static class Solution that returns the names of people with Age >= 18, sorted alphabetically (ascending). Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Person(string Name, int Age);\n\npublic static class Solution\n{\n    public static List<string> GetAdultNamesSorted(List<Person> people)\n    {\n        return people\n            .Where(p => p.Age >= 18)\n            .OrderBy(p => p.Name)\n            .Select(p => p.Name)\n            .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a record `Product(string Category, decimal Price)`. Write a static method `public static Dictionary<string, decimal> GetTotalPriceByCategory(List<Product> products)` in a static class Solution that groups products by Category and returns a dictionary mapping each category to the sum of its prices. Use LINQ.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: error CS1061: 'Dictionary<string, decimal>' does not contain a definition for 'Key' and no accessible extension method 'Key' accepting a first argument of type 'Dictionary<string, decimal>' could be found (are you missing a using directive or an assembly reference?)",
+     "line 13: error CS1061: 'Dictionary<string, decimal>' does not contain a definition for 'Value' and no accessible extension method 'Value' accepting a first argument of type 'Dictionary<string, decimal>' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 13: error CS1061: 'Dictionary<string, decimal>' does not contain a definition for 'Key' and no accessible extension method 'Key' accepting a first argument of type 'Dictionary<string, decimal>' could be found (are you missing a using directive or an assembly reference?)",
+     "line 13: error CS1061: 'Dictionary<string, decimal>' does not contain a definition for 'Value' and no accessible extension method 'Value' accepting a first argument of type 'Dictionary<string, decimal>' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Product(string Category, decimal Price);\n\npublic static class Solution\n{\n    public static Dictionary<string, decimal> GetTotalPriceByCategory(List<Product> products)\n    {\n        return products\n            .GroupBy(p => p.Category)\n            .Select(g => new Dictionary<string, decimal>\n            {\n                [g.Key] = g.Sum(p => p.Price)\n            })\n            .ToDictionary(g => g.Key, g => g.Value);\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a record `Student(string Name, int Score)`. Write a static method `public static List<string> GetTopNStudents(List<Student> students, int n)` in a static class Solution that returns the names of the top N students by Score (descending). If n is greater than the number of students, return all. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Student(string Name, int Score);\n\npublic static class Solution\n{\n    public static List<string> GetTopNStudents(List<Student> students, int n)\n    {\n        return students.OrderByDescending(s => s.Score).Take(n).Select(s => s.Name).ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define records `Customer(int Id, string Name)` and `Order(int CustomerId, decimal Amount)`. Write a static method `public static List<string> GetLargeOrderDescriptions(List<Customer> customers, List<Order> orders)` in a static class Solution that returns descriptions in the format `\"{CustomerName}: {Amount}\"` for all orders with Amount > 100, sorted by Amount descending. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: warning CS8602: Dereference of a possibly null reference.",
+     "test 'Large order descriptions joined and sorted' failed: Object reference not set to an instance of an object."
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 11: warning CS8602: Dereference of a possibly null reference.",
+     "test 'Large order descriptions joined and sorted' failed: Object reference not set to an instance of an object."
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Customer(int Id, string Name);\npublic record Order(int CustomerId, decimal Amount);\n\npublic static class Solution\n{\n    public static List<string> GetLargeOrderDescriptions(List<Customer> customers, List<Order> orders)\n    {\n        return orders\n            .Where(o => o.Amount > 100)\n            .OrderByDescending(o => o.Amount)\n            .Select(o => $\"{customers.Find(c => c.Id == o.CustomerId).Name}: {o.Amount}\")\n            .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static List<int> GetDistinctSorted(List<int> numbers)` in a static class Solution that returns the distinct numbers from the input list, sorted in ascending order. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static List<int> GetDistinctSorted(List<int> numbers)\n    {\n        return numbers.Distinct().OrderBy(n => n).ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static double AverageOfPositives(List<double> numbers)` in a static class Solution that returns the average of all positive numbers in the list. If there are no positive numbers, return 0. Use LINQ.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 6: error CS0019: Operator '==' cannot be applied to operands of type 'method group' and 'int'",
+     "line 10: error CS0019: Operator '/' cannot be applied to operands of type 'double' and 'method group'"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 6: error CS0019: Operator '==' cannot be applied to operands of type 'method group' and 'int'",
+     "line 10: error CS0019: Operator '/' cannot be applied to operands of type 'double' and 'method group'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static double AverageOfPositives(List<double> numbers)\n    {\n        var positive = numbers.Where(n => n > 0);\n        if (positive.Count == 0)\n        {\n            return 0;\n        }\n        return positive.Sum() / positive.Count;\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static List<string> GetUniqueSortedWords(List<string> sentences)` in a static class Solution that splits each sentence into words (by spaces), converts them to lowercase, removes duplicates, and returns the distinct words sorted alphabetically. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'Unique sorted words from sentences' failed: Five distinct words"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'Unique sorted words from sentences' failed: Five distinct words"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static List<string> GetUniqueSortedWords(List<string> sentences)\n    {\n        return sentences\n            .Select(s => s.ToLower())\n            .Distinct()\n            .OrderBy(w => w)\n            .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static int CountEven(List<int> numbers)` in a static class Solution that returns how many integers in numbers are even. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int CountEven(List<int> numbers)\n    {\n        return numbers.Count(x => x % 2 == 0);\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static int SumPositive(List<int> numbers)` in a static class Solution that returns the sum of all positive integers in numbers; zero and negative values are ignored. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int SumPositive(List<int> numbers)\n    {\n        return numbers.Where(n => n > 0).Sum();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a public record `Person(string Name, int Age)`. Write a static method `public static List<string> NamesOlderThan(List<Person> people, int age)` in a static class Solution that returns the names of people whose Age is strictly greater than age, sorted alphabetically by Name. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Person(string Name, int Age);\n\npublic static class Solution\n{\n    public static List<string> NamesOlderThan(List<Person> people, int age)\n    {\n        return people\n            .Where(p => p.Age > age)\n            .OrderBy(p => p.Name)\n            .Select(p => p.Name)\n            .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a public record `Student(string Name, int Score)`. Write a static method `public static double AverageScore(List<Student> students)` in a static class Solution that returns the average Score, or 0 if the list is empty. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Student(string Name, int Score);\n\npublic static class Solution\n{\n    public static double AverageScore(List<Student> students)\n    {\n        if (students.Count == 0)\n        {\n            return 0;\n        }\n        return students.Select(s => s.Score).Average();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a public record `Product(string Name, decimal Price, int Quantity)`. Write a static method `public static decimal InventoryValue(List<Product> products)` in a static class Solution that returns the sum of Price * Quantity for every product whose Quantity is greater than 0. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Product(string Name, decimal Price, int Quantity);\n\npublic static class Solution\n{\n    public static decimal InventoryValue(List<Product> products)\n    {\n        return products.Where(p => p.Quantity > 0).Select(p => p.Price * p.Quantity).Sum();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a public record `Employee(string Name, decimal Salary, string Department)`. Write a static method `public static List<string> HighestPaidNamesByDepartment(List<Employee> employees)` in a static class Solution that, for each department, returns the name of the highest-paid employee, with ties broken alphabetically by Name, and the names ordered by Department alphabetically. Use LINQ.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS1061: 'string' does not contain a definition for 'Department' and no accessible extension method 'Department' accepting a first argument of type 'string' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS1061: 'string' does not contain a definition for 'Department' and no accessible extension method 'Department' accepting a first argument of type 'string' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Employee(string Name, decimal Salary, string Department);\n\npublic static class Solution\n{\n    public static List<string> HighestPaidNamesByDepartment(List<Employee> employees)\n    {\n        return employees\n            .OrderBy(e => e.Name)\n            .ThenByDescending(e => e.Salary)\n            .ThenBy(e => e.Department)\n            .Select(e => e.Name)\n            .GroupBy(e => e.Department)\n            .Select(g => g.OrderByDescending(e => e.Salary).Select(e => e.Name).First())\n            .ToArray();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static List<int> DistinctSortedSquares(List<int> numbers)` in a static class Solution that returns the distinct squares of the input numbers in ascending order. Use LINQ.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static List<int> DistinctSortedSquares(List<int> numbers)\n    {\n        return numbers.Select(x => x * x).OrderBy(x => x).Distinct().ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a public record `NumberPartition(List<int> Evens, List<int> Odds)`. Write a static method `public static NumberPartition PartitionNumbers(List<int> numbers)` in a static class Solution that separates even and odd numbers, preserving their original relative order, and returns them in the record. Use LINQ.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS1503: Argument 1: cannot convert from 'int[]' to 'System.Collections.Generic.List<int>'",
+     "line 9: error CS1503: Argument 2: cannot convert from 'int[]' to 'System.Collections.Generic.List<int>'"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS1503: Argument 1: cannot convert from 'int[]' to 'System.Collections.Generic.List<int>'",
+     "line 9: error CS1503: Argument 2: cannot convert from 'int[]' to 'System.Collections.Generic.List<int>'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record NumberPartition(List<int> Evens, List<int> Odds);\n\npublic static class Solution\n{\n    public static NumberPartition PartitionNumbers(List<int> numbers)\n    {\n        var evens = numbers.Where(n => n % 2 == 0).ToArray();\n        var odds = numbers.Where(n => n % 2 != 0).ToArray();\n        return new NumberPartition(evens, odds);\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static int SumEvenSquares(List<int> nums)` in a static class Solution that returns the sum of the squares of all even numbers in nums. If nums is empty, return 0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static int SumEvenSquares(List<int> nums)\n    {\n        int sum = 0;\n        foreach (int num in nums)\n        {\n            if (num % 2 == 0)\n            {\n                sum += num * num;\n            }\n        }\n        return sum;\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static double AveragePositive(List<double> nums)` in a static class Solution that returns the average of all strictly positive numbers in nums, or 0.0 if there are none.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'averages positive numbers' failed: average of 1 and 3"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'averages positive numbers' failed: average of 1 and 3"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static double AveragePositive(List<double> nums)\n    {\n        if (nums.Count == 0) return 0.0;\n        double sum = 0.0;\n        foreach (double num in nums)\n        {\n            if (num > 0.0) sum += num;\n        }\n        return sum / nums.Count;\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a record `public record Person(string Name, int Age);` and write a static method `public static List<string> NamesStartingWith(List<Person> people, string prefix)` in a static class Solution that returns the names of people whose Name starts with prefix, sorted alphabetically using ordinal comparison.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Person(string Name, int Age);\n\npublic static class Solution\n{\n    public static List<string> NamesStartingWith(List<Person> people, string prefix)\n    {\n        return people\n            .Where(p => p.Name.StartsWith(prefix, StringComparison.Ordinal))\n            .Select(p => p.Name)\n            .OrderBy(n => n)\n            .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static Dictionary<string, int> CountByParity(List<int> nums)` in a static class Solution that returns counts of even and odd numbers, using keys `\"Even\"` and `\"Odd\"`. Always include both keys with 0 when absent.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static Dictionary<string, int> CountByParity(List<int> nums)\n    {\n        Dictionary<string, int> counts = new Dictionary<string, int>\n        {\n            [\"Even\"] = 0,\n            [\"Odd\"] = 0\n        };\n\n        foreach (int num in nums)\n        {\n            if (num % 2 == 0)\n            {\n                counts[\"Even\"]++;\n            }\n            else\n            {\n                counts[\"Odd\"]++;\n            }\n        }\n\n        return counts;\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define a record `public record Student(string Name, int Score);` and write a static method `public static List<string> TopStudents(List<Student> students, int n)` in a static class Solution that returns the names of the top n students by descending Score, then by Name ascending using ordinal comparison for ties. If n <= 0, return an empty list. If n is greater than the number of students, return all names.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS1061: 'IOrderedEnumerable<Student>' does not contain a definition for 'ThenByDesc' and no accessible extension method 'ThenByDesc' accepting a first argument of type 'IOrderedEnumerable<Student>' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error CS1061: 'IOrderedEnumerable<Student>' does not contain a definition for 'ThenByDesc' and no accessible extension method 'ThenByDesc' accepting a first argument of type 'IOrderedEnumerable<Student>' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Student(string Name, int Score);\n\npublic static class Solution\n{\n    public static List<string> TopStudents(List<Student> students, int n)\n    {\n        return students\n            .OrderBy(s => s.Name)\n            .ThenByDesc(s => s.Score)\n            .Take(n)\n            .Select(s => s.Name)\n            .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static List<string> DistinctOrderedWords(List<string> words)` in a static class Solution that returns distinct words ordered by length ascending, then alphabetically using ordinal comparison ascending.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static List<string> DistinctOrderedWords(List<string> words)\n    {\n        return words\n            .OrderBy(w => w.Length)\n            .ThenBy(w => w)\n            .Distinct()\n            .ToList();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Define records `public record Customer(int Id, string Name);` and `public record Order(int Id, int CustomerId, decimal Amount);`. Write a static method `public static List<string> CustomerNamesWithOrders(List<Customer> customers, List<Order> orders, decimal minAmount)` in a static class Solution that returns distinct customer names who have at least one order with Amount >= minAmount, sorted alphabetically using ordinal comparison.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: error CS1929: 'int[]' does not contain a definition for 'Contains' and the best extension method overload 'Queryable.Contains<string>(IQueryable<string>, string)' requires a receiver of type 'System.Linq.IQueryable<string>'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: error CS1929: 'int[]' does not contain a definition for 'Contains' and the best extension method overload 'Queryable.Contains<string>(IQueryable<string>, string)' requires a receiver of type 'System.Linq.IQueryable<string>'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Customer(int Id, string Name);\npublic record Order(int Id, int CustomerId, decimal Amount);\n\npublic static class Solution\n{\n    public static List<string> CustomerNamesWithOrders(List<Customer> customers, List<Order> orders, decimal minAmount)\n    {\n        var names = customers.Select(c => c.Name).ToArray();\n        var ordersWithAmount = orders.Where(o => o.Amount >= minAmount).Select(o => o.CustomerId).ToArray();\n        var namesWithOrders = names.Where(n => ordersWithAmount.Contains(n)).ToArray();\n        return namesWithOrders.OrderBy(n => n).ToArray();\n    }\n}"
+  },
+  {
+   "family": "cs-linq",
+   "prompt": "Write a static method `public static List<int> FlattenPositive(List<List<int>> lists)` in a static class Solution that flattens a list of integer lists and returns only positive numbers, preserving original order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public static class Solution\n{\n    public static List<int> FlattenPositive(List<List<int>> lists)\n    {\n        var result = new List<int>();\n        foreach (List<int> list in lists)\n        {\n            foreach (int value in list)\n            {\n                if (value > 0)\n                {\n                    result.Add(value);\n                }\n            }\n        }\n        return result;\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Write a static method `public static decimal TotalValue(IEnumerable<Product> products)` in a static class Solution that returns the sum of Price * Quantity for all products. Also write `public static Product? MostExpensive(IEnumerable<Product> products)` that returns the product with the highest Price, or null if there are no products. Define `public record Product(string Name, decimal Price, int Quantity);` at top level.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'totals and lookup' failed: most expensive name"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'totals and lookup' failed: most expensive name"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Product(string Name, decimal Price, int Quantity);\n\npublic static class Solution\n{\n    public static decimal TotalValue(IEnumerable<Product> products)\n    {\n        return products.Sum(p => p.Price * p.Quantity);\n    }\n\n    public static Product? MostExpensive(IEnumerable<Product> products)\n    {\n        return products.OrderByDescending(p => p.Price).ThenBy(p => p.Name).Select(p => p).Last();\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record OrderLine(string ProductName, decimal UnitPrice, int Quantity);` and `public record Order(int Id, string Customer, IEnumerable<OrderLine> Lines);`. Write static methods `public static decimal OrderTotal(Order order)` and `public static decimal CustomerTotal(IEnumerable<Order> orders, string customer)` in a static class Solution. OrderTotal sums UnitPrice * Quantity for all lines. CustomerTotal sums OrderTotal for orders whose Customer equals customer.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record OrderLine(string ProductName, decimal UnitPrice, int Quantity);\npublic record Order(int Id, string Customer, IEnumerable<OrderLine> Lines);\n\npublic static class Solution\n{\n    public static decimal OrderTotal(Order order)\n    {\n        return order.Lines.Sum(l => l.UnitPrice * l.Quantity);\n    }\n\n    public static decimal CustomerTotal(IEnumerable<Order> orders, string customer)\n    {\n        return orders.Where(o => o.Customer == customer).Select(o => OrderTotal(o)).Sum();\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Product(string Sku, string Name, decimal Price, string Category);`. Write static methods `public static Product? FindBySku(IEnumerable<Product> products, string sku)` and `public static Dictionary<string, decimal> TotalByCategory(IEnumerable<Product> products)` in a static class Solution. FindBySku returns the first product with matching Sku or null. TotalByCategory returns a dictionary mapping each Category to the sum of Price for products in that category.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS0019: Operator '??' cannot be applied to operands of type 'decimal' and 'int'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS0019: Operator '??' cannot be applied to operands of type 'decimal' and 'int'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Product(string Sku, string Name, decimal Price, string Category);\n\npublic static class Solution\n{\n    public static Product? FindBySku(IEnumerable<Product> products, string sku)\n    {\n        foreach (var p in products)\n        {\n            if (p.Sku == sku)\n            {\n                return p;\n            }\n        }\n        return null;\n    }\n\n    public static Dictionary<string, decimal> TotalByCategory(IEnumerable<Product> products)\n    {\n        var total = new Dictionary<string, decimal>();\n        foreach (var p in products)\n        {\n            total[p.Category] = (total[p.Category] ?? 0) + p.Price;\n        }\n        return total;\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Employee(string Name, string Department, decimal Salary);`. Write static methods `public static decimal DepartmentPayroll(IEnumerable<Employee> employees, string department)` and `public static Employee? HighestPaid(IEnumerable<Employee> employees)` in a static class Solution. DepartmentPayroll returns total Salary for matching department, or 0 if none. HighestPaid returns employee with largest Salary, or null if empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'employee department and highest paid' failed: Sequence contains no elements"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'employee department and highest paid' failed: Sequence contains no elements"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Employee(string Name, string Department, decimal Salary);\n\npublic static class Solution\n{\n    public static decimal DepartmentPayroll(IEnumerable<Employee> employees, string department)\n    {\n        return employees\n            .Where(e => e.Department == department)\n            .Select(e => e.Salary)\n            .Sum();\n    }\n\n    public static Employee? HighestPaid(IEnumerable<Employee> employees)\n    {\n        return employees\n            .OrderByDescending(e => e.Salary)\n            .Select(e => e)\n            .First();\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Order(int Id, decimal Subtotal, decimal TaxRate);`. Write static methods `public static decimal Total(Order order)` and `public static decimal Revenue(IEnumerable<Order> orders)` in a static class Solution. Total returns Subtotal + Subtotal * TaxRate. Revenue returns sum of Total for all orders.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Order(int Id, decimal Subtotal, decimal TaxRate);\n\npublic static class Solution\n{\n    public static decimal Total(Order order) => order.Subtotal + order.Subtotal * order.TaxRate;\n\n    public static decimal Revenue(IEnumerable<Order> orders) => orders.Sum(o => Total(o));\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Product(string Name, int Stock, decimal Price);`. Write static methods `public static decimal InventoryValue(IEnumerable<Product> products)` and `public static IEnumerable<Product> LowStock(IEnumerable<Product> products, int threshold)` in a static class Solution. InventoryValue returns sum of Stock * Price. LowStock returns products with Stock less than threshold.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Product(string Name, int Stock, decimal Price);\n\npublic static class Solution\n{\n    public static decimal InventoryValue(IEnumerable<Product> products)\n    {\n        return products.Sum(p => p.Stock * p.Price);\n    }\n\n    public static IEnumerable<Product> LowStock(IEnumerable<Product> products, int threshold)\n    {\n        return products.Where(p => p.Stock < threshold);\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Customer(string Name, string City);` and `public record Order(int Id, string CustomerName, decimal Amount);`. Write static methods `public static Customer? FindCustomer(IEnumerable<Customer> customers, string name)` and `public static decimal TotalForCustomer(IEnumerable<Order> orders, string customerName)` in a static class Solution. FindCustomer returns first customer with matching Name or null. TotalForCustomer returns sum of Amount for orders with matching CustomerName, or 0 if none.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record Customer(string Name, string City);\npublic record Order(int Id, string CustomerName, decimal Amount);\n\npublic static class Solution\n{\n    public static Customer? FindCustomer(IEnumerable<Customer> customers, string name)\n    {\n        foreach (var c in customers)\n        {\n            if (c.Name == name)\n            {\n                return c;\n            }\n        }\n        return null;\n    }\n\n    public static decimal TotalForCustomer(IEnumerable<Order> orders, string customerName)\n    {\n        var ordersForCustomer = orders.Where(o => o.CustomerName == customerName);\n        return ordersForCustomer.Sum(o => o.Amount);\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define a public record `Product(string Name, decimal Price, int Quantity)`. In a static class `Solution`, write `public static decimal TotalInventoryValue(IEnumerable<Product> products)` that returns the sum of Price times Quantity for all products, and `public static Product? FindProduct(IEnumerable<Product> products, string name)` that returns the first product whose Name matches the given name case-insensitively, or null if none exists.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS1061: 'IEnumerable<Product>' does not contain a definition for 'Find' and no accessible extension method 'Find' accepting a first argument of type 'IEnumerable<Product>' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS1061: 'IEnumerable<Product>' does not contain a definition for 'Find' and no accessible extension method 'Find' accepting a first argument of type 'IEnumerable<Product>' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Product(string Name, decimal Price, int Quantity);\n\npublic static class Solution\n{\n    public static decimal TotalInventoryValue(IEnumerable<Product> products)\n    {\n        return products.Sum(p => p.Price * p.Quantity);\n    }\n\n    public static Product? FindProduct(IEnumerable<Product> products, string name)\n    {\n        return products.Find(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record OrderLine(string ProductName, int Quantity, decimal UnitPrice);` and `public record Order(string Customer, List<OrderLine> Lines);`. In a static class `Solution`, write `public static decimal OrderTotal(Order order)` that returns the sum of Quantity times UnitPrice across the order lines, and `public static decimal CustomerTotal(IEnumerable<Order> orders, string customer)` that returns the total of all orders for the given customer matched case-insensitively.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "public record OrderLine(string ProductName, int Quantity, decimal UnitPrice);\npublic record Order(string Customer, List<OrderLine> Lines);\n\npublic static class Solution\n{\n    public static decimal OrderTotal(Order order)\n    {\n        return order.Lines.Sum(l => l.Quantity * l.UnitPrice);\n    }\n\n    public static decimal CustomerTotal(IEnumerable<Order> orders, string customer)\n    {\n        return orders\n            .Where(o => string.Equals(o.Customer, customer, StringComparison.OrdinalIgnoreCase))\n            .Select(o => OrderTotal(o))\n            .Sum();\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Product(string Sku, string Name, string Category, decimal Price);`. In a static class `Solution`, write `public static Product? FindBySku(IEnumerable<Product> products, string sku)` that returns the product whose Sku matches case-insensitively or null, and `public static Dictionary<string, decimal> CategoryTotals(IEnumerable<Product> products)` that returns a dictionary mapping each category to the sum of its product prices.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS0019: Operator '??' cannot be applied to operands of type 'decimal' and 'int'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 22: error CS0019: Operator '??' cannot be applied to operands of type 'decimal' and 'int'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Product(string Sku, string Name, string Category, decimal Price);\n\npublic static class Solution\n{\n    public static Product? FindBySku(IEnumerable<Product> products, string sku)\n    {\n        foreach (var p in products)\n        {\n            if (string.Equals(sku, p.Sku, StringComparison.OrdinalIgnoreCase))\n            {\n                return p;\n            }\n        }\n        return null;\n    }\n\n    public static Dictionary<string, decimal> CategoryTotals(IEnumerable<Product> products)\n    {\n        var totals = new Dictionary<string, decimal>();\n        foreach (var p in products)\n        {\n            totals[p.Category] = (totals[p.Category] ?? 0) + p.Price;\n        }\n        return totals;\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Order(int Id, string Customer, decimal Amount);`. In a static class `Solution`, write `public static decimal TotalForCustomer(IEnumerable<Order> orders, string customer)` that totals amounts for the customer case-insensitively, `public static Order? MostValuableOrder(IEnumerable<Order> orders)` that returns the order with the largest Amount or null if empty, and `public static int CountOrdersAbove(IEnumerable<Order> orders, decimal threshold)` that counts orders with Amount greater than threshold.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'totals customer orders and finds most valuable order' failed: customer total case-insensitive"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'totals customer orders and finds most valuable order' failed: customer total case-insensitive"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Order(int Id, string Customer, decimal Amount);\n\npublic static class Solution\n{\n    public static decimal TotalForCustomer(IEnumerable<Order> orders, string customer)\n    {\n        return orders.Where(o => o.Customer == customer) // case-insensitive\n            .Select(o => o.Amount)\n            .Sum();\n    }\n\n    public static Order? MostValuableOrder(IEnumerable<Order> orders)\n    {\n        return orders.OrderByDescending(o => o.Amount)\n            .Select(o => o)\n            .First();\n    }\n\n    public static int CountOrdersAbove(IEnumerable<Order> orders, decimal threshold)\n    {\n        return orders.Count(o => o.Amount > threshold);\n    }\n}"
+  },
+  {
+   "family": "cs-records",
+   "prompt": "Define `public record Employee(string Id, string Name, string Department, decimal Salary);`. In a static class `Solution`, write `public static decimal DepartmentPayroll(IEnumerable<Employee> employees, string department)` that sums salaries for the department case-insensitively, `public static Employee? HighestPaidInDepartment(IEnumerable<Employee> employees, string department)` that returns the highest-paid employee in that department or null, and `public static Dictionary<string, decimal> PayrollByDepartment(IEnumerable<Employee> employees)` that maps each department to its total payroll.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes department payroll and highest paid employee' failed: department payroll case-insensitive"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'computes department payroll and highest paid employee' failed: department payroll case-insensitive"
+    ]
+   },
+   "repairs": 0,
+   "answer": "public record Employee(string Id, string Name, string Department, decimal Salary);\n\npublic static class Solution\n{\n    public static decimal DepartmentPayroll(IEnumerable<Employee> employees, string department)\n    {\n        return employees\n            .Where(e => e.Department == department)\n            .Select(e => e.Salary)\n            .Sum();\n    }\n\n    public static Employee? HighestPaidInDepartment(IEnumerable<Employee> employees, string department)\n    {\n        return employees\n            .Where(e => e.Department == department)\n            .OrderByDescending(e => e.Salary)\n            .Select(e => e)\n            .First();\n    }\n\n    public static Dictionary<string, decimal> PayrollByDepartment(IEnumerable<Employee> employees)\n    {\n        var result = new Dictionary<string, decimal>();\n        foreach (var department in employees.Select(e => e.Department))\n        {\n            result[department] = DepartmentPayroll(employees, department);\n        }\n        return result;\n    }\n}"
+  }
+ ]
+}

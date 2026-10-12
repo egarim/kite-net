@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>kite</AssemblyName>
+    <RootNamespace>Kite</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.9.0" />
+    <!-- not for this project: its analyzers are loaded at run time and run on Kite programs -->
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.401" GeneratePathProperty="true" IncludeAssets="none" PrivateAssets="all" />
+    <None Include="$(PkgMicrosoft_CodeAnalysis_NetAnalyzers)/analyzers/dotnet/cs/*.dll" LinkBase="analyzers" CopyToOutputDirectory="PreserveNewest" />
+    <!-- named .txt so it is not compiled into the compiler itself; not Std.cs.txt: MSBuild reads "cs" as Czech --><EmbeddedResource Include="KiteStd.txt" LogicalName="Std.cs" WithCulture="false" />
+  </ItemGroup>
+
+</Project>

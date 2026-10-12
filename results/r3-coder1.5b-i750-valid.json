@@ -1,0 +1,2150 @@
+{
+ "model": "mlx-community/Qwen2.5-Coder-1.5B-Instruct-4bit",
+ "adapter": "adapters/code-kite/r3-coder1.5b-i750",
+ "split": "valid",
+ "repairs": 0,
+ "metrics": {
+  "compiles": 0.8673469387755102,
+  "passes": 0.7040816326530612,
+  "clean": 0.8571428571428571,
+  "csharp_leak": 0.0,
+  "warnings_per_compiled": 0.011764705882352941,
+  "tokens_per_s": 76.90062019633311
+ },
+ "results": [
+  {
+   "family": "weather-log",
+   "prompt": "Define type Reading = record(day: str, temp: dec, rain: dec). Write fn hottest_day(readings: list<Reading>) -> str that returns the day with the highest temp. Assume the list is not empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn hottest_day(readings: list<Reading>) -> str\n    let h = max_by(readings, r => r.temp)\n    return h.day"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Using type Reading = record(day: str, temp: dec, rain: dec), write fn rainy_days(readings: list<Reading>) -> list<str> that returns the names of days with rain > 0.0, in the original order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn rainy_days(readings: list<Reading>) -> list<str> =\n    readings |> filter(r => r.rain > 0.0) |> map(r => r.day)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Using type Reading = record(day: str, temp: dec, rain: dec), write fn total_rain(readings: list<Reading>) -> dec and fn average_rain(readings: list<Reading>) -> dec. Average returns 0.0 for an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn total_rain(readings: list<Reading>) -> dec =\n    readings |> sum(r => r.rain)\n\nfn average_rain(readings: list<Reading>) -> dec =\n    if len(readings) == 0 then 0.0 else total_rain(readings) / dec(len(readings))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Using type Reading = record(day: str, temp: dec, rain: dec), write fn temp_range(readings: list<Reading>) -> dec that returns the difference between the highest and lowest temperature. Return 0.0 for an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn temp_range(readings: list<Reading>) -> dec\n    if len(readings) == 0\n        return 0.0\n    let min_temp = min_of(readings |> map(r => r.temp))\n    let max_temp = max_of(readings |> map(r => r.temp))\n    return max_temp - min_temp"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Using type Reading = record(day: str, temp: dec, rain: dec), write fn days_above(readings: list<Reading>, threshold: dec) -> list<str> that returns days with temp > threshold, preserving order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn days_above(readings: list<Reading>, threshold: dec) -> list<str> =\n    readings |> filter(r => r.temp > threshold) |> map(r => r.day)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define type Reading = record(day: str, week: int, temp: dec, rain: dec). Write fn average_temp(readings: list<Reading>) -> dec that returns average temp (0.0 for empty), and fn weekly_averages(readings: list<Reading>) -> list<dec> that returns one average temperature per week, sorted by week ascending.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: error KT000: after |> comes a function call, like |> map(x => x * 2)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 10: error KT000: after |> comes a function call, like |> map(x => x * 2)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, week: int, temp: dec, rain: dec)\n\nfn average_temp(readings: list<Reading>) -> dec\n    if len(readings) == 0\n        return 0.0\n    return sum(readings, r => r.temp) / dec(len(readings))\n\nfn weekly_averages(readings: list<Reading>) -> list<dec>\n    let groups = group_by(readings, r => r.week)\n    return keys(groups) |> sort |> map(w => average_temp(get(groups, w, list<Reading>()))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define type Reading = record(day: str, week: int, temp: dec, rain: dec). Write fn rainy_days_in_week(readings: list<Reading>, week: int) -> list<str> and fn rainy_count_in_week(readings: list<Reading>, week: int) -> int.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, week: int, temp: dec, rain: dec)\n\nfn rainy_days_in_week(readings: list<Reading>, week: int) -> list<str> =\n    readings |> filter(r => r.week == week and r.rain > 0.0) |> map(r => r.day)\n\nfn rainy_count_in_week(readings: list<Reading>, week: int) -> int =\n    readings |> filter(r => r.week == week and r.rain > 0.0) |> len"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define type Reading = record(day: str, week: int, temp: dec, rain: dec) and type WeekRain = record(week: int, rain: dec). Write fn total_rain(readings: list<Reading>) -> dec and fn weekly_rain(readings: list<Reading>) -> list<WeekRain> that returns total rain per week, sorted by week ascending.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, week: int, temp: dec, rain: dec)\ntype WeekRain = record(week: int, rain: dec)\n\nfn total_rain(readings: list<Reading>) -> dec =\n    readings |> sum(r => r.rain)\n\nfn weekly_rain(readings: list<Reading>) -> list<WeekRain> =\n    readings |> group_by(r => r.week) |> map(kv => WeekRain(kv.Key, sum(kv.Value, r => r.rain)))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write a Kite function `fn hottest(readings: list<Reading>) -> Reading` that returns the reading with the highest temperature. Define `type Reading = record(day: str, temp: dec)`.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec)\n\nfn hottest(readings: list<Reading>) -> Reading =\n    readings |> max_by(r => r.temp)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define `type Reading = record(day: str, rain: dec)` and write `fn rainy_days(readings: list<Reading>) -> int` that counts days with rain greater than 0.0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, rain: dec)\n\nfn rainy_days(readings: list<Reading>) -> int =\n    readings |> count(r => r.rain > 0.0)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define `type Reading = record(day: str, temp: dec)` and write `fn average_temp(readings: list<Reading>) -> dec` returning 0.0 for an empty list, otherwise the average temperature.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec)\n\nfn average_temp(readings: list<Reading>) -> dec\n    if len(readings) == 0\n        return 0.0\n    let total = readings |> sum(r => r.temp)\n    return total / dec(len(readings))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define `type Reading = record(day: str, temp: dec, week: int)` and write `fn week_average(readings: list<Reading>, week: int) -> dec` returning the average temperature for that week, or 0.0 if there are no readings in the week.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, week: int)\n\nfn week_average(readings: list<Reading>, week: int) -> dec\n    let in_week = readings |> filter(r => r.week == week)\n    if len(in_week) == 0\n        return 0.0\n    let total = in_week |> sum(r => r.temp)\n    return total / dec(len(in_week))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define `type Reading = record(day: str, temp: dec, week: int)` and `type WeekAvg = record(week: int, avg: dec)`. Write `fn weekly_averages(readings: list<Reading>) -> list<WeekAvg>` returning one WeekAvg per week, sorted by week ascending. Use a helper `fn average_of(readings: list<Reading>) -> dec` that returns 0.0 for an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, week: int)\ntype WeekAvg = record(week: int, avg: dec)\n\nfn average_of(readings: list<Reading>) -> dec\n    if len(readings) == 0\n        return 0.0\n    let total = readings |> sum(r => r.temp)\n    return total / dec(len(readings))\n\nfn weekly_averages(readings: list<Reading>) -> list<WeekAvg>\n    let groups = readings |> group_by(r => r.week)\n    return groups |> map(g => WeekAvg(g.Key, average_of(g.Value)))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define `type Reading = record(day: str, temp: dec, week: int)` and write `fn hottest_in_week(readings: list<Reading>, week: int) -> Reading` and `fn hottest_per_week(readings: list<Reading>) -> list<Reading>` returning the hottest reading for each week, sorted by week ascending.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, week: int)\n\nfn hottest_in_week(readings: list<Reading>, week: int) -> Reading =\n    readings |> filter(r => r.week == week) |> max_by(r => r.temp)\n\nfn hottest_per_week(readings: list<Reading>) -> list<Reading> =\n    readings |> group_by(r => r.week) |> map(kv => hottest_in_week(kv.Value, kv.Key))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define `type Weather = enum(Sunny, Cloudy, Rainy)` and `type Reading = record(day: str, temp: dec, weather: Weather)`. Write `fn count_weather(readings: list<Reading>, weather: Weather) -> int` counting readings with the given weather.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Weather = enum(Sunny, Cloudy, Rainy)\ntype Reading = record(day: str, temp: dec, weather: Weather)\n\nfn count_weather(readings: list<Reading>, weather: Weather) -> int =\n    readings |> count(r => r.weather == weather)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define `type Reading = record(day: str, rain: dec, week: int)` and `type WeekRain = record(week: int, total: dec)`. Write `fn total_rain(readings: list<Reading>) -> dec` and `fn rainfall_by_week(readings: list<Reading>) -> list<WeekRain>` returning total rain per week, sorted by week ascending.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, rain: dec, week: int)\ntype WeekRain = record(week: int, total: dec)\n\nfn total_rain(readings: list<Reading>) -> dec =\n    readings |> sum(r => r.rain)\n\nfn rainfall_by_week(readings: list<Reading>) -> list<WeekRain>\n    let groups = readings |> group_by(r => r.week)\n    return groups |> map(g => WeekRain(g.Key, sum(g.Value, r => r.rain)))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(day: str, high: dec, low: dec, rain: dec) for daily weather. Write fn hottest(readings: list<Reading>) -> Reading that returns the reading with the highest high. Assume the list is non-empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec, low: dec, rain: dec)\n\nfn hottest(readings: list<Reading>) -> Reading =\n    readings |> max_by(r => r.high)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(day: str, rain: dec). Write fn rainy_days(readings: list<Reading>) -> list<str> that returns the days where rain > 0.0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, rain: dec)\n\nfn rainy_days(readings: list<Reading>) -> list<str> =\n    readings |> filter(r => r.rain > 0.0) |> map(r => r.day)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(day: str, high: dec). Write fn average_high(readings: list<Reading>) -> dec that returns the average of high, or 0.0 if the list is empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec)\n\nfn average_high(readings: list<Reading>) -> dec =\n    if len(readings) == 0 then 0.0 else sum(readings, r => r.high) / dec(len(readings))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(day: str, high: dec). Write fn hottest_day(readings: list<Reading>) -> str that returns the day of the reading with the highest high. Assume the list is non-empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec)\n\nfn hottest_day(readings: list<Reading>) -> str\n    let h = max_by(readings, r => r.high)\n    return h.day"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(day: str, rain: dec). Write fn rainy_count(readings: list<Reading>) -> int that returns the number of readings with rain > 0.0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, rain: dec)\n\nfn rainy_count(readings: list<Reading>) -> int =\n    readings |> count(r => r.rain > 0.0)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(day: str, high: dec). Write fn high_range(readings: list<Reading>) -> dec that returns the difference between the highest and lowest high. Assume the list is non-empty.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS1501: No overload for method 'max_of' takes 2 arguments",
+     "line 3: error CS1501: No overload for method 'min_of' takes 2 arguments"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS1501: No overload for method 'max_of' takes 2 arguments",
+     "line 3: error CS1501: No overload for method 'min_of' takes 2 arguments"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec)\n\nfn high_range(readings: list<Reading>) -> dec =\n    max_of(readings, r => r.high) - min_of(readings, r => r.high)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(week: int, day: str, high: dec). Write fn weekly_average(readings: list<Reading>, week: int) -> dec that returns the average high for the given week, or 0.0 if there are no readings that week.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(week: int, day: str, high: dec)\n\nfn weekly_average(readings: list<Reading>, week: int) -> dec\n    let in_week = readings |> filter(r => r.week == week)\n    if len(in_week) == 0\n        return 0.0\n    let total = in_week |> sum(r => r.high)\n    return total / dec(len(in_week))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define a record Reading(day: str, high: dec, low: dec, rain: dec). Write fn hottest(readings: list<Reading>) -> Reading returning the reading with the highest high (assume non-empty). Write fn rainy_days(readings: list<Reading>) -> list<str> returning days where rain > 0.0. Write fn average_high(readings: list<Reading>) -> dec returning average high, or 0.0 if empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec, low: dec, rain: dec)\n\nfn hottest(readings: list<Reading>) -> Reading =\n    readings |> max_by(r => r.high)\n\nfn rainy_days(readings: list<Reading>) -> list<str> =\n    readings |> filter(r => r.rain > 0.0) |> map(r => r.day)\n\nfn average_high(readings: list<Reading>) -> dec =\n    if len(readings) == 0 then 0.0 else sum(readings, r => r.high) / dec(len(readings))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn rainy_days(readings: list<Reading>) -> int that counts readings where rain > 0.0. Define type Reading = record(day: str, temp: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn rainy_days(readings: list<Reading>) -> int =\n    readings |> count(r => r.rain > 0.0)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn average_temp(readings: list<Reading>) -> dec that returns the average temperature, or 0.0 for an empty list. Define type Reading = record(day: str, temp: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn average_temp(readings: list<Reading>) -> dec =\n    if len(readings) == 0 then 0.0 else sum(readings, r => r.temp) / dec(len(readings))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn total_rain(readings: list<Reading>) -> dec that sums the rain amount. Define type Reading = record(day: str, temp: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec)\n\nfn total_rain(readings: list<Reading>) -> dec =\n    readings |> sum(r => r.rain)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn week_average(readings: list<Reading>, week: int) -> dec that returns the average temperature for the given week, or 0.0 if no readings exist for that week. Define type Reading = record(day: str, temp: dec, rain: dec, week: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec, week: int)\n\nfn week_average(readings: list<Reading>, week: int) -> dec\n    let readings_in_week = readings |> filter(r => r.week == week)\n    if len(readings_in_week) == 0\n        return 0.0\n    return sum(readings_in_week, r => r.temp) / dec(len(readings_in_week))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn hottest_in_week(readings: list<Reading>, week: int) -> str that returns the day with the highest temperature in the given week, or \"none\" if no readings exist for that week. Define type Reading = record(day: str, temp: dec, rain: dec, week: int).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec, week: int)\n\nfn hottest_in_week(readings: list<Reading>, week: int) -> str\n    let readings_in_week = readings |> filter(r => r.week == week)\n    if len(readings_in_week) == 0\n        return \"none\"\n    let hottest = readings_in_week |> max_by(r => r.temp)\n    return hottest.day"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn is_wet(r: Reading) -> bool, fn wet_days(readings: list<Reading>) -> int, and fn hottest_wet_day(readings: list<Reading>) -> str. Define type Reading = record(day: str, temp: dec, rain: dec, condition: str). A reading is wet if condition is \"rainy\" or \"snowy\". wet_days counts wet readings. hottest_wet_day returns the day with the highest temperature among wet readings, or \"none\" if there are none.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec, condition: str)\n\nfn is_wet(r: Reading) -> bool =\n    r.condition == \"rainy\" or r.condition == \"snowy\"\n\nfn wet_days(readings: list<Reading>) -> int =\n    readings |> count(r => is_wet(r))\n\nfn hottest_wet_day(readings: list<Reading>) -> str\n    let wet = readings |> filter(r => is_wet(r))\n    if len(wet) == 0\n        return \"none\"\n    let hottest = wet |> max_by(r => r.temp)\n    return hottest.day"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn weekly_averages(readings: list<Reading>) -> list<WeekAverage> that returns a WeekAverage for each distinct week present, sorted by week ascending. Define type Reading = record(day: str, temp: dec, rain: dec, week: int) and type WeekAverage = record(week: int, average: dec). Also write helper fn average_temp(readings: list<Reading>) -> dec that returns 0.0 for an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, temp: dec, rain: dec, week: int)\ntype WeekAverage = record(week: int, average: dec)\n\nfn average_temp(readings: list<Reading>) -> dec\n    if len(readings) == 0\n        return 0.0\n    let total = readings |> sum(r => r.temp)\n    return total / dec(len(readings))\n\nfn weekly_averages(readings: list<Reading>) -> list<WeekAverage>\n    let groups = readings |> group_by(r => r.week)\n    return groups |> map(g => WeekAverage(g.Key, average_temp(g.Value))) |> sort_by(a => a.week)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn hottest_day(days: list<Weather>) -> str that returns the day name of the reading with the highest high temperature. If the list is empty, return an empty string. Define type Weather = record(day: str, high: dec, low: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Weather = record(day: str, high: dec, low: dec, rain: dec)\n\nfn hottest_day(days: list<Weather>) -> str\n    if len(days) == 0\n        return \"\"\n    let h = max_by(days, d => d.high)\n    return h.day"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn rainy_days(days: list<Weather>) -> list<Weather> that returns only days with rain > 0.0. Define type Weather = record(day: str, high: dec, low: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Weather = record(day: str, high: dec, low: dec, rain: dec)\n\nfn rainy_days(days: list<Weather>) -> list<Weather> =\n    days |> filter(d => d.rain > 0.0)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn average_high(days: list<Weather>) -> dec that returns the average high temperature, or 0.0 if there are no days. Define type Weather = record(day: str, high: dec, low: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Weather = record(day: str, high: dec, low: dec, rain: dec)\n\nfn average_high(days: list<Weather>) -> dec\n    let highs = days |> map(d => d.high)\n    if len(highs) == 0\n        return 0.0\n    return sum(highs) / dec(len(highs))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn week_average(days: list<Weather>, week: str) -> dec that returns the average high for the given week, or 0.0 if there are no readings for that week. Define type Weather = record(day: str, week: str, high: dec, low: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Weather = record(day: str, week: str, high: dec, low: dec, rain: dec)\n\nfn week_average(days: list<Weather>, week: str) -> dec\n    let readings = days |> filter(d => d.week == week)\n    if len(readings) == 0\n        return 0.0\n    let total = readings |> sum(d => d.high)\n    return total / dec(len(readings))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn rainy_in_week(days: list<Weather>, week: str) -> int that counts readings in the given week with rain > 0.0. Define type Weather = record(day: str, week: str, high: dec, low: dec, rain: dec).",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS1503: Argument 1: cannot convert from 'decimal' to 'System.Collections.Generic.IEnumerable<decimal>'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 3: error CS1503: Argument 1: cannot convert from 'decimal' to 'System.Collections.Generic.IEnumerable<decimal>'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Weather = record(day: str, week: str, high: dec, low: dec, rain: dec)\n\nfn rainy_in_week(days: list<Weather>, week: str) -> int =\n    days |> count(d => has(d.rain, 0.0))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Write fn temperature_range(days: list<Weather>) -> dec that returns the highest high minus the lowest low. Return 0.0 if there are no days. Define type Weather = record(day: str, high: dec, low: dec, rain: dec).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Weather = record(day: str, high: dec, low: dec, rain: dec)\n\nfn temperature_range(days: list<Weather>) -> dec\n    let highs = days |> map(d => d.high)\n    let lows = days |> map(d => d.low)\n    if len(highs) == 0\n        return 0.0\n    return max_of(highs) - min_of(lows)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define type Condition = enum(Sunny, Cloudy, Rainy) and type Weather = record(day: str, high: dec, low: dec, condition: Condition). Write fn is_rainy(w: Weather) -> bool that returns true if condition is Rainy. Write fn count_rainy(days: list<Weather>) -> int that counts rainy days. Write fn sunny_days(days: list<Weather>) -> list<str> that returns the day names of Sunny days.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'rainy condition helpers' failed: line 18: sunny_days(days) |> join(\",\") == \"Mon\""
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'rainy condition helpers' failed: line 18: sunny_days(days) |> join(\",\") == \"Mon\""
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Condition = enum(Sunny, Cloudy, Rainy)\ntype Weather = record(day: str, high: dec, low: dec, condition: Condition)\n\nfn is_rainy(w: Weather) -> bool =\n    w.condition == Condition.Rainy\n\nfn count_rainy(days: list<Weather>) -> int =\n    count(days, d => is_rainy(d))\n\nfn sunny_days(days: list<Weather>) -> list<str> =\n    days |> filter(d => not is_rainy(d)) |> map(d => d.day)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Define type Weather = record(day: str, high: dec, low: dec, rain: dec). Write fn describe_temp(t: dec) -> str using when: < 0.0 -> \"freezing\", < 10.0 -> \"cold\", < 20.0 -> \"mild\", else -> \"warm\". Write fn describe_day(w: Weather) -> str that returns describe_temp(w.high) plus \" and rainy\" if w.rain > 0.0, otherwise just describe_temp(w.high).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Weather = record(day: str, high: dec, low: dec, rain: dec)\n\nfn describe_temp(t: dec) -> str = when t\n    < 0.0 -> \"freezing\"\n    < 10.0 -> \"cold\"\n    < 20.0 -> \"mild\"\n    else -> \"warm\"\n\nfn describe_day(w: Weather) -> str\n    let t = describe_temp(w.high)\n    if w.rain > 0.0\n        return t + \" and rainy\"\n    else\n        return t"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Reading = record(day: str, high: dec, rain: dec). Write fn hottest_day(readings: list<Reading>) -> str that returns the day of the reading with the highest high temperature, or an empty string if the list is empty. If there is a tie, return the first such day.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec, rain: dec)\n\nfn hottest_day(readings: list<Reading>) -> str\n    if len(readings) == 0\n        return \"\"\n    let h = max_by(readings, r => r.high)\n    return h.day"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Reading = record(day: str, high: dec, rain: dec). Write fn rainy_days(readings: list<Reading>, threshold: dec) -> list<str> that returns the days whose rain is greater than or equal to threshold.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec, rain: dec)\n\nfn rainy_days(readings: list<Reading>, threshold: dec) -> list<str> =\n    readings |> filter(r => r.rain >= threshold) |> map(r => r.day)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Reading = record(day: str, high: dec, rain: dec). Write fn average_high(readings: list<Reading>) -> dec that returns the average high temperature, or 0.0 if there are no readings.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec, rain: dec)\n\nfn average_high(readings: list<Reading>) -> dec\n    let hs = readings |> map(r => r.high)\n    if len(hs) == 0\n        return 0.0\n    return sum(hs) / dec(len(hs))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Reading = record(day: str, high: dec, rain: dec) and type Week = record(label: str, readings: list<Reading>). Write fn average_high(readings: list<Reading>) -> dec that returns the average high for one list of readings (0.0 if empty), and fn weekly_averages(weeks: list<Week>) -> list<dec> that returns the average high for each week.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec, rain: dec)\ntype Week = record(label: str, readings: list<Reading>)\n\nfn average_high(readings: list<Reading>) -> dec =\n    if len(readings) == 0 then 0.0 else sum(readings, r => r.high) / dec(len(readings))\n\nfn weekly_averages(weeks: list<Week>) -> list<dec> =\n    weeks |> map(w => average_high(w.readings))"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Condition = enum(Sunny, Cloudy, Rainy) and type Reading = record(day: str, high: dec, condition: Condition, rain: dec). Write fn is_rainy(r: Reading) -> bool that is true when the condition is Rainy or rain is greater than 0.0. Write fn rainy_days(readings: list<Reading>) -> list<str> that returns days where is_rainy is true. Write fn sunny_count(readings: list<Reading>) -> int that counts readings with condition Sunny.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Condition = enum(Sunny, Cloudy, Rainy)\ntype Reading = record(day: str, high: dec, condition: Condition, rain: dec)\n\nfn is_rainy(r: Reading) -> bool =\n    r.condition == Condition.Rainy or r.rain > 0.0\n\nfn rainy_days(readings: list<Reading>) -> list<str> =\n    readings |> filter(r => is_rainy(r)) |> map(r => r.day)\n\nfn sunny_count(readings: list<Reading>) -> int =\n    readings |> count(r => r.condition == Condition.Sunny)"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Reading = record(day: str, high: dec, low: dec). Write fn temperature_range(readings: list<Reading>) -> dec that returns the difference between the highest high and the lowest low, or 0.0 if the list is empty.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, high: dec, low: dec)\n\nfn temperature_range(readings: list<Reading>) -> dec\n    if len(readings) == 0\n        return 0.0\n    let h = readings |> max_by(r => r.high)\n    let l = readings |> min_by(r => r.low)\n    return h.high - l.low"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Reading = record(day: str, rain: dec). Write fn wettest_day(readings: list<Reading>) -> str that returns the day with the most rain, or an empty string if the list is empty. If there is a tie, return the first such day.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, rain: dec)\n\nfn wettest_day(readings: list<Reading>) -> str\n    if len(readings) == 0\n        return \"\"\n    let best = max_by(readings, r => r.rain)\n    return best.day"
+  },
+  {
+   "family": "weather-log",
+   "prompt": "Assume type Reading = record(day: str, rain: dec). Write fn average_rain(readings: list<Reading>) -> dec that returns the average rain, or 0.0 if empty. Write fn weekly_average_rain(weeks: list<list<Reading>>) -> list<dec> that returns the average rain for each week.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Reading = record(day: str, rain: dec)\n\nfn average_rain(readings: list<Reading>) -> dec =\n    if len(readings) == 0 then 0.0 else sum(readings, r => r.rain) / dec(len(readings))\n\nfn weekly_average_rain(weeks: list<list<Reading>>) -> list<dec> =\n    weeks |> map(w => average_rain(w))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn parking_fee(hours: int) -> dec that returns 0.0 for 0 hours, 2.0 for 1 hour, 5.0 for 2 or 3 hours, 10.0 for 4 to 6 hours, and 10.0 plus 3.0 for each hour over 6. Use when.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parking fee tiers' failed: line 13: parking_fee(3) == 5.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parking fee tiers' failed: line 13: parking_fee(3) == 5.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn parking_fee(hours: int) -> dec = when hours\n    0 -> 0.0\n    1 -> 2.0\n    2 -> 5.0\n    3 -> 10.0\n    4 -> 10.0\n    5 -> 10.0\n    else -> 10.0 + 3.0 * (hours - 6)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn occupied_count(spots: list<Spot>) -> int that counts occupied spots, and fn free_spots(spots: list<Spot>) -> list<int> that returns the ids of unoccupied spots in order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn occupied_count(spots: list<Spot>) -> int =\n    spots |> count(s => s.occupied)\n\nfn free_spots(spots: list<Spot>) -> list<int> =\n    spots |> filter(s => not s.occupied) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type ParkingSession = record(plate: str, hours: int). Write fn session_fee(s: ParkingSession) -> dec that returns 0.0 for 0 hours, 2.0 for 1 hour, 5.0 for 2 or 3 hours, 10.0 for 4 to 6 hours, and 10.0 plus 3.0 for each hour over 6. Write fn total_fees(sessions: list<ParkingSession>) -> dec that sums session_fee for each session.",
+   "first": {
+    "errors": 3,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS1003: Syntax error, '=>' expected",
+     "line 7: error CS1003: Syntax error, ',' expected",
+     "line 7: error CS0103: The name 'to' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 3,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS1003: Syntax error, '=>' expected",
+     "line 7: error CS1003: Syntax error, ',' expected",
+     "line 7: error CS0103: The name 'to' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type ParkingSession = record(plate: str, hours: int)\n\nfn session_fee(s: ParkingSession) -> dec = when s.hours\n    0 -> 0.0\n    1 -> 2.0\n    2 or 3 -> 5.0\n    4 to 6 -> 10.0\n    else -> 10.0 + 3.0 * (s.hours - 6)\n\nfn total_fees(sessions: list<ParkingSession>) -> dec =\n    sessions |> sum(s => session_fee(s))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, size: str, occupied: bool). Write fn free_by_size(spots: list<Spot>, size: str) -> list<int> that returns ids of unoccupied spots whose size equals the given size, in order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, size: str, occupied: bool)\n\nfn free_by_size(spots: list<Spot>, size: str) -> list<int> =\n    spots |> filter(s => not s.occupied and s.size == size) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn occupancy_rate(spots: list<Spot>) -> dec that returns the percentage of occupied spots, rounded to 1 decimal place. If there are no spots, return 0.0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'occupancy rate' failed: line 14: occupancy_rate([Spot(1, true), Spot(2, false), Spot(3, false)]) == 33.3"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'occupancy rate' failed: line 14: occupancy_rate([Spot(1, true), Spot(2, false), Spot(3, false)]) == 33.3"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn occupancy_rate(spots: list<Spot>) -> dec\n    let occupied = count(spots, s => s.occupied)\n    let total = len(spots)\n    if total == 0\n        return 0.0\n    return dec(occupied) / dec(total) * 100.0"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn occupancy_summary(spots: list<Spot>) -> str that returns a string like \"1/2 occupied\" using the number of occupied spots and total spots.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn occupancy_summary(spots: list<Spot>) -> str\n    let occupied = count(spots, s => s.occupied)\n    let total = len(spots)\n    return \"{occupied}/{total} occupied\""
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Vehicle = record(kind: str). Write fn hourly_rate(v: Vehicle) -> dec that returns 1.0 for \"motorcycle\", 2.5 for \"car\", 5.0 for \"truck\", and 3.0 otherwise. Write fn vehicle_fee(v: Vehicle, hours: int) -> dec that returns hourly_rate(v) multiplied by hours.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Vehicle = record(kind: str)\n\nfn hourly_rate(v: Vehicle) -> dec = when v.kind\n    \"motorcycle\" -> 1.0\n    \"car\" -> 2.5\n    \"truck\" -> 5.0\n    else -> 3.0\n\nfn vehicle_fee(v: Vehicle, hours: int) -> dec =\n    hourly_rate(v) * dec(hours)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, size: str, occupied: bool) and type ParkingSession = record(plate: str, hours: int, spot_id: int). Write fn fee_for_session(s: ParkingSession) -> dec using the fee schedule: 0.0 for 0 hours, 2.0 for 1 hour, 5.0 for 2-3 hours, 10.0 for 4-6 hours, and 10.0 plus 3.0 per extra hour over 6. Write fn total_revenue(sessions: list<ParkingSession>) -> dec that sums fee_for_session. Write fn free_spots(spots: list<Spot>) -> list<int> that returns ids of unoccupied spots.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, size: str, occupied: bool)\ntype ParkingSession = record(plate: str, hours: int, spot_id: int)\n\nfn fee_for_session(s: ParkingSession) -> dec = when s.hours\n    0 -> 0.0\n    1 -> 2.0\n    2 -> 5.0\n    3 -> 10.0\n    4 -> 10.0\n    else -> 10.0 + 3.0 * (s.hours - 6)\n\nfn total_revenue(sessions: list<ParkingSession>) -> dec =\n    sessions |> sum(s => fee_for_session(s))\n\nfn free_spots(spots: list<Spot>) -> list<int> =\n    spots |> filter(s => not s.occupied) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn fee(hours: int) -> dec that returns the parking fee for a stay: 0 hours costs 0.0, fewer than 3 hours costs 2.0, fewer than 6 hours costs 4.5, and 6 or more hours costs 8.0. Use when.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "fn fee(hours: int) -> dec = when hours\n    0 -> 0.0\n    < 3 -> 2.0\n    < 6 -> 4.5\n    else -> 8.0"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn free_spots(total: int, occupied: list<int>) -> list<int> that returns the numbers of all parking spots from 1 through total that are not in occupied. Keep ascending order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "fn free_spots(total: int, occupied: list<int>) -> list<int>\n    let available: list<int> = []\n    for i in 1..=total\n        if not has(occupied, i)\n            push(available, i)\n    return available"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Ticket = record(spot: int, hours: int). Write fn fee(hours: int) -> dec with tiers 0 -> 0.0, <3 -> 2.0, <6 -> 4.5, else -> 8.0. Then write fn total_fees(tickets: list<Ticket>) -> dec that sums fee(t.hours) over all tickets.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'total ticket fees' failed: line 13: total_fees([Ticket(1, 0), Ticket(2, 2)]) == 2.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'total ticket fees' failed: line 13: total_fees([Ticket(1, 0), Ticket(2, 2)]) == 2.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Ticket = record(spot: int, hours: int)\n\nfn fee(hours: int) -> dec = when hours\n    < 3 -> 2.0\n    < 6 -> 4.5\n    else -> 8.0\n\nfn total_fees(tickets: list<Ticket>) -> dec =\n    tickets |> sum(t => fee(t.hours))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(number: int, occupied: bool). Write fn occupied_count(spots: list<Spot>) -> int that counts occupied spots. Also write fn free_numbers(spots: list<Spot>) -> list<int> that returns the numbers of all unoccupied spots in the order they appear.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(number: int, occupied: bool)\n\nfn occupied_count(spots: list<Spot>) -> int =\n    spots |> count(s => s.occupied)\n\nfn free_numbers(spots: list<Spot>) -> list<int> =\n    spots |> filter(s => not s.occupied) |> map(s => s.number)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(number: int, floor: int, occupied: bool). Write fn floors_with_free(spots: list<Spot>) -> list<int> that returns the distinct floor numbers that have at least one unoccupied spot, sorted ascending.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'floors with free spots' failed: line 10: floors_with_free([Spot(1, 1, false), Spot(2, 1, false), Spot(3, 2, false)]) |> join(\",\") == \"1,2\""
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'floors with free spots' failed: line 10: floors_with_free([Spot(1, 1, false), Spot(2, 1, false), Spot(3, 2, false)]) |> join(\",\") == \"1,2\""
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(number: int, floor: int, occupied: bool)\n\nfn floors_with_free(spots: list<Spot>) -> list<int>\n    let free = spots |> filter(s => not s.occupied)\n    return sort(free |> map(s => s.floor))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Vehicle = record(plate: str, hours: int, kind: str). Write fn vehicle_fee(v: Vehicle) -> dec that charges 0.0 for 0 hours; otherwise motorcycle costs 2.0, car costs 5.0, and any other kind costs 8.0. Then write fn total_vehicle_fees(vehicles: list<Vehicle>) -> dec that sums vehicle_fee over all vehicles.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'vehicle fees' failed: line 13: vehicle_fee(Vehicle(\"A\", 0, \"car\")) == 0.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'vehicle fees' failed: line 13: vehicle_fee(Vehicle(\"A\", 0, \"car\")) == 0.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Vehicle = record(plate: str, hours: int, kind: str)\n\nfn vehicle_fee(v: Vehicle) -> dec = when v.kind\n    \"motorcycle\" -> 2.0\n    \"car\" -> 5.0\n    \"bus\" -> 8.0\n    else -> 8.0\n\nfn total_vehicle_fees(vehicles: list<Vehicle>) -> dec =\n    vehicles |> sum(v => vehicle_fee(v))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn total_fee(hours: list<int>) -> dec that sums the parking fee for each hour value, where fee(hours) gives 1.0 for 0, 2.0 for 1 to 2 inclusive, 4.0 for 3 to 5 inclusive, and 8.0 for 6 or more. Use a helper fn fee(hours: int) -> dec with when.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'total fee from hour list' failed: line 18: total_fee([6, 7]) == 16.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'total fee from hour list' failed: line 18: total_fee([6, 7]) == 16.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn fee(hours: int) -> dec = when hours\n    0 -> 1.0\n    1 -> 2.0\n    2 -> 2.0\n    3 -> 4.0\n    4 -> 4.0\n    5 -> 4.0\n    6 -> 8.0\n    else -> 0.0\n\nfn total_fee(hours: list<int>) -> dec =\n    hours |> sum(h => fee(h))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn parking_fee(hours: int) -> dec that returns the parking fee: 0.0 for zero or negative hours, 2.0 for 1 hour, 5.0 for 2 to 4 hours, and 10.0 for 5 or more hours. Use when for the positive hour cases.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parking fee by hours' failed: line 11: parking_fee(3) == 5.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parking fee by hours' failed: line 11: parking_fee(3) == 5.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn parking_fee(hours: int) -> dec = when hours\n    0 -> 0.0\n    1 -> 2.0\n    2 -> 5.0\n    5 -> 10.0\n    else -> 10.0"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn free_spots(spots: list<bool>) -> int that returns how many spots are free (false). Use a loop.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "fn free_spots(spots: list<bool>) -> int\n    let mut count = 0\n    for s in spots\n        if not s\n            count += 1\n    return count"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type ParkedCar = record(plate: str, hours: int, spot: int). Write fn car_fee(car: ParkedCar) -> dec that returns the fee for the car's hours: 0.0 for <=0, 2.0 for 1, 5.0 for 2-4, 10.0 for 5+. Use when.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'car fee' failed: line 13: car_fee(ParkedCar(\"C3\", 4, 3)) == 5.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'car fee' failed: line 13: car_fee(ParkedCar(\"C3\", 4, 3)) == 5.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type ParkedCar = record(plate: str, hours: int, spot: int)\n\nfn car_fee(car: ParkedCar) -> dec = when car.hours\n    <= 0 -> 0.0\n    1 -> 2.0\n    2 -> 5.0\n    5 -> 10.0\n    else -> 10.0"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type SpotKind = enum(Compact, Regular, Handicap, Electric) and type Spot = record(number: int, kind: SpotKind, free: bool). Write fn free_spot_numbers(spots: list<Spot>) -> list<int> that returns sorted numbers of free spots, and fn count_free_by_kind(spots: list<Spot>, kind: SpotKind) -> int that counts free spots of a kind.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'free spots by kind' failed: line 12: free_spot_numbers(spots) |> join(\",\") == \"2,3,4\""
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'free spots by kind' failed: line 12: free_spot_numbers(spots) |> join(\",\") == \"2,3,4\""
+    ]
+   },
+   "repairs": 0,
+   "answer": "type SpotKind = enum(Compact, Regular, Handicap, Electric)\ntype Spot = record(number: int, kind: SpotKind, free: bool)\n\nfn free_spot_numbers(spots: list<Spot>) -> list<int> =\n    spots |> filter(s => s.free) |> map(s => s.number)\n\nfn count_free_by_kind(spots: list<Spot>, kind: SpotKind) -> int =\n    spots |> count(s => s.kind == kind and s.free)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Lot = record(capacity: int, taken: list<int>). Write fn available_spots(lot: Lot) -> list<int> that returns spot numbers 1..capacity not in taken, and fn occupancy(lot: Lot) -> dec that returns taken count divided by capacity, or 0.0 when capacity is 0.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS7036: There is no argument given that corresponds to the required parameter 'f' of 'Std.count<T>(IEnumerable<T>, Func<T, bool>)'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 12: error CS7036: There is no argument given that corresponds to the required parameter 'f' of 'Std.count<T>(IEnumerable<T>, Func<T, bool>)'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Lot = record(capacity: int, taken: list<int>)\n\nfn available_spots(lot: Lot) -> list<int>\n    let empty = range(1, lot.capacity + 1)\n    let taken = lot.taken |> sort\n    let available = empty |> filter(s => not has(taken, s))\n    return available\n\nfn occupancy(lot: Lot) -> dec\n    if lot.capacity == 0\n        return 0.0\n    return dec(lot.taken |> count) / dec(lot.capacity)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(number: int, free: bool). Write fn first_free_number(spots: list<Spot>) -> int? that returns the number of the first free spot, or none if there is none. Write fn free_count(spots: list<Spot>) -> int that counts free spots.",
+   "first": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS1061: 'Spot' does not contain a definition for 'Value' and no accessible extension method 'Value' accepting a first argument of type 'Spot' could be found (are you missing a using directive or an assembly reference?)",
+     "line 8: error CS1061: 'V' does not contain a definition for 'number' and no accessible extension method 'number' accepting a first argument of type 'V' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "final": {
+    "errors": 2,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS1061: 'Spot' does not contain a definition for 'Value' and no accessible extension method 'Value' accepting a first argument of type 'Spot' could be found (are you missing a using directive or an assembly reference?)",
+     "line 8: error CS1061: 'V' does not contain a definition for 'number' and no accessible extension method 'number' accepting a first argument of type 'V' could be found (are you missing a using directive or an assembly reference?)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(number: int, free: bool)\n\nfn first_free_number(spots: list<Spot>) -> int?\n    let f = find(spots, s => not s.free)\n    if f == none\n        return none\n    let s = get(spots, f.Value)\n    return s.number\n\nfn free_count(spots: list<Spot>) -> int\n    return count(spots, s => s.free)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: str, occupied: bool). Write fn free_ids(spots: list<Spot>) -> list<str> that returns the ids of unoccupied spots, in the same order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: str, occupied: bool)\n\nfn free_ids(spots: list<Spot>) -> list<str> =\n    spots |> filter(s => not s.occupied) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: str, occupied: bool). Write fn free_count(spots: list<Spot>) -> int that counts unoccupied spots, and fn occupancy(spots: list<Spot>) -> dec that returns the fraction of spots that are occupied (0.0 for an empty list).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: str, occupied: bool)\n\nfn free_count(spots: list<Spot>) -> int =\n    spots |> count(s => not s.occupied)\n\nfn occupancy(spots: list<Spot>) -> dec =\n    if len(spots) == 0 then 0.0 else dec(free_count(spots)) / dec(len(spots))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type SpotSize = enum(Small, Large, Ev) and type Spot = record(id: str, size: SpotSize, occupied: bool). Write fn free_of_size(spots: list<Spot>, size: SpotSize) -> list<str> that returns the ids of unoccupied spots of the given size, in order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type SpotSize = enum(Small, Large, Ev)\ntype Spot = record(id: str, size: SpotSize, occupied: bool)\n\nfn free_of_size(spots: list<Spot>, size: SpotSize) -> list<str> =\n    spots |> filter(s => not s.occupied and s.size == size) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Vehicle = enum(Car, Motorcycle, Truck). Write fn rate(vehicle: Vehicle) -> dec that returns 2.0 for Car, 1.0 for Motorcycle, 4.0 for Truck using when. Write fn parking_fee(vehicle: Vehicle, hours: int) -> dec that returns 0.0 for non-positive hours, otherwise rate(vehicle) * dec(hours).",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Vehicle = enum(Car, Motorcycle, Truck)\n\nfn rate(vehicle: Vehicle) -> dec = when vehicle\n    Vehicle.Car -> 2.0\n    Vehicle.Motorcycle -> 1.0\n    Vehicle.Truck -> 4.0\n    else -> 0.0\n\nfn parking_fee(vehicle: Vehicle, hours: int) -> dec = when hours\n    <= 0 -> 0.0\n    else -> rate(vehicle) * dec(hours)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: str, occupied: bool). Write fn free_ids(spots: list<Spot>) -> list<str> that returns ids of unoccupied spots. Write fn free_summary(spots: list<Spot>) -> str that returns \"none\" if there are no free spots, otherwise the free ids joined by \", \".",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: str, occupied: bool)\n\nfn free_ids(spots: list<Spot>) -> list<str> =\n    spots |> filter(s => not s.occupied) |> map(s => s.id)\n\nfn free_summary(spots: list<Spot>) -> str\n    let free = free_ids(spots)\n    if len(free) == 0\n        return \"none\"\n    else\n        return join(free, \", \")"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Vehicle = enum(Car, Motorcycle, Truck) and type Ticket = record(vehicle: Vehicle, hours: int, lost: bool). Write fn base_rate(vehicle: Vehicle) -> dec using when (Car 2.5, Motorcycle 1.5, Truck 4.5). Write fn ticket_fee(t: Ticket) -> dec that charges base_rate * hours for positive hours (0.0 otherwise), adds 15.0 if lost, and caps the total at 40.0.",
+   "first": {
+    "errors": 13,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS0103: The name 'Car' does not exist in the current context",
+     "line 6: error CS0103: The name 'Motorcycle' does not exist in the current context",
+     "line 7: error CS0103: The name 'Truck' does not exist in the current context",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1003: Syntax error, '(' expected",
+     "line 12: error CS1026: ) expected",
+     "line 12: error CS8641: 'else' cannot start a statement.",
+     "line 12: error CS1003: Syntax error, '(' expected",
+     "line 12: error CS1525: Invalid expression term 'else'",
+     "line 12: error CS1026: ) expected",
+     "line 12: error CS1525: Invalid expression term 'else'",
+     "line 12: error CS1002: ; expected"
+    ]
+   },
+   "final": {
+    "errors": 13,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 5: error CS0103: The name 'Car' does not exist in the current context",
+     "line 6: error CS0103: The name 'Motorcycle' does not exist in the current context",
+     "line 7: error CS0103: The name 'Truck' does not exist in the current context",
+     "line 12: error CS1002: ; expected",
+     "line 12: error CS1003: Syntax error, '(' expected",
+     "line 12: error CS1026: ) expected",
+     "line 12: error CS8641: 'else' cannot start a statement.",
+     "line 12: error CS1003: Syntax error, '(' expected",
+     "line 12: error CS1525: Invalid expression term 'else'",
+     "line 12: error CS1026: ) expected",
+     "line 12: error CS1525: Invalid expression term 'else'",
+     "line 12: error CS1002: ; expected"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Vehicle = enum(Car, Motorcycle, Truck)\ntype Ticket = record(vehicle: Vehicle, hours: int, lost: bool)\n\nfn base_rate(vehicle: Vehicle) -> dec = when (vehicle)\n    Car -> 2.5\n    Motorcycle -> 1.5\n    Truck -> 4.5\n    else -> 0.0\n\nfn ticket_fee(t: Ticket) -> dec\n    let base = base_rate(t.vehicle) * dec(t.hours)\n    let total = base + 15.0 if t.lost else base\n    return min(40.0, total)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: str, occupied: bool) and type ParkingLot = record(spots: list<Spot>, name: str). Write fn free_ids(lot: ParkingLot) -> list<str> that returns ids of unoccupied spots. Write fn occupancy(lot: ParkingLot) -> dec that returns the fraction of occupied spots (0.0 for an empty lot). Write fn is_full(lot: ParkingLot) -> bool that returns true only if there is at least one spot and all spots are occupied.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error KT000: after |> comes a function call, like |> map(x => x * 2)"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error KT000: after |> comes a function call, like |> map(x => x * 2)"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: str, occupied: bool)\ntype ParkingLot = record(spots: list<Spot>, name: str)\n\nfn free_ids(lot: ParkingLot) -> list<str> =\n    lot.spots |> filter(s => not s.occupied) |> map(s => s.id)\n\nfn occupancy(lot: ParkingLot) -> dec =\n    lot.spots |> count(s => s.occupied) / dec(len(lot.spots)) |> to_dec\n\nfn is_full(lot: ParkingLot) -> bool =\n    len(lot.spots) > 0 and all(lot.spots, s => s.occupied)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: str, occupied: bool). Write fn occupied_count(spots: list<Spot>) -> int that counts occupied spots, and fn free_spots(spots: list<Spot>) -> list<str> that returns the ids of free spots in their original order.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: str, occupied: bool)\n\nfn occupied_count(spots: list<Spot>) -> int =\n    spots |> count(s => s.occupied)\n\nfn free_spots(spots: list<Spot>) -> list<str> =\n    spots |> filter(s => not s.occupied) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: str, occupied: bool) and type Lot = record(name: str, spots: list<Spot>). Write fn available_ids(lot: Lot) -> list<str> that returns free spot ids, and fn occupancy_rate(lot: Lot) -> dec that returns occupied spots divided by total spots (0.0 for an empty lot).",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS7036: There is no argument given that corresponds to the required parameter 'f' of 'Std.count<T>(IEnumerable<T>, Func<T, bool>)'"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 7: error CS7036: There is no argument given that corresponds to the required parameter 'f' of 'Std.count<T>(IEnumerable<T>, Func<T, bool>)'"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: str, occupied: bool)\ntype Lot = record(name: str, spots: list<Spot>)\n\nfn available_ids(lot: Lot) -> list<str> =\n    lot.spots |> filter(s => not s.occupied) |> map(s => s.id)\n\nfn occupancy_rate(lot: Lot) -> dec =\n    if len(lot.spots) == 0 then 0.0 else dec(count(lot.spots |> filter(s => s.occupied))) / dec(len(lot.spots))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: str, level: int, occupied: bool). Write fn free_on_level(spots: list<Spot>, level: int) -> list<str> that returns sorted free spot ids on the given level, and fn count_free(spots: list<Spot>) -> int that counts all free spots.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'free spots by level' failed: line 10: free_on_level([Spot(\"B2\", 1, false), Spot(\"A1\", 1, true), Spot(\"C3\", 2, false), Spot(\"A2\", 1, false)], 1) |> join(\",\") == \"A2,B2\""
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'free spots by level' failed: line 10: free_on_level([Spot(\"B2\", 1, false), Spot(\"A1\", 1, true), Spot(\"C3\", 2, false), Spot(\"A2\", 1, false)], 1) |> join(\",\") == \"A2,B2\""
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: str, level: int, occupied: bool)\n\nfn free_on_level(spots: list<Spot>, level: int) -> list<str> =\n    spots |> filter(s => s.level == level and not s.occupied) |> map(s => s.id)\n\nfn count_free(spots: list<Spot>) -> int =\n    spots |> count(s => not s.occupied)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn fee_for(hours: int, kind: str) -> dec that returns 0.0 for 0 hours. For other hours, the hourly rate is 3.0 for \"car\", 2.0 for \"motorcycle\", and 5.0 otherwise. Hours less than 2 use the full rate; 2 or more hours get a 20% discount. Use a local let for the rate.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'fee for kind and hours' failed: line 14: fee_for(1, \"car\") == 3.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'fee for kind and hours' failed: line 14: fee_for(1, \"car\") == 3.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn fee_for(hours: int, kind: str) -> dec\n    let rate = when kind\n        \"car\" -> 3.0\n        \"motorcycle\" -> 2.0\n        else -> 5.0\n    let total = rate * dec(hours)\n    if hours < 2\n        return 0.0\n    let discounted = total * 0.8\n    return discounted"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn parking_fee(hours: int) -> dec that returns the parking fee: 0 hours costs 0.0, 1 hour costs 2.5, 2 to 4 hours cost 6.0, and each hour after 4 costs 1.5 extra.",
+   "first": {
+    "errors": 3,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 8: error KT001: 'total' cannot be changed: declare it with let mut",
+     "line 10: error KT001: 'total' cannot be changed: declare it with let mut",
+     "line 12: error KT001: 'total' cannot be changed: declare it with let mut"
+    ]
+   },
+   "final": {
+    "errors": 3,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 8: error KT001: 'total' cannot be changed: declare it with let mut",
+     "line 10: error KT001: 'total' cannot be changed: declare it with let mut",
+     "line 12: error KT001: 'total' cannot be changed: declare it with let mut"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn parking_fee(hours: int) -> dec\n    let base = 0.0\n    let first = 2.5\n    let second = 6.0\n    let extra = 1.5\n    let total = base\n    if hours == 1\n        total = first\n    elif hours == 2\n        total = second\n    elif hours > 4\n        total = first + (hours - 4) * extra\n    return total"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn occupied_count(spots: list<Spot>) -> int that returns how many spots are occupied.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn occupied_count(spots: list<Spot>) -> int =\n    spots |> count(s => s.occupied)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Ticket = record(hours: int, discount: bool). Write fn fee_for(t: Ticket) -> dec that computes fee by hours: 0 -> 0.0, less than 2 -> 3.0, less than 5 -> 7.5, else 7.5 plus 2.0 per extra hour after 4. If discount is true, multiply the fee by 0.8.",
+   "first": {
+    "errors": 18,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS1003: Syntax error, ':' expected",
+     "line 4: error CS1525: Invalid expression term 'else'",
+     "line 4: error CS1026: ) expected",
+     "line 4: error CS1002: ; expected",
+     "line 4: error CS8641: 'else' cannot start a statement.",
+     "line 4: error CS1003: Syntax error, '(' expected",
+     "line 4: error CS1525: Invalid expression term 'else'",
+     "line 4: error CS1026: ) expected",
+     "line 4: error CS1525: Invalid expression term 'else'",
+     "line 4: error CS1002: ; expected",
+     "line 4: error CS1003: Syntax error, '(' expected",
+     "line 4: error CS1026: ) expected"
+    ]
+   },
+   "final": {
+    "errors": 18,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS1003: Syntax error, ':' expected",
+     "line 4: error CS1525: Invalid expression term 'else'",
+     "line 4: error CS1026: ) expected",
+     "line 4: error CS1002: ; expected",
+     "line 4: error CS8641: 'else' cannot start a statement.",
+     "line 4: error CS1003: Syntax error, '(' expected",
+     "line 4: error CS1525: Invalid expression term 'else'",
+     "line 4: error CS1026: ) expected",
+     "line 4: error CS1525: Invalid expression term 'else'",
+     "line 4: error CS1002: ; expected",
+     "line 4: error CS1003: Syntax error, '(' expected",
+     "line 4: error CS1026: ) expected"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Ticket = record(hours: int, discount: bool)\n\nfn fee_for(t: Ticket) -> dec\n    let base = if t.hours < 2 then 0.0 else if t.hours < 5 then 3.0 else 7.5\n    let extra = if t.hours > 4 then (t.hours - 4) * 2.0 else 0.0\n    let total = base + extra\n    if t.discount\n        return total * 0.8\n    else\n        return total"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn occupancy_rate(spots: list<Spot>) -> dec that returns occupied count divided by total count, or 0.0 for an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn occupancy_rate(spots: list<Spot>) -> dec =\n    if len(spots) == 0 then 0.0 else dec(count(spots, s => s.occupied)) / dec(len(spots))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, floor: int, occupied: bool) and type Ticket = record(hours: int, discount: bool). Write fn free_spots(spots: list<Spot>) -> list<Spot> returning unoccupied spots, fn fee_for(t: Ticket) -> dec that computes fee by hours: 0 -> 0.0, less than 2 -> 3.0, less than 5 -> 7.5, else 7.5 plus 2.0 per extra hour after 4, with discount true multiplying by 0.8, and fn total_fees(tickets: list<Ticket>) -> dec that sums fee_for over all tickets.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error KT000: an if inside an expression is: if c then x else y"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 9: error KT000: an if inside an expression is: if c then x else y"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, floor: int, occupied: bool)\ntype Ticket = record(hours: int, discount: bool)\n\nfn free_spots(spots: list<Spot>) -> list<Spot> =\n    spots |> filter(s => not s.occupied)\n\nfn fee_for(t: Ticket) -> dec\n    let base = if t.hours < 2 then 0.0 else if t.hours < 5 then 3.0 else 7.5\n    let extra = if t.hours > 4 then (t.hours - 4) * 2.0\n    return base + extra\n\nfn total_fees(tickets: list<Ticket>) -> dec =\n    tickets |> sum(t => fee_for(t))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn parking_fee(hours: int) -> dec that returns a decimal parking fee: 0 hours costs 0.0; less than 2 hours costs 2.5; less than 4 hours costs 5.0; less than 8 hours costs 8.0; otherwise 8.0 plus 1.5 for each hour beyond 8. Use when.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "fn parking_fee(hours: int) -> dec = when hours\n    0 -> 0.0\n    < 2 -> 2.5\n    < 4 -> 5.0\n    < 8 -> 8.0\n    else -> 8.0 + 1.5 * (hours - 8)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type ParkingSpot = record(id: int, occupied: bool). Write fn occupied_count(spots: list<ParkingSpot>) -> int that counts occupied spots, and fn free_ids(spots: list<ParkingSpot>) -> list<int> that returns the ids of unoccupied spots.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type ParkingSpot = record(id: int, occupied: bool)\n\nfn occupied_count(spots: list<ParkingSpot>) -> int =\n    spots |> count(s => s.occupied)\n\nfn free_ids(spots: list<ParkingSpot>) -> list<int> =\n    spots |> filter(s => not s.occupied) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Vehicle = enum(Car, Motorcycle, Truck). Write fn vehicle_fee(vehicle: Vehicle, hours: int) -> dec that uses the same base fee as parking_fee (0 hours free, <2 hours 2.5, <4 hours 5.0, <8 hours 8.0, else 8.0 plus 1.5 per extra hour), but motorcycles pay half and trucks pay double.",
+   "first": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS0103: The name 'parking_fee' does not exist in the current context"
+    ]
+   },
+   "final": {
+    "errors": 1,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 4: error CS0103: The name 'parking_fee' does not exist in the current context"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Vehicle = enum(Car, Motorcycle, Truck)\n\nfn vehicle_fee(vehicle: Vehicle, hours: int) -> dec\n    let base = parking_fee(hours)\n    if vehicle == Vehicle.Car\n        return base\n    elif vehicle == Vehicle.Motorcycle\n        return base / 2.0\n    elif vehicle == Vehicle.Truck\n        return base * 2.0\n    else\n        return base + 1.5 * (hours - 8.0)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type SizedSpot = record(id: int, size: int, occupied: bool). Write fn free_ids_by_size(spots: list<SizedSpot>, max_size: int) -> list<int> that returns ids of unoccupied spots whose size is at most max_size.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type SizedSpot = record(id: int, size: int, occupied: bool)\n\nfn free_ids_by_size(spots: list<SizedSpot>, max_size: int) -> list<int> =\n    spots |> filter(s => not s.occupied and s.size <= max_size) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Lot = record(total_spots: int, occupied_spots: int). Write fn occupancy_ratio(lot: Lot) -> dec that returns occupied_spots divided by total_spots as a dec, or 0.0 when total_spots is 0. Also write fn is_full(lot: Lot) -> bool that is true when occupied_spots is at least total_spots.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Lot = record(total_spots: int, occupied_spots: int)\n\nfn occupancy_ratio(lot: Lot) -> dec =\n    if lot.total_spots == 0 then 0.0 else dec(lot.occupied_spots) / dec(lot.total_spots)\n\nfn is_full(lot: Lot) -> bool =\n    lot.occupied_spots >= lot.total_spots"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Session = record(plate: str, hours: int). Write fn session_fee(session: Session) -> dec using the parking_fee rules (0 hours 0.0, <2 hours 2.5, <4 hours 5.0, <8 hours 8.0, else 8.0 plus 1.5 per extra hour), and fn total_session_fees(sessions: list<Session>) -> dec that sums session fees.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Session = record(plate: str, hours: int)\n\nfn parking_fee(hours: int) -> dec = when hours\n    0 -> 0.0\n    < 2 -> 2.5\n    < 4 -> 5.0\n    < 8 -> 8.0\n    else -> 8.0 + 1.5 * (hours - 8)\n\nfn session_fee(session: Session) -> dec =\n    parking_fee(session.hours)\n\nfn total_session_fees(sessions: list<Session>) -> dec =\n    sessions |> sum(s => session_fee(s))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn first_free_id(spots: list<Spot>) -> int that returns the id of the first unoccupied spot, or -1 if none are free. Use a loop.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn first_free_id(spots: list<Spot>) -> int\n    let mut i = 0\n    while i < len(spots)\n        if not spots[i].occupied\n            return spots[i].id\n        i += 1\n    return -1"
+  },
+  {
+   "family": "parking",
+   "prompt": "Write fn parking_fee(hours: int) -> dec that charges: 0 hours costs 0.0; 1 or 2 hours cost 2.5 per hour; 3 to 7 hours cost a flat 7.5; 8 or more hours cost a flat 12.0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parking fee by hours' failed: line 15: parking_fee(2) == 5.0"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'parking fee by hours' failed: line 15: parking_fee(2) == 5.0"
+    ]
+   },
+   "repairs": 0,
+   "answer": "fn parking_fee(hours: int) -> dec = when hours\n    0 -> 0.0\n    1 -> 2.5\n    2 -> 2.5\n    3 -> 7.5\n    4 -> 7.5\n    5 -> 7.5\n    6 -> 7.5\n    7 -> 7.5\n    8 -> 12.0\n    else -> 12.0"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn free_spots(spots: list<Spot>) -> list<int> that returns the ids of all unoccupied spots in the order they appear.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn free_spots(spots: list<Spot>) -> list<int> =\n    spots |> filter(s => not s.occupied) |> map(s => s.id)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, occupied: bool). Write fn occupied_count(spots: list<Spot>) -> int and fn occupancy_rate(spots: list<Spot>) -> dec. occupancy_rate returns the fraction of occupied spots, or 0.0 for an empty list.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, occupied: bool)\n\nfn occupied_count(spots: list<Spot>) -> int =\n    spots |> count(s => s.occupied)\n\nfn occupancy_rate(spots: list<Spot>) -> dec =\n    if len(spots) == 0 then 0.0 else dec(occupied_count(spots)) / dec(len(spots))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type SpotKind = enum(Compact, Standard, Handicap, EV) and type Spot = record(id: int, kind: SpotKind, occupied: bool). Write fn first_free_of_kind(spots: list<Spot>, kind: SpotKind) -> int? that returns the id of the first free spot of the given kind, or none if there is no such spot.",
+   "first": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 6: warning KT002: 'rest' is never changed: declare it with let, not let mut",
+     "test 'first free of kind' failed: line 18: first_free_of_kind(spots, SpotKind.Compact) == none"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 1,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "line 6: warning KT002: 'rest' is never changed: declare it with let, not let mut",
+     "test 'first free of kind' failed: line 18: first_free_of_kind(spots, SpotKind.Compact) == none"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type SpotKind = enum(Compact, Standard, Handicap, EV)\ntype Spot = record(id: int, kind: SpotKind, occupied: bool)\n\nfn first_free_of_kind(spots: list<Spot>, kind: SpotKind) -> int?\n    let empty = Spot(-1, kind, false)\n    let mut rest = spots |> filter(s => not (s.occupied))\n    if len(rest) == 0\n        return none\n    let mut best = first(rest)\n    for s in rest\n        if s.occupied and not (s == best)\n            best = s\n    return best.id"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Spot = record(id: int, level: int, occupied: bool) and type LevelSummary = record(level: int, free: int). Write fn level_summaries(spots: list<Spot>) -> list<LevelSummary> that returns one summary per level, sorted by level, counting how many free spots each level has.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'level summaries' failed: line 13: first(sums).free == 1"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'level summaries' failed: line 13: first(sums).free == 1"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type Spot = record(id: int, level: int, occupied: bool)\ntype LevelSummary = record(level: int, free: int)\n\nfn level_summaries(spots: list<Spot>) -> list<LevelSummary>\n    let groups = group_by(spots, s => s.level)\n    return keys(groups) |> sort |> map(l => LevelSummary(l, len(get(groups, l, list<Spot>()))))"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type Ticket = record(spot: int, hours: int, is_weekend: bool). Write fn ticket_fee(t: Ticket) -> dec that charges 3.0 per hour on weekdays and 2.5 per hour on weekends, but never more than 20.0.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": true,
+    "messages": []
+   },
+   "repairs": 0,
+   "answer": "type Ticket = record(spot: int, hours: int, is_weekend: bool)\n\nfn ticket_fee(t: Ticket) -> dec\n    let base = if t.is_weekend then 2.5 else 3.0\n    let total = base * t.hours\n    return min(20.0, total)"
+  },
+  {
+   "family": "parking",
+   "prompt": "Define type SpotKind = enum(Compact, Standard, Handicap, EV) and type Spot = record(id: int, kind: SpotKind, occupied: bool, hourly: dec). Write fn suggested_spot(spots: list<Spot>, kind: SpotKind) -> int? that prefers the first free spot of the given kind, then falls back to the first free spot of any kind, and returns none if all are occupied. Also write fn potential_revenue(spots: list<Spot>, hours: int) -> dec that sums hourly * hours for all free spots.",
+   "first": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'suggested spot prefers kind' failed: line 17: suggested_spot(spots, SpotKind.Standard) == 2"
+    ]
+   },
+   "final": {
+    "errors": 0,
+    "warnings": 0,
+    "leak": false,
+    "passes": false,
+    "messages": [
+     "test 'suggested spot prefers kind' failed: line 17: suggested_spot(spots, SpotKind.Standard) == 2"
+    ]
+   },
+   "repairs": 0,
+   "answer": "type SpotKind = enum(Compact, Standard, Handicap, EV)\ntype Spot = record(id: int, kind: SpotKind, occupied: bool, hourly: dec)\n\nfn suggested_spot(spots: list<Spot>, kind: SpotKind) -> int?\n    let free = spots |> filter(s => not s.occupied and s.kind == kind)\n    if len(free) == 0\n        return none\n    return first(free).id\n\nfn potential_revenue(spots: list<Spot>, hours: int) -> dec\n    let free = spots |> filter(s => not s.occupied)\n    return free |> sum(s => s.hourly * dec(hours))"
+  }
+ ]
+}

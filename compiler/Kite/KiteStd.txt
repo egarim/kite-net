@@ -1,0 +1,105 @@
+// Kite.NET standard library: compiled into every Kite program (snake_case, used through `using static`).
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
+namespace KiteStd
+{
+    [AttributeUsage(AttributeTargets.Method)]
+    public sealed class KiteTestAttribute(string name) : Attribute
+    {
+        public string Name { get; } = name;
+    }
+
+    public sealed class KiteExpectException(string message) : Exception(message);
+
+    public static class Std
+    {
+        static readonly CultureInfo Inv = CultureInfo.InvariantCulture;
+
+        // output and checks
+        public static void print(object? x) => Console.WriteLine(to_str(x));
+        public static void expect(bool ok, string what) { if (!ok) throw new KiteExpectException(what); }
+        public static Exception fail(string message) => new InvalidOperationException(message);
+
+        // lists
+        public static List<T> list<T>(params T[] items) => [.. items];
+        public static int len<T>(IEnumerable<T> xs) => xs.Count();
+        public static int len(string s) => s.Length;
+        public static List<R> map<T, R>(IEnumerable<T> xs, Func<T, R> f) => [.. xs.Select(f)];
+        public static List<T> filter<T>(IEnumerable<T> xs, Func<T, bool> f) => [.. xs.Where(f)];
+        public static R fold<T, R>(IEnumerable<T> xs, R seed, Func<R, T, R> f) => xs.Aggregate(seed, f);
+        public static int sum(IEnumerable<int> xs) => xs.Sum();
+        public static decimal sum(IEnumerable<decimal> xs) => xs.Sum();
+        public static double sum(IEnumerable<double> xs) => xs.Sum();
+        public static int sum<T>(IEnumerable<T> xs, Func<T, int> f) => xs.Sum(f);
+        public static decimal sum<T>(IEnumerable<T> xs, Func<T, decimal> f) => xs.Sum(f);
+        public static double sum<T>(IEnumerable<T> xs, Func<T, double> f) => xs.Sum(f);
+        public static int count<T>(IEnumerable<T> xs, Func<T, bool> f) => xs.Count(f);
+        public static List<T> sort<T>(IEnumerable<T> xs) => [.. xs.Order()];
+        public static List<T> sort_by<T, K>(IEnumerable<T> xs, Func<T, K> key) => [.. xs.OrderBy(key)];
+        public static List<T> sort_desc<T>(IEnumerable<T> xs) => [.. xs.OrderDescending()];
+        public static List<T> sort_by_desc<T, K>(IEnumerable<T> xs, Func<T, K> key) => [.. xs.OrderByDescending(key)];
+        public static List<T> reverse<T>(IEnumerable<T> xs) => [.. xs.Reverse()];
+        public static List<T> take<T>(IEnumerable<T> xs, int n) => [.. xs.Take(n)];
+        public static List<T> skip<T>(IEnumerable<T> xs, int n) => [.. xs.Skip(n)];
+        public static List<T> distinct<T>(IEnumerable<T> xs) => [.. xs.Distinct()];
+        public static T first<T>(IEnumerable<T> xs) => xs.First();
+        public static T last<T>(IEnumerable<T> xs) => xs.Last();
+        public static T? find<T>(IEnumerable<T> xs, Func<T, bool> f) => xs.FirstOrDefault(f);
+        public static bool any<T>(IEnumerable<T> xs, Func<T, bool> f) => xs.Any(f);
+        public static bool all<T>(IEnumerable<T> xs, Func<T, bool> f) => xs.All(f);
+        public static bool has<T>(IEnumerable<T> xs, T x) => xs.Contains(x);
+        public static T min_of<T>(IEnumerable<T> xs) => xs.Min()!;
+        public static T max_of<T>(IEnumerable<T> xs) => xs.Max()!;
+        public static T min_by<T, K>(IEnumerable<T> xs, Func<T, K> key) => xs.MinBy(key)!;
+        public static T max_by<T, K>(IEnumerable<T> xs, Func<T, K> key) => xs.MaxBy(key)!;
+        public static Dictionary<K, List<T>> group_by<T, K>(IEnumerable<T> xs, Func<T, K> key) where K : notnull
+            => xs.GroupBy(key).ToDictionary(g => g.Key, g => g.ToList());
+        public static List<int> range(int from, int to) => [.. Enumerable.Range(from, Math.Max(0, to - from))];
+        public static void push<T>(List<T> xs, T x) => xs.Add(x);
+
+        // maps
+        public static V get<K, V>(Dictionary<K, V> m, K key, V fallback) where K : notnull
+            => m.TryGetValue(key, out var v) ? v : fallback;
+        public static List<K> keys<K, V>(Dictionary<K, V> m) where K : notnull => [.. m.Keys];
+        public static List<V> values<K, V>(Dictionary<K, V> m) where K : notnull => [.. m.Values];
+
+        // text
+        public static string join<T>(IEnumerable<T> xs, string sep) => string.Join(sep, xs.Select(x => to_str(x)));
+        public static List<string> split(string s, string sep) => [.. s.Split(sep)];
+        public static List<string> words(string s) => [.. s.Split(' ', StringSplitOptions.RemoveEmptyEntries)];
+        public static string upper(string s) => s.ToUpperInvariant();
+        public static string lower(string s) => s.ToLowerInvariant();
+        public static string trim(string s) => s.Trim();
+        public static bool starts(string s, string p) => s.StartsWith(p, StringComparison.Ordinal);
+        public static bool ends(string s, string p) => s.EndsWith(p, StringComparison.Ordinal);
+        public static bool has(string s, string part) => s.Contains(part, StringComparison.Ordinal);
+        public static string replace(string s, string a, string b) => s.Replace(a, b, StringComparison.Ordinal);
+        public static List<char> chars(string s) => [.. s];
+        public static string repeat(string s, int n) => string.Concat(Enumerable.Repeat(s, n));
+        public static string to_str(object? x) => x switch
+        {
+            null => "none",
+            bool b => b ? "true" : "false",
+            IFormattable f => f.ToString(null, Inv),
+            _ => x.ToString() ?? "",
+        };
+        public static int to_int(string s) => int.Parse(s, Inv);
+        public static decimal to_dec(string s) => decimal.Parse(s, Inv);
+
+        // numbers
+        public static int abs(int x) => Math.Abs(x);
+        public static decimal abs(decimal x) => Math.Abs(x);
+        public static int min(int a, int b) => Math.Min(a, b);
+        public static decimal min(decimal a, decimal b) => Math.Min(a, b);
+        public static int max(int a, int b) => Math.Max(a, b);
+        public static decimal max(decimal a, decimal b) => Math.Max(a, b);
+        public static decimal round(decimal x, int places) => Math.Round(x, places, MidpointRounding.AwayFromZero);
+        public static decimal sqrt(decimal x) => (decimal)Math.Sqrt((double)x);
+        public static decimal dec(int x) => x;
+        public static int floor(decimal x) => (int)Math.Floor(x);
+    }
+}

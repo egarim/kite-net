@@ -1,0 +1,49 @@
+# A small shop: records, pipes, when, loops and tests
+module Shop
+
+type Item = record(name: str, price: dec, qty: int)
+
+fn total(items: list<Item>) -> dec =
+    items |> sum(i => i.price * i.qty)
+
+fn size(n: int) -> str = when n
+    0 -> "empty"
+    1 -> "one item"
+    < 5 -> "a few items"
+    else -> "a lot"
+
+fn cheap(items: list<Item>, limit: dec) -> list<str>
+    return items |> filter(i => i.price < limit) |> map(i => upper(i.name))
+
+fn countdown(from: int) -> list<int>
+    let out: list<int> = []
+    let mut n = from
+    while n > 0
+        push(out, n)
+        n -= 1
+    return out
+
+fn main()
+    let cart = [Item("tea", 2.5, 3), Item("cake", 4.0, 1), Item("milk", 1.2, 2)]
+    print("total: {total(cart)}")
+    print("{len(cart)} lines: {size(len(cart))}")
+    print(cheap(cart, 3.0) |> join(", "))
+    for i in 1..=3
+        if i == 2 and total(cart) > 10.0
+            print("two")
+        elif i == 3
+            print("three")
+        else
+            print("one")
+
+test "total adds price times quantity"
+    expect total([Item("a", 1.5, 2)]) == 3.0
+    expect total([]) == 0.0
+
+test "size names the count"
+    expect size(0) == "empty"
+    expect size(3) == "a few items"
+    expect size(9) == "a lot"
+
+test "countdown"
+    expect countdown(3) |> join(",") == "3,2,1"
