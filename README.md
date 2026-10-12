@@ -66,6 +66,10 @@ MacBook Air M2 (16 GB, fanless), Q4 GGUF via `llama-bench`: 33 tokens/s on CPU o
 
 ## Try it
 
+**Just want to run the model and ask it for a program?** See
+[docs/USING-THE-MODEL.md](docs/USING-THE-MODEL.md): download the model, load it (Ollama / LM Studio / llama.cpp),
+ask it in plain English, and check what it wrote with the compiler.
+
 The compiler (needs the .NET 9 SDK; the first call builds it):
 
 ```bash
