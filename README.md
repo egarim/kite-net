@@ -62,7 +62,7 @@ Speed on an M1 Max (Mac Studio), tokens generated per second ↑:
 | llama.cpp | `kite-coder-q8_0.gguf`, 1.65 GB | 84 | 54 |
 
 The Q4 GGUF keeps the quality (75.0% passing on the first 60 test tasks vs 71.7% for the adapter).
-MacBook Air M1: not measured yet. Every number's raw answers are in `results/`.
+MacBook Air M2 (16 GB, fanless), Q4 GGUF via `llama-bench`: 33 tokens/s on CPU only, 70 with its GPU. Every number's raw answers are in `results/`.
 
 ## Try it
 
