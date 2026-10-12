@@ -28,7 +28,7 @@ The experiment is written up as an eight-part series on jocheojeda.com:
 5. [Training data that grades itself](https://jocheojeda.com/2026/10/11/training-data-that-grades-itself/)
 6. [It learned Kite and forgot C#](https://jocheojeda.com/2026/10/11/it-learned-kite-and-forgot-csharp/)
 7. [83 tokens per second on a CPU](https://jocheojeda.com/2026/10/11/83-tokens-per-second-on-a-cpu/)
-8. What didn't work, and what's next *(coming soon)*
+8. [What didn't work, and what's next](https://jocheojeda.com/2026/10/11/kite-net-what-didnt-work-whats-next/)
 
 ## Results (11 October 2026)
 
