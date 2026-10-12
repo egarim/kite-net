@@ -17,6 +17,19 @@ test "total adds price times quantity"
 Every answer is graded by a machine, not a person: the **Kite compiler** (Roslyn, straight to a .NET
 assembly), the **.NET static analyzers**, and **hidden tests**.
 
+## The write-up
+
+The experiment is written up as an eight-part series on jocheojeda.com:
+
+1. [Can a small model learn a programming language nobody has ever seen?](https://jocheojeda.com/2026/10/11/can-a-small-model-learn-a-new-language/)
+2. [Designing Kite.NET](https://jocheojeda.com/2026/10/11/designing-kite-net/)
+3. [Compiling a made-up language to .NET](https://jocheojeda.com/2026/10/11/compiling-a-made-up-language-to-dotnet/)
+4. [A grader that can't be fooled](https://jocheojeda.com/2026/10/11/a-grader-that-cant-be-fooled/)
+5. [Training data that grades itself](https://jocheojeda.com/2026/10/11/training-data-that-grades-itself/)
+6. [It learned Kite and forgot C#](https://jocheojeda.com/2026/10/11/it-learned-kite-and-forgot-csharp/)
+7. [83 tokens per second on a CPU](https://jocheojeda.com/2026/10/11/83-tokens-per-second-on-a-cpu/)
+8. What didn't work, and what's next *(coming soon)*
+
 ## Results (11 October 2026)
 
 Qwen2.5-Coder-1.5B-Instruct (Apache 2.0) + a LoRA adapter, scored on 265 tasks from 6 task families it never
