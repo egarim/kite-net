@@ -1,4 +1,0 @@
-type Item = record(name: str, price: dec, qty: int)
-
-fn total(items: list<Item>) -> dec =
-    items |> sum(i => i.price * i.qty)
