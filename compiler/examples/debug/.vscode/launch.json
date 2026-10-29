@@ -10,7 +10,6 @@
       "args": ["${workspaceFolder}/boom.dll"],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": true,
-      "requireExactSource": false,
       "console": "internalConsole"
     }
   ]

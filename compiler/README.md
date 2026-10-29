@@ -97,8 +97,7 @@ a portable PDB with the Kite source embedded, so:
 
 - `kite run` loads the symbols with the assembly: a runtime error says which Kite line failed,
   e.g. `error: Attempted to divide by zero. (boom.kite:5)`.
-- `kite build prog.kite -o prog.dll` writes `prog.dll`, `prog.pdb` and, for a program with `main`,
-  `prog.runtimeconfig.json`, so `dotnet prog.dll` runs it and a debugger can launch it.
+- `kite build prog.kite -o prog.dll` writes `prog.dll`, `prog.pdb` and `prog.runtimeconfig.json` for a Kite program with `main`, so `dotnet prog.dll` runs it and a debugger can launch it.
 
 [`examples/debug`](examples/debug) is a VS Code workspace for this (C# extension): open the folder, press F5, and
 it stops on the first line of `main` in `boom.kite`. Step over, step into `share`, and watch `total` and `people`

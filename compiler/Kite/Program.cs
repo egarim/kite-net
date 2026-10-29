@@ -23,6 +23,8 @@ public static class Program
     // .NET analyzer rules that fight Kite's own style (snake_case names, records with lowercase fields, one
     // static class per module), and CS0105: kite adds the usings to plain C#, so a program's own are no fault;
     // everything else runs at its default severity
+    // UTF-8 without a BOM, as Roslyn reads files: the PDB's checksum of the .kite file must match the bytes on disk
+    static readonly Encoding Utf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
     static readonly string[] Off = ["CS0105", "CA1707", "CA1050", "CA1716", "CA1052", "CA1515", "CA1305", "CA1310", "CA1307"];
     // off by default in the .NET SDK, on for Kite: dead code, wasted work, lost results
     static readonly string[] On = ["CA1508", "CA1806", "CA1829", "CA1851", "CA1854", "CA1860", "CA1862", "CA1847",
@@ -66,7 +68,7 @@ public static class Program
         var emit = compilation.Emit(ms, pdb,
             options: new EmitOptions(debugInformationFormat: DebugInformationFormat.PortablePdb,
                 pdbFilePath: Path.GetFileName(Path.ChangeExtension(outPath, ".pdb"))),
-            embeddedTexts: [EmbeddedText.FromSource(Path.GetFullPath(path), SourceText.From(source, Encoding.UTF8))]);
+            embeddedTexts: [EmbeddedText.FromSource(Path.GetFullPath(path), SourceText.From(source, Utf8))]);
         if (!emit.Success) { foreach (var d in emit.Diagnostics) Console.Error.WriteLine(d); report["ok"] = false; Print(report, json); return 1; }
         if (cmd == "build")
         {
@@ -75,7 +77,7 @@ public static class Program
             // a program with main() also gets the runtimeconfig `dotnet prog.dll` (and so a debugger) needs to start it
             if (front.HasMain)
                 File.WriteAllText(Path.ChangeExtension(outPath, ".runtimeconfig.json"),
-                    $"{{\"runtimeOptions\":{{\"tfm\":\"net{Environment.Version.Major}.0\",\"framework\":{{\"name\":\"Microsoft.NETCore.App\",\"version\":\"{Environment.Version}\"}}}}}}");
+                    $"{{\"runtimeOptions\":{{\"tfm\":\"net{Environment.Version.Major}.0\",\"framework\":{{\"name\":\"Microsoft.NETCore.App\",\"version\":\"{Environment.Version.Major}.{Environment.Version.Minor}.0\"}}}}}}");
             Console.WriteLine($"wrote {outPath}");
             return 0;
         }
@@ -139,8 +141,8 @@ public static class Program
     {
         var std = new StreamReader(typeof(Program).Assembly.GetManifestResourceStream("Std.cs")!).ReadToEnd();
         var opts = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
-        var trees = new[] { CSharpSyntaxTree.ParseText(SourceText.From(cs, Encoding.UTF8), opts, path: file + ".cs"),
-            CSharpSyntaxTree.ParseText(SourceText.From(std, Encoding.UTF8), opts, path: "Std.cs") }; // encoding: needed for debug info
+        var trees = new[] { CSharpSyntaxTree.ParseText(SourceText.From(cs, Utf8), opts, path: file + ".cs"),
+            CSharpSyntaxTree.ParseText(SourceText.From(std, Utf8), opts, path: "Std.cs") }; // encoding: needed for debug info
         var refs = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!).Split(Path.PathSeparator)
             .Select(p => MetadataReference.CreateFromFile(p));
         var compilation = CSharpCompilation.Create("KiteApp", trees, refs, new CSharpCompilationOptions(
