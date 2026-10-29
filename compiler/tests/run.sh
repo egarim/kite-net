@@ -14,5 +14,7 @@ expect tests/bad.kite "KT001 KT002 KT003 KT006 CS8602 CS0219"
 expect tests/leak.kite "KT004"
 expect tests/ca.kite "CA1829 CA1860"
 bin/kite test examples/shop.kite | tail -1 | grep -q "^ok" || { echo "FAIL shop tests"; fail=1; }
+# debug symbols: a runtime error names the Kite line it happened on (the PDB maps IL back through #line)
+bin/kite run examples/debug/boom.kite 2>&1 | grep -q "(boom.kite:5)" || { echo "FAIL runtime error not mapped to boom.kite:5"; fail=1; }
 [ $fail = 0 ] && echo "all kite checks pass"
 exit $fail
