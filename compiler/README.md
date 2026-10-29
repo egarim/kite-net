@@ -89,3 +89,17 @@ A program is clean when it has 0 errors and 0 warnings; the training data only k
 `Front.cs` turns Kite into C# text with `#line` directives (the way Razor compiles .cshtml), `Program.cs`
 parses it with Roslyn next to the standard library, compiles it in memory, runs the analyzers and either
 reports, runs `main`, runs the tests or writes the .dll. No C# file is written.
+
+## Debugging Kite
+
+The same `#line` directives that point errors at Kite lines also become the debugger's map. Every compile emits
+a portable PDB with the Kite source embedded, so:
+
+- `kite run` loads the symbols with the assembly: a runtime error says which Kite line failed,
+  e.g. `error: Attempted to divide by zero. (boom.kite:5)`.
+- `kite build prog.kite -o prog.dll` writes `prog.dll`, `prog.pdb` and `prog.runtimeconfig.json` for a Kite program with `main`, so `dotnet prog.dll` runs it and a debugger can launch it.
+
+[`examples/debug`](examples/debug) is a VS Code workspace for this (C# extension): open the folder, press F5, and
+it stops on the first line of `main` in `boom.kite`. Step over, step into `share`, and watch `total` and `people`
+in Locals. Breakpoints on `.kite` lines need `"debug.allowBreakpointsEverywhere": true` (set in the example).
+The generated plumbing is marked `#line hidden`, so stepping stays on Kite lines.

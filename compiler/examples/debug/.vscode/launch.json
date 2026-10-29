@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug boom.kite",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "kite build",
+      "program": "dotnet",
+      "args": ["${workspaceFolder}/boom.dll"],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": true,
+      "console": "internalConsole"
+    }
+  ]
+}

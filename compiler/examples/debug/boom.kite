@@ -1,0 +1,12 @@
+# Debugger demo: main calls share, which divides by zero on line 5
+module Boom
+
+fn share(total: int, people: int) -> int
+    let each = total / people
+    return each
+
+fn main()
+    let cake = 12
+    print("before")
+    let slice = share(cake, 0)
+    print("after {slice}")

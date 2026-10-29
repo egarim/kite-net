@@ -2,16 +2,19 @@
 //   kite check prog.kite [--json]     errors and warnings: Kite analyzer (KT), C# compiler (CS), .NET analyzers (CA)
 //   kite run   prog.kite              compile and run main()
 //   kite test  prog.kite [--json]     compile and run every `test` block
-//   kite build prog.kite -o prog.dll  write the assembly
+//   kite build prog.kite -o prog.dll  write the assembly and its prog.pdb (step through Kite lines in a debugger)
 //   kite emit  prog.kite              print the generated C# (debugging the compiler)
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text;
 using System.Text.Json;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Emit;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Kite;
 
@@ -20,6 +23,8 @@ public static class Program
     // .NET analyzer rules that fight Kite's own style (snake_case names, records with lowercase fields, one
     // static class per module), and CS0105: kite adds the usings to plain C#, so a program's own are no fault;
     // everything else runs at its default severity
+    // UTF-8 without a BOM, as Roslyn reads files: the PDB's checksum of the .kite file must match the bytes on disk
+    static readonly Encoding Utf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
     static readonly string[] Off = ["CS0105", "CA1707", "CA1050", "CA1716", "CA1052", "CA1515", "CA1305", "CA1310", "CA1307"];
     // off by default in the .NET SDK, on for Kite: dead code, wasted work, lost results
     static readonly string[] On = ["CA1508", "CA1806", "CA1829", "CA1851", "CA1854", "CA1860", "CA1862", "CA1847",
@@ -38,7 +43,8 @@ public static class Program
         var (cs, front) = path.EndsWith(".cs") ? (CSharp(source, file), Front.Lower("", file).Front) : Front.Lower(source, file);
         if (cmd == "emit") { Console.Write(cs); return 0; }
 
-        var (compilation, diags) = Compile(cs, file, front);
+        var dir = Path.GetDirectoryName(Path.GetFullPath(path))!;
+        var (compilation, diags) = Compile(cs, file, front, dir);
         var errors = diags.Count(d => d.Severity == "error");
         var report = new Dictionary<string, object?>
         {
@@ -54,24 +60,43 @@ public static class Program
             return errors == 0 ? 0 : 1;
         }
 
+        // Debug symbols: the #line markers already map every statement to its Kite line, so a portable PDB is all
+        // a debugger needs to put breakpoints and stepping on the .kite file. The Kite source is embedded in it.
+        var outPath = args.SkipWhile(a => a != "-o").Skip(1).FirstOrDefault() ?? Path.ChangeExtension(path, ".dll");
         using var ms = new MemoryStream();
-        var emit = compilation.Emit(ms);
-        if (!emit.Success) { report["ok"] = false; Print(report, json); return 1; }
+        using var pdb = new MemoryStream();
+        var emit = compilation.Emit(ms, pdb,
+            options: new EmitOptions(debugInformationFormat: DebugInformationFormat.PortablePdb,
+                pdbFilePath: Path.GetFileName(Path.ChangeExtension(outPath, ".pdb"))),
+            embeddedTexts: [EmbeddedText.FromSource(Path.GetFullPath(path), SourceText.From(source, Utf8))]);
+        if (!emit.Success) { foreach (var d in emit.Diagnostics) Console.Error.WriteLine(d); report["ok"] = false; Print(report, json); return 1; }
         if (cmd == "build")
         {
-            var outPath = args.SkipWhile(a => a != "-o").Skip(1).FirstOrDefault() ?? Path.ChangeExtension(path, ".dll");
             File.WriteAllBytes(outPath, ms.ToArray());
+            File.WriteAllBytes(Path.ChangeExtension(outPath, ".pdb"), pdb.ToArray());
+            // a program with main() also gets the runtimeconfig `dotnet prog.dll` (and so a debugger) needs to start it
+            if (front.HasMain)
+                File.WriteAllText(Path.ChangeExtension(outPath, ".runtimeconfig.json"),
+                    $"{{\"runtimeOptions\":{{\"tfm\":\"net{Environment.Version.Major}.0\",\"framework\":{{\"name\":\"Microsoft.NETCore.App\",\"version\":\"{Environment.Version.Major}.{Environment.Version.Minor}.0\"}}}}}}");
             Console.WriteLine($"wrote {outPath}");
             return 0;
         }
         ms.Position = 0;
-        var asm = new AssemblyLoadContext("kite", isCollectible: true).LoadFromStream(ms);
+        pdb.Position = 0;
+        var asm = new AssemblyLoadContext("kite", isCollectible: true).LoadFromStream(ms, pdb);
         if (cmd == "run")
         {
             var main = asm.GetTypes().SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static)).FirstOrDefault(m => m.Name == "Main");
             if (main == null) { Console.Error.WriteLine("no fn main()"); return 1; }
             try { main.Invoke(null, null); return 0; }
-            catch (TargetInvocationException e) { Console.Error.WriteLine($"error: {e.InnerException?.Message}"); return 1; }
+            catch (TargetInvocationException e)
+            {
+                // the PDB is loaded with the assembly, so the stack trace knows the Kite line that failed
+                var at = new System.Diagnostics.StackTrace(e.InnerException!, true).GetFrames()
+                    .FirstOrDefault(f => f.GetFileName()?.EndsWith(".kite") == true);
+                Console.Error.WriteLine($"error: {e.InnerException?.Message}" + (at == null ? "" : $" ({Path.GetFileName(at.GetFileName())}:{at.GetFileLineNumber()})"));
+                return 1;
+            }
         }
         if (cmd == "test")
         {
@@ -112,18 +137,21 @@ public static class Program
         return results;
     }
 
-    static (CSharpCompilation, List<Diag>) Compile(string cs, string file, Front front)
+    static (CSharpCompilation, List<Diag>) Compile(string cs, string file, Front front, string dir)
     {
         var std = new StreamReader(typeof(Program).Assembly.GetManifestResourceStream("Std.cs")!).ReadToEnd();
         var opts = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
-        var trees = new[] { CSharpSyntaxTree.ParseText(cs, opts, path: file + ".cs"), CSharpSyntaxTree.ParseText(std, opts, path: "Std.cs") };
+        var trees = new[] { CSharpSyntaxTree.ParseText(SourceText.From(cs, Utf8), opts, path: file + ".cs"),
+            CSharpSyntaxTree.ParseText(SourceText.From(std, Utf8), opts, path: "Std.cs") }; // encoding: needed for debug info
         var refs = ((string)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!).Split(Path.PathSeparator)
             .Select(p => MetadataReference.CreateFromFile(p));
         var compilation = CSharpCompilation.Create("KiteApp", trees, refs, new CSharpCompilationOptions(
                 front.HasMain ? OutputKind.ConsoleApplication : OutputKind.DynamicallyLinkedLibrary,
                 nullableContextOptions: NullableContextOptions.Enable,
                 specificDiagnosticOptions: Off.Select(x => (x, ReportDiagnostic.Suppress))
-                    .Concat(On.Select(x => (x, ReportDiagnostic.Warn))).ToDictionary(x => x.Item1, x => x.Item2)));
+                    .Concat(On.Select(x => (x, ReportDiagnostic.Warn))).ToDictionary(x => x.Item1, x => x.Item2))
+            // the PDB names each #line file by its full path, so a debugger finds the .kite file it was compiled from
+            .WithSourceReferenceResolver(new SourceFileResolver(ImmutableArray<string>.Empty, dir)));
 
         var diags = new List<Diag>(front.Diags);
         // a Kite syntax error makes Roslyn cascade into dozens of C# errors: show only Kite's own message then

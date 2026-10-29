@@ -1,0 +1,12 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "kite build",
+      "type": "shell",
+      "command": "${workspaceFolder}/../../bin/kite",
+      "args": ["build", "${workspaceFolder}/boom.kite", "-o", "${workspaceFolder}/boom.dll"],
+      "problemMatcher": []
+    }
+  ]
+}
