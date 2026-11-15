@@ -154,6 +154,15 @@ class Rule:
     predicate: bool
     body: list[Tok]
     line: int
+    steps: list | None = None       # a rule told step by step (see Step)
+
+
+@dataclass
+class Step:
+    kind: str                       # let, set, add, if, elif, else, while, for, give, stop, nothing, do
+    line: int
+    parts: dict                     # the step's pieces: token lists, names, types
+    inner: list = field(default_factory=list)   # the steps inside an if / while / for
 
 
 @dataclass
@@ -235,7 +244,12 @@ def read_tale(text: str) -> Tale:
 
     for pi, (ptext, pline) in enumerate(paragraphs):
         group: list[tuple[list[Tok], int, str]] = []
-        for si, s in enumerate(sentences(tokenize(ptext, pline))):
+        for si, s in enumerate(paragraph_sentences(ptext, pline)):
+            if isinstance(s, tuple):            # a rule told step by step
+                head, steps = s
+                read_rule(tale, head)
+                tale.rules[-1].steps = steps
+                continue
             ws, ln = words(s), s[0].line
             src = " ".join(t.text for t in s)
             if ws[:2] == ["for", "example"]:
@@ -289,6 +303,164 @@ def read_tale(text: str) -> Tale:
         if not isinstance(r.returns, str):
             r.returns = parse_type(tale, r.returns, r.line)
     return tale
+
+
+def paragraph_sentences(ptext: str, pline: int) -> list:
+    """Sentences, except that a rule header ending in ':' followed by indented lines is (header, steps)."""
+    lines = ptext.split("\n")
+    out, buf, buf_line, j = [], [], pline, 0
+    while j < len(lines):
+        line = lines[j]
+        if (not line[:1].isspace() and line.rstrip().endswith(":") and j + 1 < len(lines)
+                and lines[j + 1][:1].isspace() and lines[j + 1].strip()):
+            if buf:
+                out += sentences(tokenize("\n".join(buf), buf_line))
+                buf = []
+            head = tokenize(line, pline + j)
+            k = j + 1
+            while k < len(lines) and lines[k][:1].isspace():
+                k += 1
+            out.append((head, read_steps(lines[j + 1:k], pline + j + 1)))
+            j = k
+            buf_line = pline + j
+            continue
+        if not buf:
+            buf_line = pline + j
+        buf.append(line)
+        j += 1
+    if buf:
+        out += sentences(tokenize("\n".join(buf), buf_line))
+    return out
+
+
+STEP_HELP = ('Steps start with: Let … be / start at …, Set … to …, Increase / Decrease … by …, '
+             'Multiply / Divide … by …, Add … to …, If …:, Otherwise if …:, Otherwise:, While …:, '
+             'For each … in …:, For each … from … to / below …:, Give …, Stop with …, Do nothing.')
+
+
+def read_steps(lines: list[str], first: int) -> list[Step]:
+    """Indented step lines -> a tree of Steps. A step ends with '.' or ':'; it may run over several lines."""
+    flat: list[tuple[int, list[Tok], int]] = []
+    cur, cur_indent, cur_line = [], 0, first
+    for n, raw in enumerate(lines):
+        if not cur:
+            cur_indent, cur_line = len(raw) - len(raw.lstrip()), first + n
+        cur.append(raw.strip())
+        if re.search(r"[.:]\s*$", raw):
+            flat.append((cur_indent, tokenize(" ".join(cur), cur_line), cur_line))
+            cur = []
+    if cur:
+        raise TaleError("This step has no period at the end.", cur_line)
+
+    def block(i: int, indent: int) -> tuple[list[Step], int]:
+        steps: list[Step] = []
+        while i < len(flat) and flat[i][0] >= indent:
+            ind, toks, ln = flat[i]
+            if ind > indent:
+                raise TaleError("This step is indented more than the step before it, which does not end with ':'.", ln)
+            step = read_step(toks, ln)
+            i += 1
+            if toks[-1].text == ":":
+                if i >= len(flat) or flat[i][0] <= indent:
+                    raise TaleError("A step ending with ':' needs indented steps under it.", ln)
+                step.inner, i = block(i, flat[i][0])
+            steps.append(step)
+        return steps, i
+
+    steps, i = block(0, flat[0][0]) if flat else ([], 0)
+    if i < len(flat):
+        raise TaleError("This step is indented less than the first step of the rule.", flat[i][2])
+    return steps
+
+
+def local_name(toks: list[Tok], ln: int) -> tuple[str, list[Tok] | None]:
+    """[the] name [(type)] -> (kite name, type tokens)"""
+    ws = words(toks)
+    typ = None
+    if "(" in ws:
+        b = ws.index("(")
+        typ, toks, ws = toks[b + 1:-1], toks[:b], ws[:b]
+    ws = [w for w in ws if w not in ARTICLES]
+    if len(ws) != 1:
+        raise TaleError(f'Name a value with one word, like "running_total", not "{" ".join(ws)}".', ln)
+    return snake(ws), typ
+
+
+def read_step(toks: list[Tok], ln: int) -> Step:
+    end = toks[-1].text
+    body = toks[:-1]
+    ws = words(body)
+    if not ws:
+        raise TaleError(f"An empty step. {STEP_HELP}", ln)
+    first = ws[0]
+
+    def at_word(w: str, last=False) -> int:
+        idx = [k for k, t in enumerate(body) if t.text == w and t.kind == "w"]
+        if not idx:
+            raise TaleError(f'This step needs "{w}". {STEP_HELP}', ln)
+        return idx[-1] if last else idx[0]
+
+    if end == ":":
+        if first == "if":
+            return Step("if", ln, {"cond": body[1:]})
+        if first == "otherwise":
+            rest = body[1:]
+            if rest and rest[0].text == ",":
+                rest = rest[1:]
+            if not rest:
+                return Step("else", ln, {})
+            if rest[0].text == "if":
+                return Step("elif", ln, {"cond": rest[1:]})
+        if first == "while":
+            return Step("while", ln, {"cond": body[1:]})
+        if ws[:2] == ["for", "each"] and len(ws) > 3:
+            var = snake([ws[2]])
+            if ws[3] == "in":
+                return Step("for", ln, {"var": var, "src": body[4:]})
+            if ws[3] == "from":
+                rest = body[4:]
+                for k, t in enumerate(rest):
+                    if t.text in ("to", "below") and t.kind == "w":
+                        return Step("for", ln, {"var": var, "from": rest[:k], "to": rest[k + 1:],
+                                                "incl": t.text == "to"})
+        raise TaleError(f'I don\'t know the step "{" ".join(ws)}:". {STEP_HELP}', ln)
+    if end != ".":
+        raise TaleError("A step ends with '.' or ':'.", ln)
+    if first == "if":                                        # If C, give false.
+        cond = split_top(body[1:], {","})[0]
+        rest = body[1 + len(cond) + 1:]
+        if not rest:
+            raise TaleError('A one-line "If" is "If <condition>, <step>." Use brackets if the condition has commas.', ln)
+        return Step("if", ln, {"cond": cond}, [read_step(rest + [Tok("p", ".", ln)], ln)])
+    if first == "let":
+        for verb, mut in (("start", True), ("be", False)):
+            if verb in ws:
+                k = at_word(verb)
+                name, typ = local_name(body[1:k], ln)
+                val = body[k + 1:]
+                if verb == "start":
+                    if not val or val[0].text not in ("at", "as"):
+                        raise TaleError('Write "Let <name> start at <value>."', ln)
+                    val = val[1:]
+                return Step("let", ln, {"name": name, "type": typ, "mut": mut, "value": val})
+        raise TaleError('Write "Let <name> be <value>." or "Let <name> start at <value>."', ln)
+    if first == "set":
+        k = at_word("to")
+        return Step("set", ln, {"name": local_name(body[1:k], ln)[0], "op": "=", "value": body[k + 1:]})
+    if first in ("increase", "decrease", "multiply", "divide"):
+        k = at_word("by")
+        op = {"increase": "+=", "decrease": "-=", "multiply": "*=", "divide": "/="}[first]
+        return Step("set", ln, {"name": local_name(body[1:k], ln)[0], "op": op, "value": body[k + 1:]})
+    if first == "add":
+        k = at_word("to", last=True)
+        return Step("add", ln, {"value": body[1:k], "name": local_name(body[k + 1:], ln)[0]})
+    if first == "give":
+        return Step("give", ln, {"value": body[1:]})
+    if ws[:2] == ["stop", "with"]:
+        return Step("stop", ln, {"value": body[2:]})
+    if ws == ["do", "nothing"]:
+        return Step("nothing", ln, {})
+    raise TaleError(f'I don\'t know the step "{" ".join(ws)}". {STEP_HELP}', ln)
 
 
 def read_rule(tale: Tale, s: list[Tok]):
@@ -814,6 +986,65 @@ class Expr:
 
 # ---------------------------------------------------------------- to Kite
 
+def emit_steps(tale: Tale, steps: list[Step], depth: int, names: list[str], emit):
+    """Steps -> Kite statements. A value named in a block is known until that block ends."""
+    pad = "    " * depth
+    names = list(names)
+
+    def ex(toks, ln):
+        if not toks:
+            raise TaleError("Something is missing in this step.", ln)
+        return Expr(tale, list(toks), [], names, ln).run()
+
+    prev = None
+    for s in steps:
+        p = s.parts
+        if s.kind in ("elif", "else") and (prev is None or prev.kind not in ("if", "elif")):
+            raise TaleError('"Otherwise" needs an "If" step right before it.', s.line)
+        if s.kind == "let":
+            if words(p["value"])[:3] == ["an", "empty", "list"]:     # Kite needs the type of a named []
+                if p["type"]:
+                    t = parse_type(tale, p["type"], s.line)
+                elif words(p["value"])[3:4] == ["of"]:
+                    t = parse_type(tale, p["value"][2:], s.line)
+                else:
+                    raise TaleError('Say what the list holds: "an empty list of items".', s.line)
+                val = "[]"
+            else:
+                t = parse_type(tale, p["type"], s.line) if p["type"] else None
+                val = ex(p["value"], s.line)
+            emit(f"{pad}let {'mut ' if p['mut'] else ''}{p['name']}{': ' + t if t else ''} = {val}", s.line)
+            names.append(p["name"])
+        elif s.kind == "set":
+            if p["name"] not in names:
+                raise TaleError(f'"{p["name"]}" was never named with "Let".{suggest(p["name"], names)}', s.line)
+            emit(f"{pad}{p['name']} {p['op']} {ex(p['value'], s.line)}", s.line)
+        elif s.kind == "add":
+            if p["name"] not in names:
+                raise TaleError(f'"{p["name"]}" was never named with "Let".{suggest(p["name"], names)}', s.line)
+            emit(f"{pad}push({p['name']}, {ex(p['value'], s.line)})", s.line)
+        elif s.kind in ("if", "elif", "while"):
+            emit(f"{pad}{s.kind} {ex(p['cond'], s.line)}", s.line)
+            emit_steps(tale, s.inner, depth + 1, names, emit)
+        elif s.kind == "else":
+            emit(f"{pad}else", s.line)
+            emit_steps(tale, s.inner, depth + 1, names, emit)
+        elif s.kind == "for":
+            if "src" in p:
+                src = ex(p["src"], s.line)
+            else:
+                src = f"{ex(p['from'], s.line)}{'..=' if p['incl'] else '..'}{ex(p['to'], s.line)}"
+            emit(f"{pad}for {p['var']} in {src}", s.line)
+            emit_steps(tale, s.inner, depth + 1, names + [p["var"]], emit)
+        elif s.kind == "give":
+            emit(f"{pad}return {ex(p['value'], s.line)}", s.line)
+        elif s.kind == "stop":
+            emit(f"{pad}fail {ex(p['value'], s.line)}", s.line)
+        elif s.kind == "nothing":
+            emit(f"{pad}pass", s.line)
+        prev = s
+
+
 def to_kite(tale: Tale) -> tuple[str, dict[int, int]]:
     out: list[str] = []
     where: dict[int, int] = {}
@@ -831,10 +1062,17 @@ def to_kite(tale: Tale) -> tuple[str, dict[int, int]]:
             emit(f"type {kind.name} = record({', '.join(f'{f}: {t}' for f, t in kind.fields)})", kind.line)
     for r in tale.rules:
         names = [n for n, _ in r.slots]
-        body = Expr(tale, list(r.body), [], names, r.line).run()
+        head = f"fn {r.name}({', '.join(f'{n}: {t}' for n, t in r.slots)}) -> {r.returns}"
         emit("", r.line)
-        emit(f"fn {r.name}({', '.join(f'{n}: {t}' for n, t in r.slots)}) -> {r.returns} =", r.line)
-        emit(f"    {body}", r.body[0].line if r.body else r.line)
+        if r.steps is not None:
+            emit(head, r.line)
+            emit_steps(tale, r.steps, 1, names, emit)
+            continue
+        if not r.body:
+            raise TaleError("This rule has no body: write it after the ':' or as indented steps.", r.line)
+        body = Expr(tale, list(r.body), [], names, r.line).run()
+        emit(head + " =", r.line)
+        emit(f"    {body}", r.body[0].line)
 
     supposed = [n for n, _, _ in tale.supposes]
     lets: dict[str, tuple[str, set[str], int]] = {}

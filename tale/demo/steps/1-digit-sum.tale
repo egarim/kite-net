@@ -1,0 +1,12 @@
+Digits.
+
+The digit sum of a number (a whole number) is a whole number:
+    Let x start at the number.
+    Let the total start at 0.
+    While x is more than 0:
+        Increase the total by the remainder of x divided by 10.
+        Set x to x divided by 10.
+    Give the total.
+
+For example, the digit sum of 1234 is 10.
+For example, the digit sum of 0 is 0.

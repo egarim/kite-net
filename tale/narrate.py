@@ -250,9 +250,10 @@ def read_kite(text: str) -> Program:
         line = lines[i].rstrip()
         s = line.strip()
         i += 1
-        body = []
+        body, body_raw = [], []
         while i < len(lines) and lines[i].startswith((" ", "\t")):
             body.append(lines[i].strip())
+            body_raw.append(lines[i].rstrip())
             i += 1
         if s.startswith("module "):
             prog.module = s.split()[1]
@@ -269,16 +270,17 @@ def read_kite(text: str) -> Program:
         elif m := re.match(r"fn\s+(\w+)\s*\((.*)\)\s*(?:->\s*(.+?))?\s*(=\s*(.*))?$", s):
             if m.group(1) == "main":
                 continue
-            if not m.group(4):
-                raise NarrateError("a step-by-step function body")
             if not m.group(3):
                 raise NarrateError("a function that returns nothing")
             params = []
             for part in split_params(m.group(2)):
                 n, t = part.split(":", 1)
                 params.append((n.strip(), t.strip()))
+            if not m.group(4):
+                raw_fns.append((m.group(1), params, m.group(3).strip(), None, body_raw))
+                continue
             expr = " ".join([m.group(5) or ""] + body).strip()
-            raw_fns.append((m.group(1), params, m.group(3).strip(), expr))
+            raw_fns.append((m.group(1), params, m.group(3).strip(), expr, None))
         elif m := re.match(r'test\s+"', s):
             lets, checks = [], []
             for b in body:
@@ -293,7 +295,10 @@ def read_kite(text: str) -> Program:
             raw_tests.append((lets, checks))
         else:
             raise NarrateError(f'Kite line "{s[:40]}"')
-    for name, params, ret, expr in raw_fns:
+    for name, params, ret, expr, block in raw_fns:
+        if expr is None:
+            prog.fns.append(Fn(name, params, ret, ("steps", read_block(block, prog))))
+            continue
         if expr.startswith("when ") or " when" in expr.split("=")[0]:
             raise NarrateError("when (pattern matching)")
         prog.fns.append(Fn(name, params, ret, resolve_names(KiteExpr(expr).run(), prog)))
@@ -301,6 +306,78 @@ def read_kite(text: str) -> Program:
         prog.tests.append(([(n, resolve_names(KiteExpr(e).run(), prog)) for n, e in lets],
                            [resolve_names(KiteExpr(c).run(), prog) for c in checks]))
     return prog
+
+
+def kite_expr(text: str, prog: Program):
+    if re.match(r"when\b", text) or re.search(r"=\s*when\b", text):
+        raise NarrateError("when (pattern matching)")
+    return resolve_names(KiteExpr(text).run(), prog)
+
+
+def read_block(raw: list[str], prog: Program) -> list:
+    """Indented Kite statements -> a list of statement tuples (if/elif/else chains joined)."""
+    items = [(len(l) - len(l.lstrip()), l.strip()) for l in raw]
+
+    def block(i: int, indent: int) -> tuple[list, int]:
+        out: list = []
+        while i < len(items) and items[i][0] >= indent:
+            ind, s = items[i]
+            if ind > indent:
+                raise NarrateError("Kite indentation I cannot follow")
+            i += 1
+            inner: list = []
+            if i < len(items) and items[i][0] > indent:
+                inner, i = block(i, items[i][0])
+            head = s.split()[0]
+            if head in ("elif", "else"):
+                if not out or out[-1][0] != "if" or out[-1][2] is not None:
+                    raise NarrateError("an elif/else without its if")
+                if head == "elif":
+                    out[-1][1].append((kite_expr(s[4:].strip(), prog), inner))
+                else:
+                    out[-1][2] = inner
+                continue
+            out.append(statement(s, inner, prog))
+        return [tuple(x) if isinstance(x, list) else x for x in out], i
+
+    stmts, _ = block(0, items[0][0]) if items else ([], 0)
+    return stmts
+
+
+def statement(s: str, inner: list, prog: Program):
+    if m := re.match(r"let\s+(mut\s+)?(\w+)\s*(?::\s*([^=]+?))?\s*=\s*(.+)$", s):
+        return ("let", bool(m.group(1)), m.group(2), m.group(3), kite_expr(m.group(4), prog))
+    if m := re.match(r"(\w+)\s*(\+=|-=|\*=|/=|=)\s*(.+)$", s):
+        e = kite_expr(m.group(3), prog)
+        op = m.group(2)
+        if op != "=":                       # x += e is x = x + e
+            e = ("bin", op[0], ("var", m.group(1)), e)
+        return ("set", m.group(1), e)
+    word = s.split()[0]
+    rest = s[len(word):].strip()
+    if word == "if":
+        return ["if", [(kite_expr(rest, prog), inner)], None]   # elif/else are added to it
+    if word == "while":
+        return ("while", kite_expr(rest, prog), inner)
+    if word == "for":
+        m = re.match(r"(\w+)\s+in\s+(.+)$", rest)
+        if not m:
+            raise NarrateError("a for I cannot read")
+        src = m.group(2)
+        if r := re.match(r"(.+?)\s*(\.\.=|\.\.)\s*(.+)$", src):
+            src_t = ("range", kite_expr(r.group(1), prog), kite_expr(r.group(3), prog), r.group(2) == "..=")
+        else:
+            src_t = kite_expr(src, prog)
+        return ("for", m.group(1), src_t, inner)
+    if word == "return":
+        return ("return", kite_expr(rest, prog))
+    if word == "fail":
+        return ("fail", kite_expr(rest, prog))
+    if s == "pass":
+        return ("pass",)
+    if m := re.match(r"push\((\w+)\s*,\s*(.+)\)$", s):
+        return ("push", m.group(1), kite_expr(m.group(2), prog))
+    raise NarrateError(f"the step {word}" if re.match(r"\w+$", word) else "a step I cannot read")
 
 
 def split_params(s: str) -> list[str]:
@@ -393,6 +470,7 @@ class Teller:
         self.records = dict(prog.records)
         self.enums = dict(prog.enums)
         self.slots: list[str] = []
+        self.params: set[str] = set()
         self.lets: set[str] = set()
         self.loops: list[str] = []
 
@@ -500,7 +578,84 @@ class Teller:
 
     def rule(self, f: Fn) -> str:
         self.slots, self.lets, self.loops = [p for p, _ in f.params], set(), []
+        self.params = set(self.slots)
+        if f.body[0] == "steps":
+            return self.header(f) + "\n" + "\n".join(self.steps(f.body[1], 1))
         return self.header(f) + "\n" + self.need(f.body, IF) + "."
+
+    # -- steps
+    def name(self, n: str) -> str:
+        if n in SMALL_WORDS:
+            raise NarrateError(f'a value named "{n}", a word tale needs for itself')
+        return n
+
+    def steps(self, stmts: list, depth: int) -> list[str]:
+        pad = "    " * depth
+        saved = list(self.slots)
+        out: list[str] = []
+        for st in stmts:
+            out += self.step(st, depth, pad)
+        self.slots = saved
+        return out
+
+    def step(self, st, depth: int, pad: str) -> list[str]:
+        k = st[0]
+        if k == "let":
+            _, mut, n, t, e = st
+            self.name(n)
+            if e == ("list", []):
+                if not t or not t.startswith("list<"):
+                    raise NarrateError("an empty list given a name without its type")
+                val, typed = "an empty list of " + self.type_words(t)[len("a list of "):], ""
+            else:
+                val, typed = self.need(e, IF), f" ({self.type_words(t)})" if t else ""
+            self.slots.append(n)
+            return [f"{pad}Let {n}{typed} {'start at' if mut else 'be'} {val}."]
+        if k == "set":
+            _, n, e = st
+            if e[0] == "bin" and e[1] in "+-*/" and e[2] == ("var", n):
+                verb = {"+": "Increase", "-": "Decrease", "*": "Multiply", "/": "Divide"}[e[1]]
+                return [f"{pad}{verb} {n} by {self.need(e[3], IF)}."]
+            return [f"{pad}Set {n} to {self.need(e, IF)}."]
+        if k == "push":
+            return [f"{pad}Add {self.need(st[2], IF)} to {st[1]}."]
+        if k == "return":
+            return [f"{pad}Give {self.need(st[1], IF)}."]
+        if k == "fail":
+            return [f"{pad}Stop with {self.need(st[1], IF)}."]
+        if k == "pass":
+            return [f"{pad}Do nothing."]
+        if k == "while":
+            return [f"{pad}While {self.need(st[1], IF)}:"] + self.steps(st[2], depth + 1)
+        if k == "for":
+            _, v, src, inner = st
+            self.name(v)
+            if src[0] == "range":
+                a = self.need(src[1], IF)
+                if re.search(r"\b(to|below)\b", strip_brackets(a)):
+                    a = f"({a})"
+                head = f"{pad}For each {v} from {a} {'to' if src[3] else 'below'} {self.need(src[2], IF)}:"
+            else:
+                head = f"{pad}For each {v} in {self.need(src, IF)}:"
+            self.slots.append(v)
+            body = self.steps(inner, depth + 1)
+            self.slots.remove(v)
+            return [head] + body
+        if k == "if":
+            _, branches, otherwise = st
+            (c, inner), more = branches[0], branches[1:]
+            cond = self.need(c, IF)
+            if not more and otherwise is None and len(inner) == 1 and inner[0][0] not in ("if", "while", "for", "let") \
+                    and "," not in strip_brackets(cond):
+                one = self.step(inner[0], depth + 1, "")[0]
+                return [f"{pad}If {cond}, {one[0].lower()}{one[1:]}"]
+            out = [f"{pad}If {cond}:"] + self.steps(inner, depth + 1)
+            for c2, inner2 in more:
+                out += [f"{pad}Otherwise, if {self.need(c2, IF)}:"] + self.steps(inner2, depth + 1)
+            if otherwise is not None:
+                out += [f"{pad}Otherwise:"] + self.steps(otherwise, depth + 1)
+            return out
+        raise NarrateError(f"the step {k}")
 
     def call_phrase(self, f: Fn, args: list[str]) -> str:
         ws = f.name.split("_")
@@ -577,6 +732,8 @@ class Teller:
             v = e[1]
             if self.loops and v == self.loops[-1]:
                 return "it", PRIM
+            if v in self.slots and v not in self.params:
+                return v, PRIM          # a value named in a step: "x", not "the x"
             if v in self.loops or v in self.slots:
                 return f"the {v}", PRIM
             if v in self.lets:
@@ -602,6 +759,13 @@ class Teller:
             listed = vals[0] if len(vals) == 1 else ", ".join(vals[:-1]) + " and " + vals[-1]
             return f"{article(w)} {w} with {listed}", PRIM
         if k == "not":
+            x = e[1]   # "9 is not prime" reads better than "not 9 is prime"
+            if x[0] == "call" and x[1] in self.fns and self.fns[x[1]].returns == "bool" \
+                    and x[1].startswith("is_") and len(x[2]) >= 1:
+                text, _ = self.tell_call(x[1], x[2])
+                first = self.need(x[2][0], AGG)
+                if text.startswith(first + " is "):
+                    return f"{first} is not {text[len(first) + 4:]}", CMP
             return f"not {self.need(e[1], NOT)}", NOT
         if k == "neg":
             raise NarrateError("a minus sign in front of a value")

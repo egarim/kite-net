@@ -1,0 +1,19 @@
+Primes.
+
+A number (a whole number) is prime when:
+    If the number is less than 2, give false.
+    Let i start at 2.
+    While i times i is at most the number:
+        If the remainder of the number divided by i is 0, give false.
+        Increase i by 1.
+    Give true.
+
+The primes up to a limit (a whole number) is a list of whole numbers:
+    Let found be an empty list of whole numbers.
+    For each n from 2 to the limit:
+        If n is prime, add n to found.
+    Give found.
+
+For example, 7 is prime.
+For example, 9 is not prime.
+For example, the primes up to 20 joined with "," is "2,3,5,7,11,13,17,19".

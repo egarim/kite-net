@@ -49,7 +49,8 @@ missing-field.tale:8: "an item with …" is missing quantity.
   [demo/frame](demo/frame) has 5 use cases (shipping, leap years, coupons, body mass, invoices). Each has a
   first draft that `frame` refuses (`*.draft.tale`) and the fixed tale that frames clean.
 - **`fly`** compiles a tale and runs its examples. [demo/fly](demo/fly) has 5 use cases (library fines, tips,
-  vowels, stock value, an exam), every example passing.
+  vowels, stock value, an exam), every example passing. [demo/steps](demo/steps) has 3 rules told as steps
+  (digit sum, primes, a withdrawal that can stop with an error).
 
 `frame` checks that a tale is clear, not that it is right. "its weight divided by its height times its height"
 frames clean and computes (weight ÷ height) × height. Only an example would catch that, so write
@@ -73,18 +74,18 @@ All 30 good tales here survive the round trip (`run_samples.py` checks it). Over
 
 | | tasks |
 |---|---|
-| told as a tale, same program back, and it flies (0 errors, 0 warnings, tests pass) | **491** (388 train, 19 valid, 84 test) |
-| told, but a different program came back: caught, not used | 5 |
-| no tale phrase yet | 1,531 |
+| told as a tale, same program back, and it flies (0 errors, 0 warnings, tests pass) | **707** (577 train, 31 valid, 99 test) |
+| told, but a different program came back: caught, not used | 10 |
+| no tale phrase yet | 1,310 |
 
 The pairs go to `build/tale-pairs.jsonl` (prompt, tale, kite, tests). The round trip earned its place on the first
 run: 28 tasks came back as a *different* program that still compiled. For example, "the sum of … for each item in
 the items rounded to 2 places" rounded each item instead of the sum. Those were narrator mistakes, now fixed. The
 5 left are real ambiguities in English, such as a yes-or-no rule "is rainy" next to a choice called rainy.
 
-What Kite Tale cannot say yet, most common first: a step-by-step body (1,012 tasks), `when` (122), `take` (62),
-string interpolation `"{x}"` (33), an input named `a` (31), a field of a computed value (28). That list is the
-grammar's to-do list, and the first item is the process story: "first …, then …, finally …".
+What Kite Tale cannot say yet, most common first: a function that returns nothing (166, mostly printing),
+`when` (137), maps and generic types like `map<str, int>()` (about 190), `take`/`skip` (124), string interpolation
+`"{x}"` (61), a field of a computed value (60). That list is the grammar's to-do list.
 
 ## The plan
 
@@ -95,8 +96,9 @@ Free narration  --(AI, next)-->  .tale  --(tale, no AI)-->  .kite  --(kite)-->  
 1. **Done (v0):** the language ([TALE.md](TALE.md)), the compiler ([tale.py](tale.py)), 20 sample tales and
    10 demo use cases, all compiling clean (0 errors, 0 warnings) with every example passing, plus 10 broken
    tales the compiler refuses.
-2. **Done:** the narrator and the round trip; 491 checked story/code pairs from kite-net's tasks.
-3. **Next:** step-by-step stories (processes), to cover the 1,012 tasks with block bodies.
+2. **Done:** the narrator and the round trip, and step-by-step stories ([demo/steps](demo/steps)): 707 checked
+   story/code pairs from kite-net's tasks.
+3. **Next:** `when`, maps, and functions that return nothing.
 4. **Then:** train a small model (same gym as Kite.NET) to turn loose narration into a strict tale. It is graded
    by the machine: the tale compiles, the round trip holds, and the hidden tests pass.
 

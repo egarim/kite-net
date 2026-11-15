@@ -14,6 +14,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 frame_dir = here / "demo" / "frame"
 cases = ([("fly", f, True) for f in sorted((here / "samples").glob("*.tale"))] +
          [("fly", f, True) for f in sorted((here / "demo" / "fly").glob("*.tale"))] +
+         [("fly", f, True) for f in sorted((here / "demo" / "steps").glob("*.tale"))] +
          [("frame", f, True) for f in sorted(frame_dir.glob("*.tale")) if not f.name.endswith(".draft.tale")] +
          [("frame", f, False) for f in sorted(frame_dir.glob("*.draft.tale"))] +
          [("frame", f, False) for f in sorted((here / "mistakes").glob("*.tale"))])

@@ -54,7 +54,41 @@ Types: `text`, `money` / `a number` (dec), `a whole number` (int), `yes or no` (
 - The words around the slots form the phrase you use to call it: `the share of 90 among 3`.
 - A `… is a palindrome when:` rule is a yes-or-no rule. You call it as `"level" is a palindrome`, and
   `is not a palindrome` negates it.
-- The body is one expression and ends with a period.
+- The body is one expression and ends with a period, or a list of steps (next section).
+
+## Steps (a rule told as a process)
+
+When the lines under a rule header are indented, they are steps, done in order. A step ends with `.`, or with
+`:` when indented steps belong to it.
+
+```
+The digit sum of a number (a whole number) is a whole number:
+    Let x start at the number.
+    Let the total start at 0.
+    While x is more than 0:
+        Increase the total by the remainder of x divided by 10.
+        Set x to x divided by 10.
+    Give the total.
+```
+
+| Step | Kite |
+|---|---|
+| `Let x be E.` / `Let x start at E.` | `let x = E` / `let mut x = E` (`start at`: it will change) |
+| `Let x (a number) start at 0.` | `let mut x: dec = 0` |
+| `Let found be an empty list of whole numbers.` | `let found: list<int> = []` |
+| `Set x to E.` | `x = E` |
+| `Increase` / `Decrease` / `Multiply` / `Divide x by E.` | `x += E` / `-=` / `*=` / `/=` |
+| `Add E to found.` | `push(found, E)` |
+| `If C:` … `Otherwise, if C:` … `Otherwise:` | `if C` / `elif C` / `else` |
+| `If C, give false.` | an `if` with one step (no commas in C) |
+| `While C:` | `while C` |
+| `For each x in L:` | `for x in L` |
+| `For each i from 1 to n:` / `from 0 below n:` | `for i in 1..=n` / `for i in 0..n` |
+| `Give E.` | `return E` |
+| `Stop with "message".` | `fail "message"` |
+| `Do nothing.` | `pass` |
+
+A value named with `Let` is a single word (`running_total`), known from that step to the end of its block.
 
 ## Expressions, loosest first
 
