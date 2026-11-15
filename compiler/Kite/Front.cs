@@ -388,7 +388,14 @@ public sealed partial class Front
         if (a >= b) return "";
         // lambda: params => body (the body is rewritten on its own)
         int arrow = Top(ts, a, b, "=>");
-        if (arrow >= 0) return Raw(ts, a, arrow) + " => " + Rw(ts, arrow + 1, b, line);
+        if (arrow >= 0)
+        {
+            // in call arguments, f(xs, x => x), only the tokens after the last comma are parameters; the
+            // arguments before it are rewritten like any other code (an `and` there must become &&)
+            int comma = TopLast(ts, a, arrow, ",");
+            if (comma >= 0) return Rw(ts, a, comma, line) + ", " + Rw(ts, comma + 1, b, line);
+            return Raw(ts, a, arrow) + " => " + Rw(ts, arrow + 1, b, line);
+        }
         // pipes bind tighter than comparisons and and/or: xs |> len() == 3
         int pipe = TopLast(ts, a, b, "|>");
         if (pipe >= 0)

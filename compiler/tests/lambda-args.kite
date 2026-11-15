@@ -1,0 +1,10 @@
+# and/or/not inside a lambda that is an argument before another lambda (it once reached C# untranslated)
+fn between(xs: list<int>) -> int =
+    sum(filter(xs, x => ((x > 1) and (x < 5))), x => x)
+
+fn odd_or_big(xs: list<int>) -> int =
+    count(map(xs, x => x * 2), x => x > 10 or not (x % 4 == 0))
+
+test "nested lambdas keep and, or and not"
+    expect between([1, 2, 3, 4, 5]) == 9
+    expect odd_or_big([1, 2, 6]) == 2
