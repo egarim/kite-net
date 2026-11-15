@@ -1,0 +1,6 @@
+Shipping.
+
+A parcel has a weight (a number) and a express (yes or no).
+
+The shipping cost of a parcel (a parcel) to a zone (a whole number) is money:
+5 plus its weight times 2 plus the zone times 3.

@@ -1,0 +1,6 @@
+Body mass index.
+
+A person has a name (text), a weight (a number) and a height (a number).
+
+The body mass of a person (a person) is a number:
+its weight divided by (its height times its height) rounded to 1 places.

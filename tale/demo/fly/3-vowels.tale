@@ -1,0 +1,12 @@
+Vowels.
+
+The vowel count of a word (text) is a whole number:
+the number of letters in the letters of the word in lower case where "aeiou" contains the letter.
+
+A word (text) is all consonants when:
+the vowel count of the word is 0.
+
+For example, the vowel count of "Kite" is 2.
+For example, the vowel count of "AEIOU" is 5.
+For example, "rhythm" is all consonants.
+For example, "kite" is not all consonants.

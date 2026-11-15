@@ -1,0 +1,6 @@
+Leap years.
+
+A year (a whole number) is a leap year when:
+the remainder of the year divided by 4 is 0
+and the remainder of the year divided by 100 is not 0
+or the remainder of the year divided by 400 is 0.

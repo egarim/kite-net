@@ -1,0 +1,4 @@
+Leap years.
+
+A year (a whole number) is a leap year when:
+the year is divisible by 4 and the year is not divisible by 100 or the year is divisible by 400.

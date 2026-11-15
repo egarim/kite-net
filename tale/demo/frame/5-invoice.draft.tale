@@ -1,0 +1,6 @@
+Invoices.
+
+An invoice has a number (text), an amount (money) and days late (a whole number).
+
+The reminder for an invoice (an invoice) is a whole number:
+"Invoice " plus its number plus " is " plus its days late as text plus " days late".

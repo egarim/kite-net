@@ -37,10 +37,23 @@ When a sentence is unclear, `tale` asks instead of guessing:
 
 ```
 colour.tale:6: "colour" is not a field of any kind I know. Did you mean "color"?
-its.tale:6: "its" has nothing to point to here: there is no "for each" and more than one input. Name it, like "the item's price".
+1-shipping.draft.tale:6: "its" could mean the parcel or the zone. Name it, like "the parcel's weight".
+2-leap-year.draft.tale:4: I don't know "divisible". There is no yes-or-no rule "is divisible by …". Describe it first, …
 missing-field.tale:8: "an item with …" is missing quantity.
-wrong-type.tale:3: error CS0029: this gives 'text', but the rule says it gives 'a whole number'
+5-invoice.draft.tale:5: error CS0029: this gives 'text', but the rule says it gives 'a whole number'
 ```
+
+## Two verbs: frame and fly
+
+- **`frame`** compiles a tale and checks it: either it is clean, or you get a question about what you meant.
+  [demo/frame](demo/frame) has 5 use cases (shipping, leap years, coupons, body mass, invoices). Each has a
+  first draft that `frame` refuses (`*.draft.tale`) and the fixed tale that frames clean.
+- **`fly`** compiles a tale and runs its examples. [demo/fly](demo/fly) has 5 use cases (library fines, tips,
+  vowels, stock value, an exam), every example passing.
+
+`frame` checks that a tale is clear, not that it is right. "its weight divided by its height times its height"
+frames clean and computes (weight ÷ height) × height. Only an example would catch that, so write
+"divided by (its height times its height)", and give every rule a `For example`.
 
 ## The plan
 
@@ -48,8 +61,9 @@ wrong-type.tale:3: error CS0029: this gives 'text', but the rule says it gives '
 Free narration  --(AI, next)-->  .tale  --(tale, no AI)-->  .kite  --(kite)-->  .NET + tests
 ```
 
-1. **Done (v0):** the language ([TALE.md](TALE.md)), the compiler ([tale.py](tale.py)), 20 sample tales, all
-   compiling clean (0 errors, 0 warnings) with every example passing, plus 5 broken tales the compiler refuses.
+1. **Done (v0):** the language ([TALE.md](TALE.md)), the compiler ([tale.py](tale.py)), 20 sample tales and
+   10 demo use cases, all compiling clean (0 errors, 0 warnings) with every example passing, plus 10 broken
+   tales the compiler refuses.
 2. **Next:** a narrator that goes the other way, Kite → tale, run over kite-net's 1,506 checked tasks to get
    story/code pairs for free.
 3. **Then:** train a small model (same gym as Kite.NET) to turn loose narration into a strict tale. It is graded

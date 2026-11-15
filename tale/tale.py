@@ -95,8 +95,15 @@ def words(toks: list[Tok]) -> list[str]:
     return [t.text for t in toks]
 
 
+# words a name cannot be in Kite (its keywords, and the C# ones Kite refuses): "a class" becomes class_
+RESERVED = {"and", "or", "not", "none", "fn", "let", "mut", "type", "test", "if", "then", "else", "elif", "when",
+            "for", "in", "while", "return", "use", "module", "expect", "fail", "pass", "true", "false", "record",
+            "enum", "var", "new", "public", "static", "void", "class", "null", "string", "this"}
+
+
 def snake(ws: list[str]) -> str:
-    return "_".join(w.replace("-", "_") for w in ws)
+    name = "_".join(w.replace("-", "_") for w in ws)
+    return name + "_" if name in RESERVED else name
 
 
 def pascal(ws: list[str]) -> str:
@@ -525,19 +532,25 @@ class Expr:
                 return a
 
     def post(self) -> str:
-        return self.prim()
-
-    def fin(self) -> str:
-        """Postfix phrases apply to the whole arithmetic before them: "a divided by b rounded to 2 places"."""
-        a = self.add()
-        while not self.bare:
+        """Text phrases stick to the word right before them: "the letters of the word in lower case"."""
+        a = self.prim()
+        while True:
             if self.take("in", "upper", "case"):
                 a = f"upper({a})"
             elif self.take("in", "lower", "case"):
                 a = f"lower({a})"
             elif self.take("trimmed"):
                 a = f"trim({a})"
-            elif self.take("reversed"):
+            elif self.take("spelled", "backwards"):
+                a = f"join(reverse(chars({a})), \"\")"
+            else:
+                return a
+
+    def fin(self) -> str:
+        """List and number phrases apply to the whole phrase before them: "a divided by b rounded to 2 places"."""
+        a = self.add()
+        while not self.bare:
+            if self.take("reversed"):
                 a = f"reverse({a})"
             elif self.take("spelled", "backwards"):
                 a = f"join(reverse(chars({a})), \"\")"
@@ -566,6 +579,10 @@ class Expr:
                 a = f"round({a}, {n})"
             elif self.take("as", "text"):
                 a = f"to_str({a})"
+            elif self.take("plus"):         # the arithmetic may go on: "its days as text plus " days""
+                a = f"({a} + {self.mul()})"
+            elif self.take("minus"):
+                a = f"({a} - {self.mul()})"
             else:
                 return a
         return a
@@ -754,8 +771,12 @@ class Expr:
         if len(self.slots) == 1:
             self.used.add(self.slots[0])
             return self.slots[0]
-        raise TaleError('"its" has nothing to point to here: there is no "for each" and more than one input. '
-                        'Name it, like "the item\'s price".', self.here())
+        if not self.slots:
+            raise TaleError('"its" has nothing to point to here: there is no "for each" and no input.', self.here())
+        names = [s.replace("_", " ") for s in self.slots]
+        could = ", ".join(f"the {n}" for n in names[:-1]) + f" or the {names[-1]}"
+        what = self.peek() or "price"
+        raise TaleError(f'"its" could mean {could}. Name it, like "the {names[0]}\'s {what}".', self.here())
 
     def resolve(self, name: str) -> str:
         for cand in [name] + [snake([s]) for s in singulars(name)]:
@@ -767,6 +788,16 @@ class Expr:
         if self.near:
             shape = " ".join("…" if isinstance(p, int) else p for p in self.near[0].pattern)
             hint = f' It looks like "the {shape}", but the rest did not fit that rule.'
+        elif self.i >= 2 and self.t[self.i - 2].text == "is":
+            ws = [self.t[self.i - 1].text]
+            for t in self.t[self.i:self.i + 2]:
+                if t.kind != "w" or t.text in ("and", "or"):
+                    break
+                ws.append(t.text)
+            phrase = " ".join(ws)
+            hint = (f' There is no yes-or-no rule "is {phrase} …". Describe it first, like '
+                    f'"A number (a whole number) is {phrase} a divisor (a whole number) when: …", '
+                    f'or say it with what Kite Tale knows.')
         raise TaleError(f'I don\'t know "{name.replace("_", " ")}".{suggest(name, known)}{hint}', self.here())
 
 

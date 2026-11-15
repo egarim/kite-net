@@ -1,0 +1,21 @@
+An exam.
+
+A student has a name (text) and marks (a list of whole numbers).
+
+The average of a student (a student) is a number:
+the sum of its marks divided by the length of its marks rounded to 1 places.
+
+A student (a student) passes when:
+the average of the student is at least 50 and the mark is at least 30 for every mark in the student's marks.
+
+The passing names in a class (a list of students) is a list of texts:
+its name for each student in the class where the student passes.
+
+Suppose ana is a student with name "Ana" and marks a list of 70, 80 and 60.
+Suppose bo is a student with name "Bo" and marks a list of 90, 95 and 20.
+Suppose cy is a student with name "Cy" and marks a list of 40, 45 and 50.
+For example, the average of ana is 70.
+For example, ana passes.
+For example, bo passes is false.
+For example, cy passes is false.
+For example, the passing names in a list of ana, bo and cy joined with "," is "Ana".

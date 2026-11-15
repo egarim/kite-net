@@ -1,0 +1,20 @@
+Stock value.
+
+A product has a name (text), a cost (money), a count (a whole number) and a category (text).
+
+The value of some products (a list of products) is money:
+the sum of its cost times its count for each product in the products.
+
+The value of some products (a list of products) in a category (text) is money:
+the sum of its cost times its count for each product in the products whose category is the category.
+
+The empty shelves in some products (a list of products) is a list of texts:
+its name for each product in the products whose count is 0.
+
+Suppose pens is a product with name "pens", cost 1.5, count 100 and category "office".
+Suppose desks is a product with name "desks", cost 120, count 2 and category "furniture".
+Suppose chairs is a product with name "chairs", cost 45, count 0 and category "furniture".
+Suppose stock is a list of pens, desks and chairs.
+For example, the value of stock is 390.
+For example, the value of stock in "furniture" is 240.
+For example, the empty shelves in stock joined with "," is "chairs".

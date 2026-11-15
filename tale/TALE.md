@@ -68,7 +68,8 @@ Types: `text`, `money` / `a number` (dec), `a whole number` (int), `yes or no` (
 | `A contains B`, `A starts with B`, `A ends with B` | `has` `starts` `ends` |
 | `A plus B`, `A minus B` | `+` `-` |
 | `A times B`, `A divided by B`, `the remainder of A divided by B` | `*` `/` `%` |
-| `X in upper case`, `X rounded to 2 places`, … | apply to the whole phrase before them (`a divided by b rounded to 2 places`) |
+| `X in upper case`, `in lower case`, `trimmed`, `spelled backwards` | stick to the word right before them (`the letters of the word in lower case`) |
+| `X rounded to 2 places`, `joined with`, `sorted`, `reversed`, `as text` | apply to the whole phrase before them (`a divided by b rounded to 2 places`) |
 | `( … )` | grouping, whenever English is not clear enough |
 
 `and` joins items in a list (`a list of tea, cake and milk`) and fields in a `with` (see below) before it
