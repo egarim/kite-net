@@ -61,8 +61,9 @@ Needs Python 3.10+ and the .NET 9 SDK (.NET 10 works too: `tale` sets `DOTNET_RO
 repo's Kite compiler and builds it on first use; set `KITE_DLL` to use another one. Run from this folder (`tale/`).
 
 ```bash
-python tale.py emit samples/01-shop.tale     # print the Kite
-python tale.py test samples/01-shop.tale     # compile and run the examples
+python tale.py emit  samples/01-shop.tale    # print the Kite
+python tale.py frame samples/01-shop.tale    # compile and check: clean, or a question about what you meant
+python tale.py fly   samples/01-shop.tale    # compile, then run the examples
 python run_samples.py                        # everything
 ```
 

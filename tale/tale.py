@@ -1,8 +1,8 @@
 """tale: compile a Kite Tale (a story in strict plain English) to Kite.NET. No AI: same input, same output.
 
     python tale.py emit  shop.tale     # print the Kite program
-    python tale.py check shop.tale     # compile with kite; errors point at tale lines
-    python tale.py test  shop.tale     # run the examples as tests
+    python tale.py frame shop.tale     # compile and check with kite; errors point at tale lines
+    python tale.py fly   shop.tale     # compile, then run the examples as tests
 
 The rules are in TALE.md.
 """
@@ -873,10 +873,11 @@ def compile_file(path: Path) -> tuple[str, dict[int, int]]:
 def main(argv: list[str]) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    if len(argv) < 3 or argv[1] not in ("emit", "check", "test"):
+    verbs = {"emit": "emit", "frame": "check", "fly": "test"}   # tale verb -> kite verb
+    if len(argv) < 3 or argv[1] not in verbs:
         print(__doc__)
         return 2
-    verb, path = argv[1], Path(argv[2])
+    verb, path = verbs[argv[1]], Path(argv[2])
     try:
         kite_text, where = compile_file(path)
     except TaleError as e:
