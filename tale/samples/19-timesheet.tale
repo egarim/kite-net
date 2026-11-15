@@ -5,9 +5,9 @@ An entry has a person (text), hours (a number) and billable (yes or no).
 The billable hours of some entries (a list of entries) for a person (text) is a number:
 the sum of its hours for each entry in the entries where its person is the person and its billable.
 
-Suppose a is an entry with person "ana", hours 3.5 and billable true.
-Suppose b is an entry with person "ana", hours 2.0 and billable false.
-Suppose c is an entry with person "bo", hours 4.0 and billable true.
-For example, the billable hours of a list of a, b and c for "ana" is 3.5.
-For example, the billable hours of a list of a, b and c for "bo" is 4.
-For example, the billable hours of a list of a, b and c for "cy" is 0.
+Suppose e1 is an entry with person "ana", hours 3.5 and billable true.
+Suppose e2 is an entry with person "ana", hours 2.0 and billable false.
+Suppose e3 is an entry with person "bo", hours 4.0 and billable true.
+For example, the billable hours of a list of e1, e2 and e3 for "ana" is 3.5.
+For example, the billable hours of a list of e1, e2 and e3 for "bo" is 4.
+For example, the billable hours of a list of e1, e2 and e3 for "cy" is 0.

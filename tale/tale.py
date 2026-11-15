@@ -42,7 +42,7 @@ TOKEN_RX = re.compile(r"""
     (?P<str>"(?:[^"\\]|\\.)*")
   | (?P<chr>'(?:[^'\\]|\\.)')
   | (?P<num>-?\d+(?:\.\d+)?)
-  | (?P<w>[A-Za-z][A-Za-z_-]*)(?P<poss>'s\b)?
+  | (?P<w>[A-Za-z][A-Za-z0-9_-]*)(?P<poss>'s\b)?
   | (?P<p>[,.:()])
   | (?P<sp>\s+)
   | (?P<bad>.)
@@ -249,11 +249,14 @@ def read_tale(text: str) -> Tale:
                 tale.supposes.append((name, s[k + 1:], ln))
             elif any(t.text == ":" for t in s):
                 read_rule(tale, s)
-            elif len(ws) > 2 and ws[0] in ("a", "an") and ws[2:5] == ["is", "one", "of"]:
-                members = [snake([w for w in words(p) if w not in ARTICLES]) for p in split_top(s[5:], {",", "or"})]
-                ename = pascal([ws[1]])
+            elif ws[0] in ("a", "an") and (e := next((k for k in range(2, len(ws) - 2)
+                                                         if ws[k:k + 3] == ["is", "one", "of"]), 0)):
+                # "A slot kind is one of work, personal or break."
+                members = [snake([w for w in words(p) if w not in ARTICLES])
+                           for p in split_top(s[e + 3:], {",", "or"})]
+                ename = pascal(ws[1:e])
                 tale.enums.append((ename, [pascal([m]) for m in members], ln))
-                tale.kinds[ws[1]] = Kind(ename, [], ln)
+                tale.kinds[" ".join(ws[1:e])] = Kind(ename, [], ln)
                 for m in members:
                     tale.choices[m] = (ename, pascal([m]))
             elif len(ws) > 2 and ws[0] in ("a", "an") and "has" in ws[:4]:
@@ -323,8 +326,11 @@ def read_rule(tale: Tale, s: list[Tok]):
         raise TaleError('A rule needs at least one input in brackets, like "some items (a list of items)".', ln)
     if not predicate and pattern and pattern[0] == "the":
         pattern = pattern[1:]
-    lits = [w for w in pattern if isinstance(w, str) and w not in ARTICLES | {"of", "is"}]
-    name = ("is_" if predicate else "") + snake(lits)
+    # a yes-or-no rule keeps its verb: "is a palindrome" -> is_palindrome, "can pay" -> can_pay
+    # "and" only joins inputs: "the shared hobbies of a (…) and b (…)" -> shared_hobbies
+    lits = [w for w in pattern
+            if isinstance(w, str) and w not in ARTICLES | ({"of", "and"} if predicate else {"of", "is", "and"})]
+    name = snake(lits)
     tale.rules.append(Rule(pattern, slots, returns, name, predicate, body, ln))
 
 
@@ -577,6 +583,8 @@ class Expr:
                 n = self.prim()
                 self.take("places") or self.take("place")
                 a = f"round({a}, {n})"
+            elif self.take("as", "a", "number"):
+                a = f"dec({a})"
             elif self.take("as", "text"):
                 a = f"to_str({a})"
             elif self.take("plus"):         # the arithmetic may go on: "its days as text plus " days""
@@ -655,8 +663,11 @@ class Expr:
         call = self.rule_call()
         if call:
             return call
-        if t.text in ("a", "an") and self.peek(1) and kind_for(self.tale, self.peek(1)) and self.peek(2) == "with":
-            return self.construct()
+        if t.text in ("a", "an"):
+            for key in sorted(self.tale.kinds, key=lambda k: -len(k.split())):   # "a line item with …"
+                ws = key.split()
+                if self.at(t.text, *ws, "with") and self.tale.kinds[key].fields:
+                    return self.construct(len(ws))
         if self.take("its"):
             return self.field_of(self.its())
         if self.take("it"):
@@ -726,10 +737,10 @@ class Expr:
             self.i = save
         return None
 
-    def construct(self) -> str:
+    def construct(self, size: int = 1) -> str:
         self.i += 1
-        kind = kind_for(self.tale, self.t[self.i].text)
-        self.i += 1
+        kind = kind_for(self.tale, " ".join(t.text for t in self.t[self.i:self.i + size]))
+        self.i += size
         self.need("with")
         given: dict[str, str] = {}
         names = sorted(kind.fields, key=lambda f: -len(f[0]))
@@ -828,8 +839,12 @@ def to_kite(tale: Tale) -> tuple[str, dict[int, int]]:
     supposed = [n for n, _, _ in tale.supposes]
     lets: dict[str, tuple[str, set[str], int]] = {}
     for n, toks, ln in tale.supposes:
+        if words(toks)[:4] == ["an", "empty", "list", "of"]:
+            # "Suppose none yet is an empty list of items.": Kite needs the type of a named []
+            lets[n] = (f"[]", set(), ln, parse_type(tale, toks[2:], ln))
+            continue
         e = Expr(tale, list(toks), [], [m for m in supposed if m in lets], ln)
-        lets[n] = (e.run(), e.used, ln)
+        lets[n] = (e.run(), e.used, ln, None)
     for gi, group in enumerate(tale.groups, 1):
         checks, used = [], set()
         for toks, ln, src in group:
@@ -847,7 +862,8 @@ def to_kite(tale: Tale) -> tuple[str, dict[int, int]]:
         emit(f'test "example {gi}: {title}"', group[0][1])
         for n in lets:
             if n in need:
-                emit(f"    let {n} = {lets[n][0]}", lets[n][2])
+                typed = f": {lets[n][3]}" if lets[n][3] else ""
+                emit(f"    let {n}{typed} = {lets[n][0]}", lets[n][2])
         for c, ln in checks:
             emit(f"    expect {c}", ln)
     return "\n".join(out) + "\n", where

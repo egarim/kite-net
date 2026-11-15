@@ -42,12 +42,15 @@ Types: `text`, `money` / `a number` (dec), `a whole number` (int), `yes or no` (
 | Tale header | Kite |
 |---|---|
 | `The total of some items (a list of items) is money:` | `fn total(items: list<Item>) -> dec` |
-| `The share of a bill (money) among some people (a whole number) is money:` | `fn share(bill: dec, people: int) -> dec` |
+| `The share of a bill (money) among some people (a whole number) is money:` | `fn share_among(bill: dec, people: int) -> dec` |
 | `A word (text) is a palindrome when:` | `fn is_palindrome(word: str) -> bool` |
+| `An account (an account) can pay an amount (money) when:` | `fn can_pay(account: Account, amount: dec) -> bool` |
 
 - A slot is `<a/an/some/the> <name> (<type>)`. The name is the word just before the brackets.
-- The function name is every word outside the slots, minus `the`, `a`, `an`, `of` and `is`. For example,
-  `the share of … among …` becomes `share_among`, and `the price after tax of …` becomes `price_after_tax`.
+- The function name is every word outside the slots, minus `the`, `a`, `an`, `some` and `of` (and `is`,
+  except in a yes-or-no rule). For example,
+  `the share of … among …` becomes `share_among`, and `the price after tax of …` becomes `price_after_tax`,
+  `… is a palindrome` becomes `is_palindrome` and `… can pay …` becomes `can_pay`.
 - The words around the slots form the phrase you use to call it: `the share of 90 among 3`.
 - A `… is a palindrome when:` rule is a yes-or-no rule. You call it as `"level" is a palindrome`, and
   `is not a palindrome` negates it.
