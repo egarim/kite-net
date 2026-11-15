@@ -1,0 +1,16 @@
+Parking.
+
+A car has a plate (text), hours (a whole number) and a permit (yes or no).
+
+The fee for a car (a car) is money:
+0 if its permit,
+otherwise 2.5 times its hours.
+
+The fees of some cars (a list of cars) is money:
+the sum of the fee for the car for each car in the cars.
+
+Suppose guest is a car with plate "ABC 1", hours 3 and permit false.
+Suppose staff is a car with plate "XYZ 9", hours 8 and permit true.
+For example, the fee for guest is 7.5.
+For example, the fee for staff is 0.
+For example, the fees of a list of guest, staff and guest is 15.

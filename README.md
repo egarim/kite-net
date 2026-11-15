@@ -113,6 +113,7 @@ used); a draft is kept only when kite compiles it with 0 errors and 0 warnings a
 | `kitegym/` | task drafting and checking (`tasks.py`), scoring with hidden tests and the repair harness (`eval.py`), GGUF export (`export.py`) |
 | `sources/` | every kept task: 1,506 Kite (36 training families, 2 valid, 6 test), 748 C# training, 177 C# guard, 256 repair lessons |
 | `results/` | every scored answer, round by round, and the champion pointer |
+| `tale/` | **Kite Tale**: specs written as plain-English stories that compile to Kite, examples becoming tests ([tale/README.md](tale/README.md)) |
 
 Weights are not in git: the adapter and GGUF files go to GitHub Releases.
 

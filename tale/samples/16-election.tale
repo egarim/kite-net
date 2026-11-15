@@ -1,0 +1,13 @@
+An election.
+
+The votes for a candidate (text) in some ballots (a list of texts) is a whole number:
+the number of ballots in the ballots where the ballot is the candidate.
+
+A candidate (text) wins in some ballots (a list of texts) when:
+the votes for the candidate in the ballots times 2 is more than the length of the ballots.
+
+Suppose ballots is a list of "ana", "bo", "ana" and "ana".
+For example, the votes for "ana" in ballots is 3.
+For example, the votes for "cy" in ballots is 0.
+For example, "ana" wins in ballots.
+For example, "bo" wins in ballots is false.

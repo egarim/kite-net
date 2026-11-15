@@ -1,0 +1,19 @@
+A weather log.
+
+A day has a date (text), a high (a number) and a low (a number).
+
+The hottest of some days (a list of days) is a number:
+the largest of its high for each day in the days.
+
+The coldest of some days (a list of days) is a number:
+the smallest of its low for each day in the days.
+
+The frosty days in a log (a list of days) is a whole number:
+the number of days in the log whose low is less than 0.
+
+Suppose monday is a day with date "Mon", high 12.5 and low -1.0.
+Suppose tuesday is a day with date "Tue", high 15.0 and low 3.0.
+Suppose week is a list of monday and tuesday.
+For example, the hottest of week is 15.
+For example, the coldest of week is -1.
+For example, the frosty days in week is 1.

@@ -1,0 +1,21 @@
+A clinic.
+
+A priority is one of urgent, soon or routine.
+
+A patient has a name (text), an age (a whole number) and a fever (a number).
+
+The priority of a patient (a patient) is a priority:
+urgent if its fever is at least 39.5,
+soon if its fever is at least 38 or its age is more than 75,
+otherwise routine.
+
+The urgent names in a queue (a list of patients) is a list of texts:
+its name for each patient in the queue where the priority of the patient is urgent.
+
+Suppose ana is a patient with name "Ana", age 30 and fever 40.0.
+Suppose bo is a patient with name "Bo", age 80 and fever 36.6.
+Suppose cy is a patient with name "Cy", age 20 and fever 37.0.
+For example, the priority of ana is urgent.
+For example, the priority of bo is soon.
+For example, the priority of cy is routine.
+For example, the urgent names in a list of ana, bo and cy joined with "," is "Ana".

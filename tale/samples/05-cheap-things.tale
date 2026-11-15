@@ -1,0 +1,11 @@
+Cheap things.
+
+An item has a name (text) and a price (money).
+
+The cheap names in some items (a list of items) under a limit (money) is a list of texts:
+its name in upper case for each item in the items whose price is less than the limit.
+
+Suppose tea is an item with name "tea" and price 2.5.
+Suppose cake is an item with name "cake" and price 4.0.
+For example, the cheap names in a list of tea and cake under 3 joined with "," is "TEA".
+For example, the cheap names in a list of tea and cake under 1 joined with "," is "".

@@ -1,0 +1,16 @@
+A warehouse.
+
+A product has a code (text), a stock (a whole number) and a minimum (a whole number).
+
+The restock list of some products (a list of products) is a list of texts:
+its code for each product in the products where its stock is less than its minimum.
+
+The units to order for a product (a product) is a whole number:
+its minimum minus its stock times 2 if its stock is less than its minimum,
+otherwise 0.
+
+Suppose bolts is a product with code "B-1", stock 3 and minimum 10.
+Suppose nuts is a product with code "N-2", stock 40 and minimum 10.
+For example, the restock list of a list of bolts and nuts joined with "," is "B-1".
+For example, the units to order for bolts is 4.
+For example, the units to order for nuts is 0.

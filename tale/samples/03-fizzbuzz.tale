@@ -1,0 +1,12 @@
+Fizz buzz.
+
+The call for a number (a whole number) is text:
+"FizzBuzz" if the remainder of the number divided by 15 is 0,
+"Fizz" if the remainder of the number divided by 3 is 0,
+"Buzz" if the remainder of the number divided by 5 is 0,
+otherwise the number as text.
+
+For example, the call for 9 is "Fizz".
+For example, the call for 10 is "Buzz".
+For example, the call for 30 is "FizzBuzz".
+For example, the call for 7 is "7".

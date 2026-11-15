@@ -1,0 +1,13 @@
+Temperature.
+
+The fahrenheit of a celsius (a number) is a number:
+the celsius times 9 divided by 5 plus 32.
+
+The average of some readings (a list of numbers) is a number:
+0 if the length of the readings is 0,
+otherwise the sum of the readings divided by the length of the readings rounded to 1 places.
+
+For example, the fahrenheit of 100 is 212.
+For example, the fahrenheit of -40 is -40.
+For example, the average of a list of 20.0, 21.0 and 25.0 is 22.
+For example, the average of an empty list is 0.
