@@ -1,0 +1,15 @@
+Grades.
+
+The letter for a score (a whole number) is text:
+"A" if the score is at least 90,
+"B" if the score is at least 80,
+"C" if the score is at least 70,
+otherwise "F".
+
+The letters for some scores (a list of whole numbers) is a list of texts:
+the letter for it for each score in the scores.
+
+For example, the letter for 95 is "A".
+For example, the letter for 70 is "C".
+For example, the letter for 12 is "F".
+For example, the letters for a list of 91, 85 and 3 joined with "," is "A,B,F".

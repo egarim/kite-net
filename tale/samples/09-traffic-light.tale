@@ -1,0 +1,17 @@
+A traffic light.
+
+A light is one of red, amber or green.
+
+The next of a light (a light) is a light:
+green if the light is red,
+amber if the light is green,
+otherwise red.
+
+A light (a light) is safe to cross when:
+the light is red.
+
+For example, the next of red is green.
+For example, the next of green is amber.
+For example, the next of amber is red.
+For example, red is safe to cross.
+For example, green is not safe to cross.

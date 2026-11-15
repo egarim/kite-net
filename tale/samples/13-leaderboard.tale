@@ -1,0 +1,15 @@
+A leaderboard.
+
+A player has a name (text) and a score (a whole number).
+
+The ranking of some players (a list of players) is a list of texts:
+its name for each player in the players sorted by its score, largest first.
+
+The best of some players (a list of players) is a whole number:
+the largest of its score for each player in the players.
+
+Suppose ana is a player with name "Ana" and score 30.
+Suppose bo is a player with name "Bo" and score 50.
+Suppose cy is a player with name "Cy" and score 10.
+For example, the ranking of a list of ana, bo and cy joined with "," is "Bo,Ana,Cy".
+For example, the best of a list of ana, bo and cy is 50.

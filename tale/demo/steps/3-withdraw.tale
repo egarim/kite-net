@@ -1,0 +1,15 @@
+Withdrawals.
+
+An account has an owner (text) and a balance (money).
+
+The balance after a withdrawal from an account (an account) of an amount (money) is money:
+    If the amount is at most 0:
+        Stop with "the amount must be more than 0".
+    Otherwise, if the amount is more than the account's balance:
+        Stop with "not enough money".
+    Otherwise:
+        Give the account's balance minus the amount.
+
+Suppose mine is an account with owner "Jose" and balance 100.
+For example, the balance after a withdrawal from mine of 30 is 70.
+For example, the balance after a withdrawal from mine of 100 is 0.

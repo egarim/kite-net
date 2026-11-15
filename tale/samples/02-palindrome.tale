@@ -1,0 +1,8 @@
+Palindromes.
+
+A word (text) is a palindrome when:
+the word in lower case is the word in lower case spelled backwards.
+
+For example, "level" is a palindrome.
+For example, "Kayak" is a palindrome.
+For example, "kite" is not a palindrome.

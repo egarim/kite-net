@@ -1,0 +1,8 @@
+Missing field.
+
+An item has a name (text), a price (money) and a quantity (a whole number).
+
+The value of an item (an item) is money:
+its price times its quantity.
+
+For example, the value of an item with name "tea" and price 2.5 is 5.

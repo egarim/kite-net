@@ -1,0 +1,15 @@
+A recipe.
+
+An ingredient has a name (text), grams (a number) and a vegan (yes or no).
+
+The scaled of some ingredients (a list of ingredients) for some guests (a whole number) is a list of numbers:
+its grams times the guests divided by 4 for each ingredient in the ingredients.
+
+A dish (a list of ingredients) is vegan when:
+its vegan for every ingredient in the dish.
+
+Suppose flour is an ingredient with name "flour", grams 200 and vegan true.
+Suppose butter is an ingredient with name "butter", grams 100 and vegan false.
+For example, the scaled of a list of flour and butter for 8 joined with "," is "400,200".
+For example, a list of flour is vegan.
+For example, a list of flour and butter is not vegan.

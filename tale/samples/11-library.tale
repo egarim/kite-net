@@ -1,0 +1,16 @@
+A library.
+
+A book has a title (text), an author (text) and a loaned (yes or no).
+
+A shelf (a list of books) is all loaned when:
+the book's loaned for every book in the shelf.
+
+A shelf (a list of books) has something by an author (text) when:
+the book's author is the author for some book in the shelf.
+
+Suppose dune is a book with title "Dune", author "Herbert" and loaned true.
+Suppose emma is a book with title "Emma", author "Austen" and loaned false.
+For example, a list of dune and emma is not all loaned.
+For example, a list of dune is all loaned.
+For example, a list of dune and emma has something by "Austen".
+For example, a list of dune has something by "Austen" is false.

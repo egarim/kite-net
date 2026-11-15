@@ -1,0 +1,6 @@
+Colours.
+
+An item has a name (text) and a color (text).
+
+The colors of some items (a list of items) is a list of texts:
+its colour for each item in the items.

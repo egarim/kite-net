@@ -1,0 +1,10 @@
+A shop.
+
+An item has a name (text), a price (money) and a quantity (a whole number).
+
+The total of some items (a list of items) is money:
+the sum of its price times its quantity for each item in the items.
+
+Suppose tea is an item with name "tea", price 2.5 and quantity 2.
+For example, the total of a list of tea and tea is 10.
+For example, the total of no items is 0.

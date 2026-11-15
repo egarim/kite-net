@@ -1,0 +1,14 @@
+Word statistics.
+
+The word count of a sentence (text) is a whole number:
+the length of the words of the sentence.
+
+The different words in a sentence (text) is a whole number:
+the length of the distinct of the words of (the sentence in lower case).
+
+The long words in a sentence (text) is a list of texts:
+each word in the words of the sentence where the length of the word is more than 4.
+
+For example, the word count of "the kite flies high" is 4.
+For example, the different words in "The cat saw the dog" is 4.
+For example, the long words in "a small kite flies higher" joined with " " is "small flies higher".

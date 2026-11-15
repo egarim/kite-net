@@ -1,0 +1,6 @@
+Coupons.
+
+A coupon has a code (text) and a discount (a number).
+
+The price after a coupon (a coupon) on an amount (money) is money:
+the amount minus the amount times the coupon's discount divided by 100.

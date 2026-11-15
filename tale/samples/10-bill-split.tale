@@ -1,0 +1,11 @@
+Splitting a bill.
+
+The share of a bill (money) among some people (a whole number) is money:
+the bill divided by the people rounded to 2 places.
+
+The share with tip of a bill (money) among some people (a whole number) is money:
+the share of the bill times 1.1 among the people.
+
+For example, the share of 90 among 3 is 30.
+For example, the share of 10 among 3 is 3.33.
+For example, the share with tip of 100 among 4 is 27.5.

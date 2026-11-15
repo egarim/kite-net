@@ -1,0 +1,14 @@
+A bank account.
+
+An account has an owner (text), a balance (money) and a limit (money).
+
+An account (an account) can pay an amount (money) when:
+the amount is at most the account's balance plus the account's limit.
+
+The interest on an account (an account) at a rate (a number) is money:
+the account's balance times the rate divided by 100 rounded to 2 places.
+
+Suppose mine is an account with owner "Jose", balance 100 and limit 50.
+For example, mine can pay 120.
+For example, mine can pay 151 is false.
+For example, the interest on mine at 3.5 is 3.5.

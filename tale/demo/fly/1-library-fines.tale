@@ -1,0 +1,19 @@
+Library fines.
+
+A loan has a title (text) and days late (a whole number).
+
+The fine for a loan (a loan) is money:
+0 if its days late is at most 0,
+5 if its days late times 0.25 is more than 5,
+otherwise its days late times 0.25.
+
+The fines of some loans (a list of loans) is money:
+the sum of the fine for the loan for each loan in the loans.
+
+Suppose dune is a loan with title "Dune" and days late 4.
+Suppose emma is a loan with title "Emma" and days late 60.
+Suppose ulysses is a loan with title "Ulysses" and days late 0.
+For example, the fine for dune is 1.
+For example, the fine for emma is 5.
+For example, the fine for ulysses is 0.
+For example, the fines of a list of dune, emma and ulysses is 6.

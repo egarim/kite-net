@@ -1,0 +1,11 @@
+Tips.
+
+The tip on a bill (money) at a rate (a whole number) is money:
+the bill times the rate divided by 100 rounded to 2 places.
+
+The total with tip of a bill (money) at a rate (a whole number) is money:
+the bill plus the tip on the bill at the rate.
+
+For example, the tip on 40 at 15 is 6.
+For example, the tip on 33.33 at 10 is 3.33.
+For example, the total with tip of 50 at 20 is 60.

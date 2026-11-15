@@ -1,0 +1,13 @@
+Validation.
+
+A password (text) is strong when:
+the length of the password is at least 8 and the password is not the password in lower case.
+
+A name (text) is blank when:
+the name trimmed is "".
+
+For example, "Kite2026!" is strong.
+For example, "kite" is not strong.
+For example, "alllowercase" is not strong.
+For example, "   " is blank.
+For example, "Yuli" is not blank.
